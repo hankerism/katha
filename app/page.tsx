@@ -3,6 +3,7 @@
 import FeaturedBooks from '@/components/home/FeaturedBooks';
 import PopularCategories from '@/components/home/PopularCategories';
 import ContinueReading from '../components/home/ContinueReading';
+import WhyKatha from '@/components/home/WhyKatha';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
