@@ -5,6 +5,7 @@ import PopularCategories from '@/components/home/PopularCategories';
 import ContinueReading from '../components/home/ContinueReading';
 import WhyKatha from '@/components/home/WhyKatha';
 import ReaderLove from '@/components/home/ReaderLove';
+import FeaturedAuthors from '@/components/home/FeaturedAuthors';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
@@ -165,6 +166,7 @@ export default function HomePage() {
       <WhyKatha />
       <WhyKatha />
       <ReaderLove />
+      <FeaturedAuthors />
 
     </>
   );
