@@ -6,6 +6,7 @@ import ContinueReading from '../components/home/ContinueReading';
 import WhyKatha from '@/components/home/WhyKatha';
 import ReaderLove from '@/components/home/ReaderLove';
 import FeaturedAuthors from '@/components/home/FeaturedAuthors';
+import FinalCTA from '@/components/home/FinalCTA';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
@@ -167,6 +168,7 @@ export default function HomePage() {
       <WhyKatha />
       <ReaderLove />
       <FeaturedAuthors />
+      <FinalCTA />
 
     </>
   );
