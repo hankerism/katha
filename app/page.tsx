@@ -165,7 +165,6 @@ export default function HomePage() {
       <PopularCategories />
       <ContinueReading />
       <WhyKatha />
-      <WhyKatha />
       <ReaderLove />
       <FeaturedAuthors />
       <FinalCTA />
