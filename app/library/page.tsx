@@ -1,144 +1,66 @@
 import type { Metadata } from 'next';
 import type { SVGProps } from 'react';
 import Link from 'next/link';
-import BookCard, { type BookCardProps } from '@/components/ui/BookCard';
+import BookCard from '@/components/ui/BookCard';
+import {
+  getAllBooks,
+  getBooksByCategory,
+  getFeaturedBooks,
+  type KathaBook,
+} from '@/lib/books';
+import { collectCategories } from '@/lib/search';
 
 /* ---------------------------------------------------------------------------
  * KATHA · Library
  * app/library/page.tsx
  *
  * The browse surface for the whole catalogue, in the same Apple Books /
- * Kinokuniya / Aesop editorial register as the homepage: a calm hero, a single
- * search field, a row of genre pills, a featured shelf, then the full grid.
+ * Kinokuniya / Aesop editorial register as the homepage: a calm hero, the
+ * search doorway, a row of genre pills, a featured shelf, then the full grid.
  *
- * Server component (no 'use client') — it is purely presentational and renders
- * BookCard (itself an RSC) inside the standard 1 / 2 / 4 responsive grid. The
- * search field is a doorway: it links to the dedicated /search experience.
- * The genre pills are intentionally visual-only for now; wiring them to real
- * query state will move that interactive slice into a small client child
- * later, leaving this shell untouched.
+ * Everything renders from lib/books.ts — no book arrays live here. Genre
+ * filtering is URL-driven: the pills are LINKS to /library?genre=<slug>
+ * (the convention every other surface already points at), so filters are
+ * shareable, back-button-friendly, and keyboard-accessible with zero client
+ * state. The page is an async server component reading `searchParams`
+ * (a Promise in this Next.js version); categories and counts derive from the
+ * catalogue via collectCategories(), so new books grow the pills untouched.
  *
- * Tokens only — no new colours. Static sample data lives at module scope in
- * ALL_CAPS so swapping to `const books = await prisma.book.findMany(...)`
- * needs no markup changes.
+ * The featured shelf shows only on the unfiltered view — a filtered page is
+ * an answer, not a storefront.
  * ------------------------------------------------------------------------- */
-
-export const metadata: Metadata = {
-  title: 'Library',
-  description:
-    'Browse the KATHA library — a curated shelf of Filipino-inspired fiction, poetry, and short stories, set in type made for slow, beautiful reading.',
-};
 
 function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
 }
 
-/* -- Sample data (temporary; replace with fetched data later) -------------- */
+interface LibrarySearchParams {
+  genre?: string | string[];
+}
 
-const GENRES = [
-  'All',
-  'Romance',
-  'Fantasy',
-  'Mystery',
-  'Poetry',
-  'Short Stories',
-  'Historical Fiction',
-  'Young Adult',
-] as const;
+/** First value wins when the param repeats; undefined means "All". */
+function activeGenreSlug(params: LibrarySearchParams): string | undefined {
+  const { genre } = params;
+  const value = Array.isArray(genre) ? genre[0] : genre;
+  return value?.trim() || undefined;
+}
 
-const FEATURED_BOOKS: BookCardProps[] = [
-  {
-    title: 'Ang Huling Tag-araw',
-    author: 'Lakambini Reyes',
-    category: 'Literary Fiction',
-    chapters: 7,
-    featured: true,
-    href: '/library/ang-huling-tag-araw',
-  },
-  {
-    title: 'Mga Liham sa Dilim',
-    author: 'J. Salvador',
-    category: 'Poetry',
-    chapters: 24,
-    featured: true,
-    href: '/library/mga-liham-sa-dilim',
-  },
-  {
-    title: 'Ang Bahay sa Buwan',
-    author: 'Noemi Bautista',
-    category: 'Magical Realism',
-    chapters: 15,
-    featured: true,
-    href: '/library/ang-bahay-sa-buwan',
-  },
-  {
-    title: 'Sa Ilalim ng Sampaguita',
-    author: 'Clara Mendoza',
-    category: 'Romance',
-    chapters: 18,
-    featured: true,
-    href: '/library/sa-ilalim-ng-sampaguita',
-  },
-];
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<LibrarySearchParams>;
+}): Promise<Metadata> {
+  const slug = activeGenreSlug(await searchParams);
+  const category = slug
+    ? collectCategories(getAllBooks()).find((c) => c.slug === slug)
+    : undefined;
 
-const LIBRARY_BOOKS: BookCardProps[] = [
-  {
-    title: 'Ang Huling Tag-araw',
-    author: 'Lakambini Reyes',
-    category: 'Literary Fiction',
-    chapters: 7,
-    href: '/library/ang-huling-tag-araw',
-  },
-  {
-    title: 'Mga Liham sa Dilim',
-    author: 'J. Salvador',
-    category: 'Poetry',
-    chapters: 24,
-    href: '/library/mga-liham-sa-dilim',
-  },
-  {
-    title: 'Ang Bahay sa Buwan',
-    author: 'Noemi Bautista',
-    category: 'Magical Realism',
-    chapters: 15,
-    href: '/library/ang-bahay-sa-buwan',
-  },
-  {
-    title: 'Huling Tren Pauwi',
-    author: 'Rafael Lim',
-    category: 'Short Stories',
-    chapters: 9,
-    href: '/library/huling-tren-pauwi',
-  },
-  {
-    title: 'Sa Ilalim ng Sampaguita',
-    author: 'Clara Mendoza',
-    category: 'Romance',
-    chapters: 18,
-    href: '/library/sa-ilalim-ng-sampaguita',
-  },
-  {
-    title: 'Mga Tala sa Ulan',
-    author: 'Isa Navarro',
-    category: 'Young Adult',
-    chapters: 12,
-    href: '/library/mga-tala-sa-ulan',
-  },
-  {
-    title: 'Bayan ng mga Alon',
-    author: 'Tomas Reyes',
-    category: 'Historical Fiction',
-    chapters: 20,
-    href: '/library/bayan-ng-mga-alon',
-  },
-  {
-    title: 'Ang Mahiwagang Estasyon',
-    author: 'Mila Cruz',
-    category: 'Fantasy',
-    chapters: 16,
-    href: '/library/ang-mahiwagang-estasyon',
-  },
-];
+  return {
+    title: category ? `${category.name} · Library` : 'Library',
+    description:
+      'Browse the KATHA library — a curated shelf of Filipino-inspired fiction, poetry, and short stories, set in type made for slow, beautiful reading.',
+  };
+}
 
 /* -- Icons ----------------------------------------------------------------- */
 
@@ -160,9 +82,58 @@ function SearchIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function ShelfIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M4 4h4v16H4zM10 4h4v16h-4zM16.5 4.5l4 1-3.5 15-4-1z" />
+    </svg>
+  );
+}
+
+/* -- Card mapping ----------------------------------------------------------- */
+
+function toCard(book: KathaBook) {
+  return (
+    <BookCard
+      key={book.slug}
+      title={book.title}
+      author={book.author}
+      category={book.category}
+      chapters={book.chapters.length}
+      featured={book.featured}
+      href={`/library/${book.slug}`}
+    />
+  );
+}
+
 /* -- Page ------------------------------------------------------------------ */
 
-export default function LibraryPage() {
+export default async function LibraryPage({
+  searchParams,
+}: {
+  searchParams: Promise<LibrarySearchParams>;
+}) {
+  const genreSlug = activeGenreSlug(await searchParams);
+
+  const allBooks = getAllBooks();
+  const categories = collectCategories(allBooks);
+  const activeCategory = genreSlug
+    ? categories.find((category) => category.slug === genreSlug)
+    : undefined;
+
+  const books = genreSlug ? getBooksByCategory(genreSlug) : allBooks;
+  const featured = getFeaturedBooks();
+  const isFiltered = genreSlug !== undefined;
+
   return (
     <>
       {/* Hero ------------------------------------------------------------- */}
@@ -207,82 +178,119 @@ export default function LibraryPage() {
             </Link>
           </div>
 
-          {/* Genre filter pills — visual only for now */}
-          <div
-            role="group"
+          {/* Genre pills — URL-driven links, derived from the catalogue */}
+          <nav
             aria-label="Filter by genre"
             className="mt-6 flex flex-wrap gap-2.5"
           >
-            {GENRES.map((genre, i) => {
-              const active = i === 0;
+            <Link
+              href="/library"
+              aria-current={!isFiltered ? 'page' : undefined}
+              className={cx(
+                'rounded-full px-4 py-2 font-body text-sm font-medium transition-colors duration-200',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                !isFiltered
+                  ? 'bg-foreground text-background shadow-sm'
+                  : 'border border-border bg-card text-muted-foreground hover:border-foreground/25 hover:text-foreground',
+              )}
+            >
+              All
+            </Link>
+            {categories.map((category) => {
+              const active = category.slug === genreSlug;
               return (
-                <button
-                  key={genre}
-                  type="button"
-                  aria-pressed={active}
+                <Link
+                  key={category.slug}
+                  href={category.href}
+                  aria-current={active ? 'page' : undefined}
                   className={cx(
                     'rounded-full px-4 py-2 font-body text-sm font-medium transition-colors duration-200',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                     active
                       ? 'bg-foreground text-background shadow-sm'
                       : 'border border-border bg-card text-muted-foreground hover:border-foreground/25 hover:text-foreground',
                   )}
                 >
-                  {genre}
-                </button>
+                  {category.name}
+                </Link>
               );
             })}
-          </div>
+          </nav>
         </div>
       </section>
 
-      {/* Featured shelf --------------------------------------------------- */}
-      <section
-        aria-labelledby="library-featured-heading"
-        className="container-katha"
-      >
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h2
-              id="library-featured-heading"
-              className="font-heading text-2xl text-foreground sm:text-3xl"
-            >
-              Featured this season
-            </h2>
-            <p className="mt-1.5 font-body text-sm text-muted-foreground">
-              Hand-picked stories our editors keep returning to.
-            </p>
+      {/* Featured shelf — unfiltered view only ----------------------------- */}
+      {!isFiltered && featured.length > 0 && (
+        <section
+          aria-labelledby="library-featured-heading"
+          className="container-katha"
+        >
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2
+                id="library-featured-heading"
+                className="font-heading text-2xl text-foreground sm:text-3xl"
+              >
+                Featured this season
+              </h2>
+              <p className="mt-1.5 font-body text-sm text-muted-foreground">
+                Hand-picked stories our editors keep returning to.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURED_BOOKS.map((book) => (
-            <BookCard key={book.href} {...book} />
-          ))}
-        </div>
-      </section>
+          <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featured.map(toCard)}
+          </div>
+        </section>
+      )}
 
-      {/* Full grid -------------------------------------------------------- */}
+      {/* Grid --------------------------------------------------------------- */}
       <section
         aria-labelledby="library-all-heading"
         className="container-katha py-16 md:py-24"
       >
-        <div className="flex items-end justify-between gap-4 border-t border-border pt-12">
+        <div
+          className={cx(
+            'flex items-end justify-between gap-4',
+            !isFiltered && 'border-t border-border pt-12',
+          )}
+        >
           <h2
             id="library-all-heading"
             className="font-heading text-2xl text-foreground sm:text-3xl"
           >
-            All books
+            {activeCategory ? activeCategory.name : 'All books'}
           </h2>
           <p className="font-body text-sm text-muted-foreground">
-            {LIBRARY_BOOKS.length} titles
+            {books.length} {books.length === 1 ? 'title' : 'titles'}
           </p>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {LIBRARY_BOOKS.map((book) => (
-            <BookCard key={book.href} {...book} />
-          ))}
-        </div>
+        {books.length > 0 ? (
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {books.map(toCard)}
+          </div>
+        ) : (
+          /* Empty shelf — unknown or not-yet-stocked genre */
+          <div className="mt-14 flex flex-col items-center text-center">
+            <ShelfIcon className="size-8 text-primary/40" />
+            <p className="mt-6 font-reader text-2xl text-reader-foreground">
+              This shelf is still being stocked
+            </p>
+            <p className="mt-3 max-w-[40ch] font-body text-[0.95rem] leading-relaxed text-muted-foreground">
+              No books live here yet. New titles join the library often —
+              in the meantime, the rest of the shelves are open.
+            </p>
+            <Link
+              href="/library"
+              className="mt-7 inline-flex items-center gap-2 rounded-full font-body text-[0.85rem] font-medium text-primary transition-colors hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              Browse all books
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        )}
       </section>
     </>
   );
