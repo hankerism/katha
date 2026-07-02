@@ -342,6 +342,32 @@ export function getAllBooks(): KathaBook[] {
   return Object.values(BOOKS);
 }
 
+/** Lightweight projection for the client-side search engine: everything the
+ *  engine matches on (title, authorId, category, chapter titles) and none of
+ *  the prose — so full book content never ships in the browser bundle.
+ *  Structurally satisfies lib/search.ts's SearchableBook. */
+export interface BookSearchRecord {
+  slug: string;
+  title: string;
+  authorId: string;
+  category: string;
+  chapters: Array<{ number: number; slug: string; title: string }>;
+}
+
+export function getSearchIndex(): BookSearchRecord[] {
+  return getAllBooks().map((book) => ({
+    slug: book.slug,
+    title: book.title,
+    authorId: book.authorId,
+    category: book.category,
+    chapters: book.chapters.map(({ number, slug, title }) => ({
+      number,
+      slug,
+      title,
+    })),
+  }));
+}
+
 /** Editorial picks for the featured shelves, in catalogue order. */
 export function getFeaturedBooks(): KathaBook[] {
   return getAllBooks().filter((book) => book.featured);

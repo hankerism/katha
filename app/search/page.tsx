@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { getSearchIndex } from '@/lib/books';
+import { getAllAuthors } from '@/lib/authors';
 import SearchExperience from '@/components/search/SearchExperience';
 
 /* ---------------------------------------------------------------------------
@@ -52,7 +54,12 @@ export default function SearchPage() {
 
         <div className="mt-9">
           <Suspense fallback={null}>
-            <SearchExperience />
+            {/* The index is computed HERE (server) so chapter prose never
+                enters the client bundle — the experience gets data as props. */}
+            <SearchExperience
+              books={getSearchIndex()}
+              authors={getAllAuthors()}
+            />
           </Suspense>
         </div>
       </div>

@@ -21,9 +21,28 @@
  * any matching logic.
  * ------------------------------------------------------------------------- */
 
-import type { KathaBook } from './books';
 import type { KathaAuthor } from './authors';
 import { foldText, slugifyCategory } from './text';
+
+/* ── Searchable shapes ───────────────────────────────────────────────────────
+ * The engine deliberately accepts MINIMAL structural types — everything it
+ * matches on and nothing more. A full KathaBook satisfies SearchableBook, but
+ * client callers should pass getSearchIndex() from lib/books.ts instead so
+ * chapter prose never ships in the browser bundle. */
+
+export interface SearchableChapter {
+  number: number;
+  slug: string;
+  title: string;
+}
+
+export interface SearchableBook {
+  slug: string;
+  title: string;
+  authorId: string;
+  category: string;
+  chapters: SearchableChapter[];
+}
 
 /* ── Result model ────────────────────────────────────────────────────────── */
 
@@ -306,7 +325,7 @@ function byScore<T extends { score: number; title: string }>(a: T, b: T): number
  *  data (the caller supplies getAllBooks() / getAllAuthors()). The engine
  *  joins authorId → name internally and never imports either domain module. */
 export interface SearchableCatalogue {
-  books: KathaBook[];
+  books: SearchableBook[];
   authors: KathaAuthor[];
 }
 
@@ -479,7 +498,9 @@ export interface CategorySuggestion {
 }
 
 /** The catalogue's categories, most-populated first — grows with the data. */
-export function collectCategories(books: KathaBook[]): CategorySuggestion[] {
+export function collectCategories(
+  books: Array<Pick<SearchableBook, 'category'>>,
+): CategorySuggestion[] {
   const counts = new Map<string, { name: string; bookCount: number }>();
   for (const book of books) {
     const key = foldText(book.category);

@@ -8,8 +8,8 @@ import {
   useState,
 } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getAllBooks } from '@/lib/books';
-import { getAllAuthors } from '@/lib/authors';
+import type { BookSearchRecord } from '@/lib/books';
+import type { KathaAuthor } from '@/lib/authors';
 import { searchCatalogue, collectCategories } from '@/lib/search';
 import {
   getRecentSearches,
@@ -49,7 +49,18 @@ import SearchNoResults from './SearchNoResults';
 
 const URL_SYNC_DELAY_MS = 250;
 
-export default function SearchExperience() {
+export interface SearchExperienceProps {
+  /** The server-computed search index (no chapter prose) — passing it as
+   *  props keeps lib/books.ts (and every book's full text) out of the client
+   *  bundle entirely. */
+  books: BookSearchRecord[];
+  authors: KathaAuthor[];
+}
+
+export default function SearchExperience({
+  books,
+  authors,
+}: SearchExperienceProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -62,11 +73,9 @@ export default function SearchExperience() {
     setRecent(getRecentSearches());
   }, []);
 
-  // The two domain tables are static per session; categories derive from them.
-  const catalogue = useMemo(
-    () => ({ books: getAllBooks(), authors: getAllAuthors() }),
-    [],
-  );
+  // The two domain tables arrive as server-computed props; categories derive
+  // from the index client-side.
+  const catalogue = useMemo(() => ({ books, authors }), [books, authors]);
   const categories = useMemo(
     () => collectCategories(catalogue.books),
     [catalogue],

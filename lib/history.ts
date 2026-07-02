@@ -116,17 +116,6 @@ export function saveHistory(entries: HistoryEntry[]): void {
   }
 }
 
-/* ── Lookups ─────────────────────────────────────────────────────────────── */
-
-/** Is this location already in history? Pass a list to avoid re-reading. */
-export function isInHistory(
-  location: ReadingLocationIdentity,
-  entries: HistoryEntry[] = getHistory(),
-): boolean {
-  const id = historyEntryId(location);
-  return entries.some((e) => e.id === id);
-}
-
 /* ── Mutations ───────────────────────────────────────────────────────────── */
 
 /** Record a visit to a location. De-dupes by id (any previous visit to the same
