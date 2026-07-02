@@ -97,7 +97,7 @@ export default function ReadingLocationCard({
           'block rounded-xl border border-border/60 reading-surface p-6 sm:p-7',
           'shadow-soft transition-[transform,box-shadow,border-color] duration-300 ease-out',
           'group-hover:border-border-strong/70 group-hover:shadow-[var(--ds-shadow-md)]',
-          'motion-safe:group-hover:-translate-y-0.5',
+          'motion-safe:group-motion-safe:hover:-translate-y-0.5',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         )}
       >

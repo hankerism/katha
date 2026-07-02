@@ -153,7 +153,7 @@ export default function ReaderSidebar({
               View Bookmarks
             </span>
           </span>
-          <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />
+          <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 motion-safe:group-hover:translate-x-0.5" />
         </Link>
 
         {/* Reading history link */}
@@ -167,7 +167,7 @@ export default function ReaderSidebar({
               View History
             </span>
           </span>
-          <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />
+          <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 motion-safe:group-hover:translate-x-0.5" />
         </Link>
       </div>
     </aside>

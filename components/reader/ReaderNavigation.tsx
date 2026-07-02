@@ -41,7 +41,7 @@ export default function ReaderNavigation({
           className="group flex flex-col gap-1 rounded-[14px] border border-border bg-card px-5 py-4 text-left transition-colors hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <span className="inline-flex items-center gap-1.5 font-body text-xs uppercase tracking-[0.14em] text-muted-foreground">
-            <ArrowLeftIcon className="size-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
+            <ArrowLeftIcon className="size-3.5 transition-transform duration-200 motion-safe:group-hover:-translate-x-0.5" />
             Previous
           </span>
           <span className="truncate font-heading text-sm text-foreground">
@@ -69,7 +69,7 @@ export default function ReaderNavigation({
         >
           <span className="inline-flex items-center gap-1.5 font-body text-xs uppercase tracking-[0.14em] text-muted-foreground">
             Next
-            <ArrowRightIcon className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+            <ArrowRightIcon className="size-3.5 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5" />
           </span>
           <span className="truncate font-heading text-sm text-foreground">
             {nextChapter.title}
@@ -82,7 +82,7 @@ export default function ReaderNavigation({
         >
           <span className="inline-flex items-center gap-1.5 font-body text-xs uppercase tracking-[0.14em] text-muted-foreground">
             Finish
-            <ArrowRightIcon className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+            <ArrowRightIcon className="size-3.5 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5" />
           </span>
           <span className="font-heading text-sm text-foreground">
             Back to book

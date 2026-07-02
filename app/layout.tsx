@@ -1,19 +1,39 @@
 import Navbar from '@/components/ui/layout/Navbar';
 import Footer from '@/components/ui/layout/Footer';
 import type { Metadata } from 'next';
+import { Cormorant_Garamond, Inter, Literata } from 'next/font/google';
 import './globals.css';
+
+/* Brand typefaces, self-hosted via next/font (no render-blocking @import).
+ * The CSS variables feed the --font-* role tokens in globals.css. Literata
+ * and Inter are variable fonts (full weight axis); Cormorant Garamond is
+ * static, so its weights are enumerated. */
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
+  display: 'swap',
+});
+const literata = Literata({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--font-literata',
+  display: 'swap',
+});
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 /* ---------------------------------------------------------------------------
  * KATHA · Root layout
  * app/layout.tsx
  *
  * The app shell: brand metadata (a `%s · KATHA` title template that every
- * page's title composes into) and the sticky Navbar above the routed content.
- *
- * Typography loads via the Google Fonts @import in globals.css (Cormorant
- * Garamond · Literata · Inter), which feeds the --font-* tokens; per the note
- * there, moving that to next/font is a future optimization — the unused
- * create-next-app Geist fonts are gone.
+ * page's title composes into), the self-hosted brand typefaces, and the
+ * sticky Navbar above the routed content.
  * ------------------------------------------------------------------------- */
 
 export const metadata: Metadata = {
@@ -42,7 +62,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${literata.variable} ${inter.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col">
         <Navbar />
 

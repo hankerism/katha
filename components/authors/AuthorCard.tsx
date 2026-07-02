@@ -41,7 +41,7 @@ export default function AuthorCard({
     <Link
       href={href}
       aria-label={`View ${name}'s profile — ${genreLabel}, ${bookCount} ${bookCount === 1 ? 'book' : 'books'}`}
-      className="group flex h-full flex-col items-center rounded-[18px] border border-border bg-card p-6 text-center shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-border-strong hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="group flex h-full flex-col items-center rounded-[18px] border border-border bg-card p-6 text-center shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out motion-safe:hover:-translate-y-1 hover:border-border-strong hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       {/* Portrait — uploaded avatar when present, initials otherwise */}
       {avatar ? (
@@ -49,12 +49,12 @@ export default function AuthorCard({
         <img
           src={avatar}
           alt=""
-          className="size-20 shrink-0 rounded-full object-cover shadow-sm ring-1 ring-black/10 transition-transform duration-300 ease-out group-hover:scale-105"
+          className="size-20 shrink-0 rounded-full object-cover shadow-sm ring-1 ring-black/10 transition-transform duration-300 ease-out motion-safe:group-hover:scale-105"
         />
       ) : (
         <span
           aria-hidden="true"
-          className="grid size-20 shrink-0 place-items-center rounded-full font-heading text-xl font-semibold text-brand-secondary shadow-sm ring-1 ring-black/10 transition-transform duration-300 ease-out group-hover:scale-105 bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))]"
+          className="grid size-20 shrink-0 place-items-center rounded-full font-heading text-xl font-semibold text-brand-secondary shadow-sm ring-1 ring-black/10 transition-transform duration-300 ease-out motion-safe:group-hover:scale-105 bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))]"
         >
           {initialsOf(name)}
         </span>
@@ -80,7 +80,7 @@ export default function AuthorCard({
             View Profile
             <span
               aria-hidden="true"
-              className="transition-transform duration-200 group-hover:translate-x-0.5"
+              className="transition-transform duration-200 motion-safe:group-hover:translate-x-0.5"
             >
               →
             </span>

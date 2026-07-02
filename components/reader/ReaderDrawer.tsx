@@ -303,7 +303,7 @@ export default function ReaderDrawer({
                     </span>
                   )}
                 </span>
-                <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />
+                <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 motion-safe:group-hover:translate-x-0.5" />
               </Link>
 
               {/* Reading history CTA */}
@@ -318,7 +318,7 @@ export default function ReaderDrawer({
                     View History
                   </span>
                 </span>
-                <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />
+                <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 motion-safe:group-hover:translate-x-0.5" />
               </Link>
 
               {/* Close */}

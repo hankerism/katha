@@ -59,7 +59,7 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
         aria-hidden="true"
         className={cx(
           'pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left rounded-full bg-accent',
-          'transition-transform duration-300 ease-out',
+          'motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out',
           active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
         )}
       />

@@ -41,12 +41,12 @@ export default function PopularCategories() {
               key={category.slug}
               href={category.href}
               aria-label={`Browse ${category.name} books`}
-              className="group relative flex h-full min-h-[7.5rem] flex-col justify-between overflow-hidden rounded-[18px] border border-border bg-card p-5 shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-border-strong hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="group relative flex h-full min-h-[7.5rem] flex-col justify-between overflow-hidden rounded-[18px] border border-border bg-card p-5 shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out motion-safe:hover:-translate-y-1 hover:border-border-strong hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               {/* Decorative monogram */}
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute -right-1 -top-3 select-none font-logo text-7xl font-semibold leading-none text-accent/10 transition-all duration-300 ease-out group-hover:-top-2 group-hover:text-accent/20"
+                className="pointer-events-none absolute -right-1 -top-3 select-none font-logo text-7xl font-semibold leading-none text-accent/10 transition-all duration-300 ease-out motion-safe:group-hover:-top-2 group-hover:text-accent/20"
               >
                 {category.name.charAt(0)}
               </span>
@@ -59,7 +59,7 @@ export default function PopularCategories() {
                 Browse
                 <span
                   aria-hidden="true"
-                  className="transition-transform duration-200 group-hover:translate-x-0.5"
+                  className="transition-transform duration-200 motion-safe:group-hover:translate-x-0.5"
                 >
                   →
                 </span>
