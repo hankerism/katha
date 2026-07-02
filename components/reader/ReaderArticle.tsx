@@ -1,6 +1,5 @@
 import type { SVGProps } from 'react';
 import { paragraphAnchorId } from '@/lib/reading-location';
-import ParagraphScrollRestoration from './ParagraphScrollRestoration';
 
 /* ---------------------------------------------------------------------------
  * KATHA · ReaderArticle
@@ -117,10 +116,6 @@ export default function ReaderArticle({
           </p>
         ))}
       </div>
-
-      {/* Scroll to #p-{index} after mount (deep-linked bookmarks). A client leaf,
-          so this article stays a server component. */}
-      <ParagraphScrollRestoration />
     </article>
   );
 }

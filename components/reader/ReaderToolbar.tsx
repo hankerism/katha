@@ -161,7 +161,6 @@ export default function ReaderToolbar({
             bookTitle={bookTitle}
             chapterSlug={chapterSlug}
             chapterTitle={chapterTitle}
-            chapterNumber={chapterNumber}
             href={chapterHref}
           />
         </div>
