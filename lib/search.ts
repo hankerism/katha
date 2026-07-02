@@ -22,6 +22,7 @@
  * ------------------------------------------------------------------------- */
 
 import type { KathaBook } from './books';
+import { foldText, slugifyCategory } from './text';
 
 /* ── Result model ────────────────────────────────────────────────────────── */
 
@@ -105,25 +106,11 @@ const EMPTY_RESULTS: Omit<SearchResults, 'query'> = {
 };
 
 /* ── Normalization ───────────────────────────────────────────────────────── */
+/* foldText / slugifyCategory live in lib/text.ts (shared with the catalogue
+ * and persistence layers); re-exported here so search consumers keep a single
+ * import surface. */
 
-/** Lowercase + strip diacritics, one output char per input char, so indices
- *  into the folded text are valid indices into the original. Characters that
- *  decompose to several code points (rare ligatures) keep their base char. */
-export function foldText(text: string): string {
-  let folded = '';
-  for (const char of text.toLowerCase()) {
-    const decomposed = char.normalize('NFD').replace(/[̀-ͯ]/g, '');
-    folded += decomposed.charAt(0) || char;
-  }
-  return folded;
-}
-
-/** URL-safe slug in the existing `/library?genre=historical-fiction` register. */
-export function slugifyCategory(name: string): string {
-  return foldText(name)
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+export { foldText, slugifyCategory } from './text';
 
 /* ── Fuzzy primitives ────────────────────────────────────────────────────── */
 

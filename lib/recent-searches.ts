@@ -15,7 +15,7 @@
  * SSR-safe: every accessor no-ops (returns [] / does nothing) without a window.
  * ------------------------------------------------------------------------- */
 
-import { foldText } from './search';
+import { foldText } from './text';
 
 export interface RecentSearch {
   query: string;
