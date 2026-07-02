@@ -289,8 +289,12 @@ function scoreText(queryTokens: string[], text: string): TextMatch | null {
 
 /* ── Catalogue search ────────────────────────────────────────────────────── */
 
-/** Field weights: what kind of hit matters most, all else equal. */
+/** Field weights: what kind of hit matters most, all else equal. A book
+ *  matches on "title author" combined (so author queries and cross-field
+ *  queries like "huling reyes" list the book itself), with a lower-weighted
+ *  category fallback. */
 const WEIGHT_BOOK = 1;
+const WEIGHT_BOOK_VIA_CATEGORY = 0.65;
 const WEIGHT_AUTHOR = 0.9;
 const WEIGHT_CATEGORY = 0.8;
 const WEIGHT_CHAPTER = 0.7;
@@ -328,18 +332,36 @@ export function searchCatalogue(
   >();
 
   for (const book of books) {
-    const titleMatch = scoreText(tokens, book.title);
-    if (titleMatch) {
+    // Books match on "title author" combined: an author query lists the
+    // author's books, and mixed queries ("huling reyes") still hit. Highlight
+    // ranges are clipped to the title portion, which the combined text starts
+    // with, so they remain valid indices into the displayed title. Books that
+    // only match via their category still surface, ranked lower.
+    const combinedMatch = scoreText(tokens, `${book.title} ${book.author}`);
+    const bookCategoryMatch = combinedMatch
+      ? null
+      : scoreText(tokens, book.category);
+    if (combinedMatch || bookCategoryMatch) {
+      const titleRanges = combinedMatch
+        ? combinedMatch.ranges
+            .filter((range) => range.start < book.title.length)
+            .map((range) => ({
+              start: range.start,
+              end: Math.min(range.end, book.title.length),
+            }))
+        : [];
       bookResults.push({
         type: 'book',
         id: book.slug,
         title: book.title,
-        titleRanges: titleMatch.ranges,
+        titleRanges,
         author: book.author,
         category: book.category,
         chapterCount: book.chapters.length,
         href: `/library/${book.slug}`,
-        score: titleMatch.score * WEIGHT_BOOK,
+        score: combinedMatch
+          ? combinedMatch.score * WEIGHT_BOOK
+          : (bookCategoryMatch as TextMatch).score * WEIGHT_BOOK_VIA_CATEGORY,
       });
     }
 
