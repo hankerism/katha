@@ -18,12 +18,11 @@ import type {
  *   Books      → the existing BookCard grid (straight reuse)
  *   Chapters   → quiet row links deep into the reader, "Chapter N · Book"
  *   Categories → row links to the existing /library?genre= convention
- *   Authors    → rows that REFINE the query (there is no author page yet), so
- *                they are buttons, not links
+ *   Authors    → row links to the author profile (/authors/[slug])
  *
  * Highlights render the engine's MatchRanges through <mark> — no matching
- * logic is re-derived here. All rows are real links/buttons in DOM order, so
- * keyboard navigation is native. Tokens only.
+ * logic is re-derived here. All rows are real links in DOM order, so keyboard
+ * navigation is native. Tokens only.
  * ------------------------------------------------------------------------- */
 
 function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
@@ -89,14 +88,11 @@ export interface SearchResultsProps {
   results: SearchResultsModel;
   /** A result link was chosen — the caller records the search as recent. */
   onCommit: () => void;
-  /** An author row was chosen — the caller refines the query. */
-  onRefine: (query: string) => void;
 }
 
 export default function SearchResults({
   results,
   onCommit,
-  onRefine,
 }: SearchResultsProps) {
   const { books, authors, categories, chapters } = results;
 
@@ -122,16 +118,17 @@ export default function SearchResults({
         </section>
       )}
 
-      {/* Authors — refine the search (no author pages yet) */}
+      {/* Authors — into their profiles */}
       {authors.length > 0 && (
         <section aria-labelledby="search-authors-heading">
           <GroupHeading id="search-authors-heading">Authors</GroupHeading>
           <ul className="mt-5 space-y-3">
             {authors.map((author) => (
               <li key={author.id}>
-                <button
-                  type="button"
-                  onClick={() => onRefine(author.refineQuery)}
+                <Link
+                  href={author.href}
+                  onClick={onCommit}
+                  aria-label={`View ${author.title}'s profile`}
                   className={rowClass}
                 >
                   <span className="min-w-0">
@@ -147,10 +144,10 @@ export default function SearchResults({
                     </span>
                   </span>
                   <span className="inline-flex shrink-0 items-center gap-1.5 font-body text-[0.78rem] font-medium text-muted-foreground transition-colors group-hover:text-primary">
-                    See books
+                    View profile
                     <ArrowRightIcon className="size-[15px] transition-transform duration-200 motion-safe:group-hover:translate-x-0.5" />
                   </span>
-                </button>
+                </Link>
               </li>
             ))}
           </ul>

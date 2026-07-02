@@ -48,12 +48,15 @@ export interface BookResult {
 
 export interface AuthorResult {
   type: 'author';
+  /** The author's stable id. */
   id: string;
   title: string;
   titleRanges: MatchRange[];
   bookCount: number;
-  /** Authors have no page — selecting one refines the search to this query. */
-  refineQuery: string;
+  /** The author's route segment. */
+  slug: string;
+  /** Deep link to the author profile. */
+  href: string;
   score: number;
 }
 
@@ -414,7 +417,8 @@ export function searchCatalogue(
       title: author.name,
       titleRanges: match.ranges,
       bookCount: books.filter((book) => book.authorId === author.id).length,
-      refineQuery: author.name,
+      slug: author.slug,
+      href: `/authors/${author.slug}`,
       score: match.score * WEIGHT_AUTHOR,
     });
   }

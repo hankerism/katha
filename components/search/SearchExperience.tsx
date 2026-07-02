@@ -39,8 +39,8 @@ import SearchNoResults from './SearchNoResults';
  *   · recent searches — mount-gated read (the localStorage pattern shared
  *     with Bookmarks/History), recorded on COMMIT (Enter or result click),
  *     never per keystroke
- *   · keyboard flow — Enter opens the engine's top result (authors refine the
- *     query instead, as they have no page); Escape/clear lives in SearchBox
+ *   · keyboard flow — Enter opens the engine's top result (every result type
+ *     carries an href, authors included); Escape/clear lives in SearchBox
  *   · a polite aria-live announcement of the result count
  *
  * Branching: no query → suggestions; results → grouped results; none → the
@@ -106,22 +106,13 @@ export default function SearchExperience() {
     setRecent((current) => addRecentSearch(trimmed, current));
   }
 
-  /** Enter — open the engine's top result. Authors refine instead of navigate. */
+  /** Enter — open the engine's top result. Every result type has an href now
+   *  (authors navigate to their profiles like everything else). */
   function handleSubmit() {
     const top = results.top;
     if (!top) return;
     commit();
-    if (top.type === 'author') {
-      setQuery(top.refineQuery);
-    } else {
-      router.push(top.href);
-    }
-  }
-
-  /** An author row (or a recent chip) turns into a fresh query. */
-  function handleRefine(next: string) {
-    commit();
-    setQuery(next);
+    router.push(top.href);
   }
 
   function handleRemoveRecent(target: string) {
@@ -156,11 +147,7 @@ export default function SearchExperience() {
             onClearAll={handleClearRecent}
           />
         ) : results.total > 0 ? (
-          <SearchResults
-            results={results}
-            onCommit={commit}
-            onRefine={handleRefine}
-          />
+          <SearchResults results={results} onCommit={commit} />
         ) : (
           <div className="mt-16">
             <SearchNoResults
