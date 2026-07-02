@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { SVGProps } from 'react';
-import { getBookmarks, type Bookmark } from '@/lib/bookmarks';
+import { getBookmarks, removeBookmark, type Bookmark } from '@/lib/bookmarks';
 import {
   groupBookmarksByBook,
   resolvePreview,
@@ -26,8 +26,9 @@ import ReadingLocationCard from '@/components/ui/ReadingLocationCard';
  *   (eyebrow / preview / meta / href) are composed HERE via the selectors, so
  *   no book logic leaks into the presentational card.
  *
- * Deliberately NOT here yet (later phases): delete + undo toast, paragraph-level
- * capture, scroll restoration. No onRemove is passed, so no remove control.
+ * Delete is wired to removeBookmark() with an immediate local-state update; the
+ * empty state appears automatically when the last bookmark is removed. Deferred
+ * to later phases: the undo toast, paragraph-level capture, scroll restoration.
  * ------------------------------------------------------------------------- */
 
 function cx(...classes: Array<string | false | null | undefined>): string {
@@ -113,6 +114,14 @@ export default function BookmarksPage() {
   const groups = groupBookmarksByBook(bookmarks);
   const hasBookmarks = bookmarks.length > 0;
 
+  // Remove immediately: removeBookmark() filters + persists via the foundation
+  // and returns the next list. The functional updater removes from the LATEST
+  // list, so quick successive deletes can't race on a stale closure. When the
+  // last one goes, `groups` empties and the empty state renders automatically.
+  function handleRemove(id: string) {
+    setBookmarks((current) => removeBookmark(id, current));
+  }
+
   return (
     <div className="min-h-dvh bg-background">
       <main className="mx-auto max-w-[720px] px-5 py-16 sm:px-6 sm:py-20">
@@ -163,6 +172,8 @@ export default function BookmarksPage() {
                         preview={resolvePreview(bookmark)}
                         meta={formatSavedAt(bookmark.createdAt)}
                         ariaLabel={`Continue reading ${group.bookTitle}, ${bookmark.chapterTitle}`}
+                        onRemove={() => handleRemove(bookmark.id)}
+                        removeLabel={`Remove bookmark: ${bookmark.chapterTitle}`}
                       />
                     ))}
                   </div>
