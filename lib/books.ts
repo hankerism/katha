@@ -107,6 +107,11 @@ export function getBookBySlug(slug: string): KathaBook | undefined {
   return BOOKS[slug];
 }
 
+/** Every book in the catalogue, in catalogue order. */
+export function getAllBooks(): KathaBook[] {
+  return Object.values(BOOKS);
+}
+
 export function getChapterBySlug(
   bookSlug: string,
   chapterSlug: string,
