@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { SVGProps } from 'react';
+import Link from 'next/link';
 import BookCard, { type BookCardProps } from '@/components/ui/BookCard';
 
 /* ---------------------------------------------------------------------------
@@ -12,9 +13,10 @@ import BookCard, { type BookCardProps } from '@/components/ui/BookCard';
  *
  * Server component (no 'use client') — it is purely presentational and renders
  * BookCard (itself an RSC) inside the standard 1 / 2 / 4 responsive grid. The
- * search input and genre pills are intentionally visual-only for now; wiring
- * them to real query state will move that interactive slice into a small client
- * child later, leaving this shell untouched.
+ * search field is a doorway: it links to the dedicated /search experience.
+ * The genre pills are intentionally visual-only for now; wiring them to real
+ * query state will move that interactive slice into a small client child
+ * later, leaving this shell untouched.
  *
  * Tokens only — no new colours. Static sample data lives at module scope in
  * ALL_CAPS so swapping to `const books = await prisma.book.findMany(...)`
@@ -191,21 +193,18 @@ export default function LibraryPage() {
             unhurried reading.
           </p>
 
-          {/* Search — visual only for now */}
+          {/* Search — a doorway into the dedicated /search experience */}
           <div className="mt-9 max-w-xl">
-            <label htmlFor="library-search" className="sr-only">
-              Search the library
-            </label>
-            <div className="flex items-center gap-3 rounded-full border border-border bg-card px-5 py-3.5 shadow-sm transition-shadow duration-300 focus-within:shadow-md">
+            <Link
+              href="/search"
+              aria-label="Search the library"
+              className="flex items-center gap-3 rounded-full border border-border bg-card px-5 py-3.5 shadow-sm transition-shadow duration-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
               <SearchIcon className="size-5 shrink-0 text-muted-foreground" />
-              <input
-                id="library-search"
-                type="search"
-                placeholder="Search by title, author, or genre…"
-                aria-label="Search the library"
-                className="w-full bg-transparent font-body text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
-              />
-            </div>
+              <span className="font-body text-base text-muted-foreground">
+                Search by title, author, or genre…
+              </span>
+            </Link>
           </div>
 
           {/* Genre filter pills — visual only for now */}
