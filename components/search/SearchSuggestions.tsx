@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import type { SVGProps } from 'react';
 import type { RecentSearch } from '@/lib/recent-searches';
 import type { CategorySuggestion } from '@/lib/search';
+import { ClockIcon, CloseIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · SearchSuggestions
@@ -20,40 +20,6 @@ import type { CategorySuggestion } from '@/lib/search';
  * convention. A recent-search chip is a pair of SIBLING buttons (search +
  * remove), never nested interactive elements. Tokens only.
  * ------------------------------------------------------------------------- */
-
-function ClockIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 3" />
-    </svg>
-  );
-}
-
-function CloseIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M6 6l12 12M18 6L6 18" />
-    </svg>
-  );
-}
 
 export interface SearchSuggestionsProps {
   recent: RecentSearch[];

@@ -8,6 +8,8 @@
  * separate from the markup.
  * ------------------------------------------------------------------------- */
 
+import { initialsOf } from '@/lib/text';
+
 type Testimonial = {
   quote: string;
   name: string;
@@ -31,15 +33,6 @@ const TESTIMONIALS: Testimonial[] = [
     role: 'Cebu reader',
   },
 ];
-
-function initialsOf(name: string): string {
-  return name
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 export default function ReaderLove() {
   return (

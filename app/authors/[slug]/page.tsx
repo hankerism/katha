@@ -7,6 +7,7 @@ import {
 } from '@/lib/author-selectors';
 import BookCard from '@/components/ui/BookCard';
 import AuthorCard from '@/components/authors/AuthorCard';
+import { initialsOf } from '@/lib/text';
 
 /* ---------------------------------------------------------------------------
  * KATHA · Author profile
@@ -34,15 +35,6 @@ export async function generateMetadata({
     title: profile.author.name,
     description: profile.author.bio,
   };
-}
-
-function initialsOf(name: string): string {
-  return name
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
 }
 
 export default async function AuthorProfilePage({

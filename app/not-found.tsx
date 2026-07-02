@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import type { SVGProps } from 'react';
+import { BookOpenIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · Not found
@@ -14,23 +14,6 @@ import type { SVGProps } from 'react';
 export const metadata: Metadata = {
   title: 'Page not found',
 };
-
-function BookOpenIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M12 6.5C10.5 5.5 8 5 4 5v13c4 0 6.5.5 8 1.5 1.5-1 4-1.5 8-1.5V5c-4 0-6.5.5-8 1.5V20" />
-    </svg>
-  );
-}
 
 export default function NotFound() {
   return (

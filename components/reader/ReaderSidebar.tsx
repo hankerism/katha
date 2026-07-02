@@ -1,7 +1,11 @@
 import Link from 'next/link';
-import type { SVGProps } from 'react';
 import { getBookBySlug } from '@/lib/books';
 import { authorName } from '@/lib/author-selectors';
+import {
+  BookmarkIcon,
+  ArrowRightIcon,
+  ClockIcon,
+} from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · ReaderSidebar
@@ -29,31 +33,6 @@ interface ReaderSidebarProps {
 
 function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
-}
-
-function BookmarkIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
-      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
-      <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
-  );
-}
-
-function ClockIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 3" />
-    </svg>
-  );
 }
 
 export default function ReaderSidebar({
@@ -169,7 +148,7 @@ export default function ReaderSidebar({
           className="group flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-3 transition-colors hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
         >
           <span className="inline-flex items-center gap-2.5">
-            <BookmarkIcon className="size-4 text-primary" />
+            <BookmarkIcon filled className="size-4 text-primary" />
             <span className="font-body text-sm font-medium text-foreground">
               View Bookmarks
             </span>

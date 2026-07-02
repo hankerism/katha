@@ -1,8 +1,12 @@
 import Link from 'next/link';
-import type { SVGProps } from 'react';
 import type { KathaChapter } from '@/lib/books';
 import BookmarkButton from '@/components/reader/BookmarkButton';
 import ReaderDrawer from '@/components/reader/ReaderDrawer';
+import {
+  ArrowLeftIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · ReaderToolbar
@@ -41,30 +45,6 @@ interface ReaderToolbarProps {
   totalChapters: number;
   prevChapter: KathaChapter | null;
   nextChapter: KathaChapter | null;
-}
-
-function ArrowLeftIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
-      <path d="M19 12H5M12 19l-7-7 7-7" />
-    </svg>
-  );
-}
-
-function ChevronLeftIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
-      <path d="m9 18 6-6-6-6" />
-    </svg>
-  );
 }
 
 export default function ReaderToolbar({

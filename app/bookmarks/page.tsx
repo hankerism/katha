@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { SVGProps } from 'react';
 import { getBookmarks, removeBookmark, type Bookmark } from '@/lib/bookmarks';
+import { relativeTimeLabel } from '@/lib/relative-time';
+import { RibbonIcon, ArrowRightIcon } from '@/components/ui/icons';
 import {
   groupBookmarksByBook,
   resolvePreview,
@@ -33,59 +34,6 @@ import ReadingLocationCard from '@/components/ui/ReadingLocationCard';
 
 function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
-}
-
-function RibbonIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M6 3h12v18l-6-4-6 4z" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  );
-}
-
-/** Calm, editorial relative time for the "saved" label. Client-only (rendered
- *  after mount), so no server/client clock mismatch. */
-function formatSavedAt(iso: string): string {
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return 'Saved';
-  const days = Math.floor((Date.now() - then) / 86_400_000);
-  if (days <= 0) return 'Saved today';
-  if (days === 1) return 'Saved yesterday';
-  if (days < 7) return `Saved ${days} days ago`;
-  if (days < 14) return 'Saved last week';
-  if (days < 30) return `Saved ${Math.floor(days / 7)} weeks ago`;
-  if (days < 60) return 'Saved last month';
-  if (days < 365) return `Saved ${Math.floor(days / 30)} months ago`;
-  return `Saved on ${new Date(iso).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })}`;
 }
 
 /** Chapter citation for the card eyebrow, composed from the selectors — the
@@ -170,7 +118,7 @@ export default function BookmarksPage() {
                         href={bookmark.href}
                         eyebrow={composeEyebrow(bookmark)}
                         preview={resolvePreview(bookmark)}
-                        meta={formatSavedAt(bookmark.createdAt)}
+                        meta={relativeTimeLabel(bookmark.createdAt, 'Saved')}
                         ariaLabel={`Continue reading ${group.bookTitle}, ${bookmark.chapterTitle}`}
                         onRemove={() => handleRemove(bookmark.id)}
                         removeLabel={`Remove bookmark: ${bookmark.chapterTitle}`}

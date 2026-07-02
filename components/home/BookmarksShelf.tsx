@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState, type SVGProps } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getBookmarks, type Bookmark } from '@/lib/bookmarks';
 import { getChapterNumber } from '@/lib/bookmark-selectors';
+import { BookmarkIcon, ArrowRightIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · BookmarksShelf
@@ -18,40 +19,6 @@ import { getChapterNumber } from '@/lib/bookmark-selectors';
  * ------------------------------------------------------------------------- */
 
 const MAX_VISIBLE = 3;
-
-function BookmarkIcon({ filled, ...props }: { filled?: boolean } & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill={filled ? 'currentColor' : 'none'}
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
-  );
-}
 
 export default function BookmarksShelf() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);

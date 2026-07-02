@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { SVGProps } from 'react';
 import Link from 'next/link';
 import {
   getContinueReading,
   type ContinueReadingRecord,
 } from '@/lib/continue-reading';
 import { readingProgress } from '@/lib/continue-reading-selectors';
+import { relativeTimeLabel } from '@/lib/relative-time';
+import { ArrowRightIcon, CheckIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · ContinueReading
@@ -22,64 +23,6 @@ import { readingProgress } from '@/lib/continue-reading-selectors';
  * "Opened …" label is derived from updatedAt. Tokens only — no new colours.
  * ------------------------------------------------------------------------- */
 
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
-  );
-}
-
-function CheckIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-/** Friendly relative label from an ISO timestamp. Calendar-day aware. */
-function formatOpened(iso: string): string {
-  const then = new Date(iso);
-  if (Number.isNaN(then.getTime())) return 'Opened recently';
-
-  const now = new Date();
-  const diffMs = now.getTime() - then.getTime();
-  const FIVE_MINUTES = 5 * 60 * 1000;
-  const ONE_DAY = 24 * 60 * 60 * 1000;
-
-  if (diffMs >= 0 && diffMs < FIVE_MINUTES) return 'Opened just now';
-
-  const startOfToday = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-  ).getTime();
-  const startOfYesterday = startOfToday - ONE_DAY;
-
-  if (then.getTime() >= startOfToday) return 'Opened today';
-  if (then.getTime() >= startOfYesterday) return 'Opened yesterday';
-  return 'Opened recently';
-}
-
 export default function ContinueReading() {
   const [record, setRecord] = useState<ContinueReadingRecord | null>(null);
 
@@ -93,7 +36,7 @@ export default function ContinueReading() {
 
   const progress = readingProgress(record);
   const isCompleted = progress === 100;
-  const opened = formatOpened(record.updatedAt);
+  const opened = relativeTimeLabel(record.updatedAt, 'Opened');
 
   return (
     <section

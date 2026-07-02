@@ -28,3 +28,14 @@ export function slugifyCategory(name: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
+
+/** Up to two uppercase initials for portrait fallbacks ("Lakambini Reyes" →
+ *  "LR"). */
+export function initialsOf(name: string): string {
+  return name
+    .split(' ')
+    .map((part) => part.charAt(0))
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+}

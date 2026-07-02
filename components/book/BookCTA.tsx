@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { SVGProps } from 'react';
 import { getContinueReading } from '@/lib/continue-reading';
+import { ArrowRightIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · BookCTA
@@ -18,23 +18,6 @@ import { getContinueReading } from '@/lib/continue-reading';
  * from the server-safe default so hydration stays clean — the upgrade is a
  * plain post-mount state change.
  * ------------------------------------------------------------------------- */
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
-  );
-}
 
 export interface BookCTAProps {
   bookSlug: string;

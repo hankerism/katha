@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { SVGProps } from 'react';
 import { getHistory, clearHistory, type HistoryEntry } from '@/lib/history';
+import { relativeTimeLabel } from '@/lib/relative-time';
+import { ClockIcon, ArrowRightIcon } from '@/components/ui/icons';
 import {
   groupHistoryByBook,
   resolvePreview,
@@ -30,61 +31,6 @@ import ReadingLocationCard from '@/components/ui/ReadingLocationCard';
 
 function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
-}
-
-function ClockIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 3" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  );
-}
-
-/** Calm, editorial relative time for the "visited" label. Client-only (rendered
- *  after mount), so no server/client clock mismatch. */
-function formatVisited(iso: string): string {
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return 'Visited';
-  const days = Math.floor((Date.now() - then) / 86_400_000);
-  if (days <= 0) return 'Visited today';
-  if (days === 1) return 'Visited yesterday';
-  if (days < 7) return `Visited ${days} days ago`;
-  if (days < 14) return 'Visited last week';
-  if (days < 30) return `Visited ${Math.floor(days / 7)} weeks ago`;
-  if (days < 60) return 'Visited last month';
-  if (days < 365) return `Visited ${Math.floor(days / 30)} months ago`;
-  return `Visited on ${new Date(iso).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })}`;
 }
 
 /** Chapter citation for the card eyebrow, composed from the selectors — the
@@ -182,7 +128,7 @@ export default function HistoryPage() {
                         href={entry.href}
                         eyebrow={composeEyebrow(entry)}
                         preview={resolvePreview(entry)}
-                        meta={formatVisited(entry.visitedAt)}
+                        meta={relativeTimeLabel(entry.visitedAt, 'Visited')}
                         ariaLabel={`Continue reading ${group.bookTitle}, ${entry.chapterTitle}`}
                       />
                     ))}

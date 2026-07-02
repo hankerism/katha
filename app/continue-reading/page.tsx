@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { SVGProps } from 'react';
 import {
   getContinueReading,
   type ContinueReadingRecord,
 } from '@/lib/continue-reading';
+import { relativeTimeLabel } from '@/lib/relative-time';
+import { BookOpenIcon, ArrowRightIcon } from '@/components/ui/icons';
 import {
   resolvePreview,
   getChapterNumber,
@@ -31,60 +32,6 @@ import ReadingLocationCard from '@/components/ui/ReadingLocationCard';
 
 function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
-}
-
-function BookOpenIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M12 6.5C10.5 5.5 8 5 4 5v13c4 0 6.5.5 8 1.5 1.5-1 4-1.5 8-1.5V5c-4 0-6.5.5-8 1.5V20" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  );
-}
-
-/** Calm, editorial relative time for the "opened" label. Client-only (rendered
- *  after mount), so no server/client clock mismatch. */
-function formatOpened(iso: string): string {
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return 'Opened recently';
-  const days = Math.floor((Date.now() - then) / 86_400_000);
-  if (days <= 0) return 'Opened today';
-  if (days === 1) return 'Opened yesterday';
-  if (days < 7) return `Opened ${days} days ago`;
-  if (days < 14) return 'Opened last week';
-  if (days < 30) return `Opened ${Math.floor(days / 7)} weeks ago`;
-  if (days < 60) return 'Opened last month';
-  if (days < 365) return `Opened ${Math.floor(days / 30)} months ago`;
-  return `Opened on ${new Date(iso).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })}`;
 }
 
 /** Chapter citation for the card eyebrow, via the shared selector. */
@@ -134,7 +81,7 @@ export default function ContinueReadingPage() {
                 href={record.href}
                 eyebrow={composeEyebrow(record)}
                 preview={resolvePreview(record)}
-                meta={formatOpened(record.updatedAt)}
+                meta={relativeTimeLabel(record.updatedAt, 'Opened')}
                 ariaLabel={`Continue reading ${record.bookTitle}, ${record.chapterTitle}`}
                 showRibbon={false}
                 progress={readingProgress(record)}

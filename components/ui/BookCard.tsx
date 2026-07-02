@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { SVGProps } from 'react';
+import { ChaptersIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · BookCard
@@ -30,23 +30,6 @@ export interface BookCardProps {
   featured?: boolean;
   chapters?: number;
   href: string;
-}
-
-function ChaptersIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 6h14M5 12h14M5 18h9" />
-    </svg>
-  );
 }
 
 /** CSS-only fallback cover, themed from the brand palette (stable in light + dark). */

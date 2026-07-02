@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, type KeyboardEvent, type SVGProps } from 'react';
+import { useRef, type KeyboardEvent } from 'react';
+import { SearchIcon, CloseIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · SearchBox
@@ -15,40 +16,6 @@ import { useRef, type KeyboardEvent, type SVGProps } from 'react';
  * Accessible by construction: a real <input type="search"> with an sr-only
  * label, and a clear button with an explicit name. Tokens only.
  * ------------------------------------------------------------------------- */
-
-function SearchIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.2-3.2" />
-    </svg>
-  );
-}
-
-function CloseIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M6 6l12 12M18 6L6 18" />
-    </svg>
-  );
-}
 
 export interface SearchBoxProps {
   value: string;

@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState, type SVGProps } from 'react';
+import { useEffect, useState } from 'react';
 import { isBookmarked, toggleBookmark } from '@/lib/bookmarks';
 import { withParagraphAnchor } from '@/lib/reading-location';
+import { BookmarkIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · BookmarkButton
@@ -32,26 +33,6 @@ interface BookmarkButtonProps {
 
 function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
-}
-
-function BookmarkIcon({
-  filled,
-  ...props
-}: { filled?: boolean } & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill={filled ? 'currentColor' : 'none'}
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-    </svg>
-  );
 }
 
 /** A short, single-line preview from a paragraph's text (~200 chars, trimmed at

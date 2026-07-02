@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import type { SVGProps } from 'react';
 import type { CategorySuggestion } from '@/lib/search';
+import { SearchIcon, ArrowRightIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · SearchNoResults
@@ -18,41 +18,6 @@ function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
 }
 
-function SearchIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.2-3.2" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  );
-}
-
 export interface SearchNoResultsProps {
   query: string;
   categories: CategorySuggestion[];
@@ -64,7 +29,7 @@ export default function SearchNoResults({
 }: SearchNoResultsProps) {
   return (
     <div className="flex flex-col items-center text-center">
-      <SearchIcon className="size-8 text-primary/40" />
+      <SearchIcon strokeWidth={1.5} className="size-8 text-primary/40" />
       <p className="mt-6 font-reader text-2xl text-reader-foreground">
         Nothing found for &ldquo;{query}&rdquo;
       </p>

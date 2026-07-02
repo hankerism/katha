@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { initialsOf } from '@/lib/text';
 
 /* ---------------------------------------------------------------------------
  * KATHA · AuthorCard
@@ -26,15 +27,6 @@ export interface AuthorCardProps {
   bookCount: number;
   /** Uploaded portrait URL; null → initials portrait. */
   avatar?: string | null;
-}
-
-function initialsOf(name: string): string {
-  return name
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
 }
 
 export default function AuthorCard({

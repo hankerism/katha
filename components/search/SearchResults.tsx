@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import type { ReactNode, SVGProps } from 'react';
+import type { ReactNode } from 'react';
 import BookCard from '@/components/ui/BookCard';
+import { ArrowRightIcon } from '@/components/ui/icons';
 import type {
   MatchRange,
   SearchResults as SearchResultsModel,
@@ -24,23 +25,6 @@ import type {
  * logic is re-derived here. All rows are real links in DOM order, so keyboard
  * navigation is native. Tokens only.
  * ------------------------------------------------------------------------- */
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  );
-}
 
 /** Render text with the engine's match ranges wrapped in <mark>. */
 function Highlighted({

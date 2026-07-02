@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState, type SVGProps } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getHistory, type HistoryEntry } from '@/lib/history';
 import { groupHistoryByBook, getChapterNumber } from '@/lib/history-selectors';
+import { relativeTimeLabel } from '@/lib/relative-time';
+import { ClockIcon, ArrowRightIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · RecentlyRead
@@ -27,66 +29,6 @@ import { groupHistoryByBook, getChapterNumber } from '@/lib/history-selectors';
  * ------------------------------------------------------------------------- */
 
 const MAX_VISIBLE = 3;
-
-function ClockIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 3" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
-  );
-}
-
-/** Friendly relative label from an ISO timestamp. Calendar-day aware (same
- *  register as the home ContinueReading card's "Opened …" label). */
-function formatVisited(iso: string): string {
-  const then = new Date(iso);
-  if (Number.isNaN(then.getTime())) return 'Visited recently';
-
-  const now = new Date();
-  const diffMs = now.getTime() - then.getTime();
-  const FIVE_MINUTES = 5 * 60 * 1000;
-  const ONE_DAY = 24 * 60 * 60 * 1000;
-
-  if (diffMs >= 0 && diffMs < FIVE_MINUTES) return 'Visited just now';
-
-  const startOfToday = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-  ).getTime();
-  const startOfYesterday = startOfToday - ONE_DAY;
-
-  if (then.getTime() >= startOfToday) return 'Visited today';
-  if (then.getTime() >= startOfYesterday) return 'Visited yesterday';
-  return 'Visited recently';
-}
 
 export default function RecentlyRead() {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
@@ -150,7 +92,7 @@ export default function RecentlyRead() {
                 <span aria-hidden="true" className="mx-2 text-muted-foreground/50">
                   ·
                 </span>
-                {formatVisited(latest.visitedAt)}
+                {relativeTimeLabel(latest.visitedAt, 'Visited')}
               </p>
 
               <div className="mt-auto pt-6">
