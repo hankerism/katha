@@ -1,42 +1,19 @@
 import Link from 'next/link';
-import BookCard, { type BookCardProps } from '@/components/ui/BookCard';
+import BookCard from '@/components/ui/BookCard';
+import { getFeaturedBooks } from '@/lib/books';
 
-const FEATURED_BOOKS: BookCardProps[] = [
-  {
-    title: 'Ang Huling Tag-araw',
-    author: 'Lakambini Reyes',
-    category: 'Literary Fiction',
-    featured: true,
-    chapters: 7,
-    href: '/library/ang-huling-tag-araw',
-  },
-  {
-    title: 'Mga Liham sa Dilim',
-    author: 'J. Salvador',
-    category: 'Poetry',
-    featured: true,
-    chapters: 24,
-    href: '/library/mga-liham-sa-dilim',
-  },
-  {
-    title: 'Ang Bahay sa Buwan',
-    author: 'Noemi Bautista',
-    category: 'Magical Realism',
-    featured: true,
-    chapters: 15,
-    href: '/library/ang-bahay-sa-buwan',
-  },
-  {
-    title: 'Huling Tren Pauwi',
-    author: 'Rafael Lim',
-    category: 'Short Stories',
-    featured: true,
-    chapters: 9,
-    href: '/library/huling-tren-pauwi',
-  },
-];
+/* ---------------------------------------------------------------------------
+ * KATHA · FeaturedBooks
+ * components/home/FeaturedBooks.tsx
+ *
+ * Homepage featured shelf, rendered from the catalogue's editorial picks
+ * (lib/books.ts `featured` flag) — no book data lives here. Server component;
+ * flag a book featured in the catalogue and it appears on this shelf and the
+ * library's featured shelf alike.
+ * ------------------------------------------------------------------------- */
 
 export default function FeaturedBooks() {
+  const featured = getFeaturedBooks();
   return (
     <section aria-labelledby="featured-books-heading" className="bg-background">
       <div className="container-katha py-20">
@@ -68,8 +45,16 @@ export default function FeaturedBooks() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURED_BOOKS.map((book) => (
-            <BookCard key={book.href} {...book} />
+          {featured.map((book) => (
+            <BookCard
+              key={book.slug}
+              title={book.title}
+              author={book.author}
+              category={book.category}
+              featured={book.featured}
+              chapters={book.chapters.length}
+              href={`/library/${book.slug}`}
+            />
           ))}
         </div>
       </div>

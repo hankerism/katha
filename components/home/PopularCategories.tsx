@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { getAllBooks } from '@/lib/books';
+import { collectCategories } from '@/lib/search';
 
 /* ---------------------------------------------------------------------------
  * KATHA · PopularCategories
@@ -8,21 +10,14 @@ import Link from 'next/link';
  * register: a faded Cormorant initial behind each genre name, a soft hover lift,
  * and a quiet "Browse →" affordance. Each tile links to the filtered library.
  *
- * Presentation only — server component, static data kept separate from the JSX.
+ * Server component; the genres derive from the catalogue via
+ * collectCategories() (most-stocked first), so every tile lands on a shelf
+ * that actually has books — and new categories appear here on their own.
  * ------------------------------------------------------------------------- */
 
-const CATEGORIES = [
-  { name: 'Romance', slug: 'romance' },
-  { name: 'Fantasy', slug: 'fantasy' },
-  { name: 'Mystery', slug: 'mystery' },
-  { name: 'Thriller', slug: 'thriller' },
-  { name: 'Historical Fiction', slug: 'historical-fiction' },
-  { name: 'Young Adult', slug: 'young-adult' },
-  { name: 'Poetry', slug: 'poetry' },
-  { name: 'Short Stories', slug: 'short-stories' },
-] as const;
-
 export default function PopularCategories() {
+  const categories = collectCategories(getAllBooks());
+
   return (
     <section aria-labelledby="browse-by-genre-heading" className="bg-background">
       <div className="container-katha py-20">
@@ -41,10 +36,10 @@ export default function PopularCategories() {
 
         {/* Grid */}
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
-          {CATEGORIES.map((category) => (
+          {categories.map((category) => (
             <Link
               key={category.slug}
-              href={`/library?genre=${category.slug}`}
+              href={category.href}
               aria-label={`Browse ${category.name} books`}
               className="group relative flex h-full min-h-[7.5rem] flex-col justify-between overflow-hidden rounded-[18px] border border-border bg-card p-5 shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-border-strong hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
