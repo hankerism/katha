@@ -720,3 +720,10 @@
   from { background-position: 100% 0; }
   to   { background-position: -100% 0; }
 }
+/* ── Reader chrome gate ──────────────────────────────────────────────────────
+   The immersive reader (its page carries data-reader-page) hides the
+   site-wide footer rendered by the root layout. Pure CSS via :has(), so the
+   server-rendered HTML is already correct — no client gate, no flash. */
+body:has([data-reader-page]) .site-footer {
+  display: none;
+}

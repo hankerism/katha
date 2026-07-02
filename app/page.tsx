@@ -13,7 +13,6 @@ import WhyKatha from '@/components/home/WhyKatha';
 import ReaderLove from '@/components/home/ReaderLove';
 import FeaturedAuthors from '@/components/home/FeaturedAuthors';
 import FinalCTA from '@/components/home/FinalCTA';
-import Footer from '@/components/ui/layout/Footer';
 
 export default function HomePage() {
   const router = useRouter();
@@ -126,8 +125,6 @@ export default function HomePage() {
       <FeaturedAuthors />
 
       <FinalCTA />
-
-      <Footer />
     </>
   );
 }

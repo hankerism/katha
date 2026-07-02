@@ -81,7 +81,7 @@ export default async function ReaderPage({
         href={href}
       />
 
-      <div className="lg:flex lg:items-start">
+      <div data-reader-page className="lg:flex lg:items-start">
         {/* Desktop: persistent TOC rail (hidden < lg) */}
         <ReaderSidebar
           bookSlug={book.slug}

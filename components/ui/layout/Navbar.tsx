@@ -27,7 +27,6 @@ const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Library', href: '/library' },
   { label: 'Authors', href: '/authors' },
-  { label: 'Community', href: '/community' },
 ] as const;
 
 function isActivePath(pathname: string, href: string): boolean {
@@ -194,12 +193,6 @@ export default function Navbar() {
               <SearchIcon className="size-[1.15rem]" />
             </button>
 
-            <div className="hidden sm:block">
-              <Button variant="primary" size="sm" onClick={() => router.push('/sign-in')}>
-                Sign In
-              </Button>
-            </div>
-
             <button
               type="button"
               aria-label={open ? 'Close menu' : 'Open menu'}
@@ -253,16 +246,6 @@ export default function Navbar() {
             }}
           >
             Search
-          </Button>
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={() => {
-              setOpen(false);
-              router.push('/sign-in');
-            }}
-          >
-            Sign In
           </Button>
         </nav>
       </div>

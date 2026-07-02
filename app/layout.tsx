@@ -1,4 +1,5 @@
 import Navbar from '@/components/ui/layout/Navbar';
+import Footer from '@/components/ui/layout/Footer';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -16,12 +17,23 @@ import './globals.css';
  * ------------------------------------------------------------------------- */
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://katha.ph'),
   title: {
     default: 'KATHA',
     template: '%s · KATHA',
   },
   description:
     'KATHA is a calm, premium home for Filipino literature — novels, serials, and short fiction, beautifully typeset for slow, unhurried reading.',
+  openGraph: {
+    siteName: 'KATHA',
+    type: 'website',
+    locale: 'en_PH',
+    description:
+      'A calm, premium home for Filipino literature — beautifully typeset for slow, unhurried reading.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 };
 
 export default function RootLayout({
@@ -37,6 +49,11 @@ export default function RootLayout({
         <main id="main-content" className="flex-1">
           {children}
         </main>
+
+        {/* Site-wide footer. The immersive reader opts out via a CSS gate:
+            its page carries data-reader-page, and globals.css hides the
+            footer with body:has() — server-rendered correctly, no JS. */}
+        <Footer />
       </body>
     </html>
   );
