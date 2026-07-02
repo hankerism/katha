@@ -238,7 +238,7 @@ export default async function BookDetailPage({
               className="group inline-flex shrink-0 items-center gap-1.5 pb-1 font-body text-sm font-medium text-primary transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               View all
-              <ArrowRightIcon className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRightIcon className="size-3.5 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5" />
             </Link>
           </div>
 
