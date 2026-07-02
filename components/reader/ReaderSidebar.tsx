@@ -46,6 +46,15 @@ function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function ClockIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 3" />
+    </svg>
+  );
+}
+
 export default function ReaderSidebar({
   bookSlug,
   bookTitle,
@@ -124,7 +133,7 @@ export default function ReaderSidebar({
         </ol>
       </nav>
 
-      {/* Footer: progress · bookmarks */}
+      {/* Footer: progress · bookmarks · history */}
       <div className="shrink-0 space-y-5 border-t border-border px-6 py-6">
         {/* Reading progress */}
         <div
@@ -162,6 +171,20 @@ export default function ReaderSidebar({
             <BookmarkIcon className="size-4 text-primary" />
             <span className="font-body text-sm font-medium text-foreground">
               View Bookmarks
+            </span>
+          </span>
+          <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />
+        </Link>
+
+        {/* Reading history link */}
+        <Link
+          href="/history"
+          className="group flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-3 transition-colors hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+        >
+          <span className="inline-flex items-center gap-2.5">
+            <ClockIcon className="size-4 text-primary" />
+            <span className="font-body text-sm font-medium text-foreground">
+              View History
             </span>
           </span>
           <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />

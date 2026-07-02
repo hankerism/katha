@@ -8,6 +8,7 @@ import FeaturedBooks from '@/components/home/FeaturedBooks';
 import PopularCategories from '@/components/home/PopularCategories';
 import ContinueReading from '@/components/home/ContinueReading';
 import BookmarksShelf from '@/components/home/BookmarksShelf';
+import RecentlyRead from '@/components/home/RecentlyRead';
 import WhyKatha from '@/components/home/WhyKatha';
 import ReaderLove from '@/components/home/ReaderLove';
 import FeaturedAuthors from '@/components/home/FeaturedAuthors';
@@ -111,6 +112,8 @@ export default function HomePage() {
       <ContinueReading />
 
       <BookmarksShelf />
+
+      <RecentlyRead />
 
       <FeaturedBooks />
 
