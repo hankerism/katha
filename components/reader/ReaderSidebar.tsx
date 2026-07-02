@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { SVGProps } from 'react';
 import { getBookBySlug } from '@/lib/books';
+import { authorName } from '@/lib/author-selectors';
 
 /* ---------------------------------------------------------------------------
  * KATHA · ReaderSidebar
@@ -62,7 +63,7 @@ export default function ReaderSidebar({
 }: ReaderSidebarProps) {
   const book = getBookBySlug(bookSlug);
   const chapters = book?.chapters ?? [];
-  const author = book?.author ?? '';
+  const author = book ? authorName(book.authorId) : '';
   const title = book?.title ?? bookTitle;
   const total = chapters.length;
   const currentNumber =

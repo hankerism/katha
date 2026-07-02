@@ -2,7 +2,12 @@ import type { Metadata } from 'next';
 import type { SVGProps } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getAllBooks, getBookBySlug, getRelatedBooks, type KathaBook } from '@/lib/books';
+import { getBookBySlug, getRelatedBooks, type KathaBook } from '@/lib/books';
+import {
+  authorName,
+  getAuthorForBook,
+  getBibliography,
+} from '@/lib/author-selectors';
 import BookCard from '@/components/ui/BookCard';
 import BookCTA from '@/components/book/BookCTA';
 
@@ -105,8 +110,12 @@ export default async function BookDetailPage({
   const minutes = totalReadingMinutes(book);
   const firstChapter = book.chapters[0];
   const related = getRelatedBooks(book.slug).slice(0, 4);
-  const moreByAuthor = getAllBooks().filter(
-    (other) => other.author === book.author && other.slug !== book.slug,
+
+  // All author facts come from the Author domain via the selector layer.
+  const author = getAuthorForBook(book);
+  const displayAuthor = author?.name ?? authorName(book.authorId);
+  const moreByAuthor = getBibliography(book.authorId).filter(
+    (other) => other.slug !== book.slug,
   );
 
   return (
@@ -146,7 +155,7 @@ export default async function BookDetailPage({
                     {book.title}
                   </p>
                   <p className="mt-3 font-logo text-lg italic text-brand-secondary/80">
-                    {book.author}
+                    {displayAuthor}
                   </p>
                 </div>
               </div>
@@ -167,7 +176,7 @@ export default async function BookDetailPage({
             </h1>
 
             <p className="mt-3 font-logo text-xl italic text-muted-foreground">
-              by {book.author}
+              by {displayAuthor}
             </p>
 
             <p className="mt-6 max-w-2xl font-body text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -283,7 +292,7 @@ export default async function BookDetailPage({
               <BookCard
                 key={other.slug}
                 title={other.title}
-                author={other.author}
+                author={authorName(other.authorId)}
                 category={other.category}
                 chapters={other.chapters.length}
                 href={`/library/${other.slug}`}
@@ -311,25 +320,29 @@ export default async function BookDetailPage({
               aria-hidden="true"
               className="grid size-20 shrink-0 place-items-center rounded-full bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))] font-heading text-xl font-semibold text-brand-secondary shadow-sm ring-1 ring-black/10"
             >
-              {initialsOf(book.author)}
+              {initialsOf(displayAuthor)}
             </span>
 
             <div className="min-w-0">
               <p className="font-heading text-xl font-semibold text-foreground">
-                {book.author}
+                {displayAuthor}
               </p>
               <p className="mt-1 font-body text-sm text-muted-foreground">
                 {1 + moreByAuthor.length}{' '}
                 {moreByAuthor.length === 0 ? 'book' : 'books'} on KATHA ·{' '}
                 {book.category}
+                {author?.location ? ` · ${author.location}` : ''}
               </p>
               <p className="mt-3 max-w-xl font-body text-sm leading-relaxed text-muted-foreground">
-                {moreByAuthor.length > 0
-                  ? `Also the author of ${moreByAuthor
-                      .map((other) => other.title)
-                      .join(', ')}.`
-                  : `${book.title} is ${book.author}'s first title on KATHA — more is on the way.`}
+                {author?.bio ??
+                  `${book.title} is ${displayAuthor}'s first title on KATHA — more is on the way.`}
               </p>
+              {moreByAuthor.length > 0 && (
+                <p className="mt-2 max-w-xl font-body text-sm leading-relaxed text-muted-foreground">
+                  Also the author of{' '}
+                  {moreByAuthor.map((other) => other.title).join(', ')}.
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import BookCard from '@/components/ui/BookCard';
 import { getFeaturedBooks } from '@/lib/books';
+import { authorName } from '@/lib/author-selectors';
 
 /* ---------------------------------------------------------------------------
  * KATHA · FeaturedBooks
@@ -49,7 +50,7 @@ export default function FeaturedBooks() {
             <BookCard
               key={book.slug}
               title={book.title}
-              author={book.author}
+              author={authorName(book.authorId)}
               category={book.category}
               featured={book.featured}
               chapters={book.chapters.length}

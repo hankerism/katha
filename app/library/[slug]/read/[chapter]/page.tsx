@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getBookBySlug, getChapterBySlug } from '@/lib/books';
+import { authorName } from '@/lib/author-selectors';
 import ReaderSidebar from '@/components/reader/ReaderSidebar';
 import ReaderToolbar from '@/components/reader/ReaderToolbar';
 import ReaderArticle from '@/components/reader/ReaderArticle';
@@ -42,7 +43,7 @@ export async function generateMetadata({
 
   return {
     title: `${current.title} · ${book.title}`,
-    description: `Chapter ${current.number} of ${book.chapters.length} — ${book.title} by ${book.author}.`,
+    description: `Chapter ${current.number} of ${book.chapters.length} — ${book.title} by ${authorName(book.authorId)}.`,
   };
 }
 
@@ -112,7 +113,7 @@ export default async function ReaderPage({
               <div className="reading-surface flex min-h-[70dvh] w-full flex-col rounded-xl border border-border/50 px-8 py-14 shadow-[var(--ds-shadow-soft)] sm:px-12 sm:py-16 md:px-14 md:py-20">
                 <ReaderArticle
                   bookTitle={book.title}
-                  author={book.author}
+                  author={authorName(book.authorId)}
                   chapterTitle={current.title}
                   estimatedReadingTime={current.estimatedReadingTime}
                   content={current.content}

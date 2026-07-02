@@ -10,6 +10,7 @@ import {
 import Link from 'next/link';
 import { getBookBySlug } from '@/lib/books';
 import { getBookmarks } from '@/lib/bookmarks';
+import { authorName } from '@/lib/author-selectors';
 
 /* ---------------------------------------------------------------------------
  * KATHA · ReaderDrawer
@@ -97,7 +98,7 @@ export default function ReaderDrawer({
 
   const book = getBookBySlug(bookSlug);
   const chapters = book?.chapters ?? [];
-  const author = book?.author ?? '';
+  const author = book ? authorName(book.authorId) : '';
   const title = book?.title ?? bookTitle;
   const total = chapters.length;
   const currentNumber =

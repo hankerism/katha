@@ -38,7 +38,10 @@ export interface KathaBook {
   /** URL-safe identifier, unique across the catalogue (the [slug] route segment). */
   slug: string;
   title: string;
-  author: string;
+  /** Stable foreign key into the Author domain (lib/authors.ts). Books carry
+   *  ONLY this reference — name, bio, and other author metadata are joined by
+   *  the selector layer (lib/author-selectors.ts), never duplicated here. */
+  authorId: string;
   category: string;
   language: string;
   status: string;
@@ -161,7 +164,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'ang-huling-tag-araw',
     title: 'Ang Huling Tag-araw',
-    author: 'Lakambini Reyes',
+    authorId: 'auth-lakambini-reyes',
     category: 'Literary Fiction',
     language: 'Filipino / English',
     status: 'Ongoing',
@@ -182,7 +185,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'mga-liham-sa-dilim',
     title: 'Mga Liham sa Dilim',
-    author: 'J. Salvador',
+    authorId: 'auth-j-salvador',
     category: 'Poetry',
     language: 'Filipino / English',
     status: 'Completed',
@@ -201,7 +204,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'ang-bahay-sa-buwan',
     title: 'Ang Bahay sa Buwan',
-    author: 'Noemi Bautista',
+    authorId: 'auth-noemi-bautista',
     category: 'Magical Realism',
     language: 'Filipino / English',
     status: 'Ongoing',
@@ -221,7 +224,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'sa-ilalim-ng-sampaguita',
     title: 'Sa Ilalim ng Sampaguita',
-    author: 'Clara Mendoza',
+    authorId: 'auth-clara-mendoza',
     category: 'Romance',
     language: 'Filipino / English',
     status: 'Ongoing',
@@ -241,7 +244,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'huling-tren-pauwi',
     title: 'Huling Tren Pauwi',
-    author: 'Rafael Lim',
+    authorId: 'auth-rafael-lim',
     category: 'Short Stories',
     language: 'Filipino / English',
     status: 'Completed',
@@ -259,7 +262,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'mga-tala-sa-ulan',
     title: 'Mga Tala sa Ulan',
-    author: 'Isa Navarro',
+    authorId: 'auth-isa-navarro',
     category: 'Young Adult',
     language: 'Filipino / English',
     status: 'Ongoing',
@@ -277,7 +280,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'bayan-ng-mga-alon',
     title: 'Bayan ng mga Alon',
-    author: 'Tomas Reyes',
+    authorId: 'auth-tomas-reyes',
     category: 'Historical Fiction',
     language: 'Filipino / English',
     status: 'Ongoing',
@@ -296,7 +299,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'ang-mahiwagang-estasyon',
     title: 'Ang Mahiwagang Estasyon',
-    author: 'Mila Cruz',
+    authorId: 'auth-mila-cruz',
     category: 'Fantasy',
     language: 'Filipino / English',
     status: 'Ongoing',

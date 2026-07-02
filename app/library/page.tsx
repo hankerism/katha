@@ -8,6 +8,7 @@ import {
   getFeaturedBooks,
   type KathaBook,
 } from '@/lib/books';
+import { authorName } from '@/lib/author-selectors';
 import { collectCategories } from '@/lib/search';
 
 /* ---------------------------------------------------------------------------
@@ -106,7 +107,7 @@ function toCard(book: KathaBook) {
     <BookCard
       key={book.slug}
       title={book.title}
-      author={book.author}
+      author={authorName(book.authorId)}
       category={book.category}
       chapters={book.chapters.length}
       featured={book.featured}

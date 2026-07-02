@@ -22,6 +22,7 @@
  * ------------------------------------------------------------------------- */
 
 import type { KathaBook } from './books';
+import type { KathaAuthor } from './authors';
 import { foldText, slugifyCategory } from './text';
 
 /* ── Result model ────────────────────────────────────────────────────────── */
@@ -298,21 +299,29 @@ function byScore<T extends { score: number; title: string }>(a: T, b: T): number
   return b.score - a.score || a.title.localeCompare(b.title);
 }
 
+/** What the engine searches over: the two domain tables, passed as plain
+ *  data (the caller supplies getAllBooks() / getAllAuthors()). The engine
+ *  joins authorId → name internally and never imports either domain module. */
+export interface SearchableCatalogue {
+  books: KathaBook[];
+  authors: KathaAuthor[];
+}
+
 /** Search the given catalogue. Pure: same inputs, same outputs. An empty /
  *  whitespace query returns empty results (the UI treats that state itself). */
 export function searchCatalogue(
   query: string,
-  books: KathaBook[],
+  catalogue: SearchableCatalogue,
 ): SearchResults {
+  const { books, authors } = catalogue;
   const tokens = foldText(query).trim().split(/\s+/).filter(Boolean);
   if (tokens.length === 0) return { query, ...EMPTY_RESULTS };
 
+  // The one join the engine performs: authorId → display name.
+  const authorNameById = new Map(authors.map((a) => [a.id, a.name]));
+
   const bookResults: BookResult[] = [];
   const chapterResults: ChapterResult[] = [];
-  const authorHits = new Map<
-    string,
-    { title: string; ranges: MatchRange[]; score: number; bookCount: number }
-  >();
   const categoryHits = new Map<
     string,
     { title: string; ranges: MatchRange[]; score: number; bookCount: number }
@@ -323,8 +332,13 @@ export function searchCatalogue(
     // author's books, and mixed queries ("huling reyes") still hit. Highlight
     // ranges are clipped to the title portion, which the combined text starts
     // with, so they remain valid indices into the displayed title. Books that
-    // only match via their category still surface, ranked lower.
-    const combinedMatch = scoreText(tokens, `${book.title} ${book.author}`);
+    // only match via their category still surface, ranked lower. An orphaned
+    // authorId (no author row) simply drops the author half of the text.
+    const authorDisplay = authorNameById.get(book.authorId) ?? '';
+    const combinedMatch = scoreText(
+      tokens,
+      authorDisplay ? `${book.title} ${authorDisplay}` : book.title,
+    );
     const bookCategoryMatch = combinedMatch
       ? null
       : scoreText(tokens, book.category);
@@ -342,7 +356,7 @@ export function searchCatalogue(
         id: book.slug,
         title: book.title,
         titleRanges,
-        author: book.author,
+        author: authorDisplay,
         category: book.category,
         chapterCount: book.chapters.length,
         href: `/library/${book.slug}`,
@@ -352,24 +366,7 @@ export function searchCatalogue(
       });
     }
 
-    // Authors / categories aggregate across books (one row per name).
-    const authorMatch = scoreText(tokens, book.author);
-    if (authorMatch) {
-      const key = foldText(book.author);
-      const existing = authorHits.get(key);
-      if (existing) {
-        existing.bookCount += 1;
-        existing.score = Math.max(existing.score, authorMatch.score);
-      } else {
-        authorHits.set(key, {
-          title: book.author,
-          ranges: authorMatch.ranges,
-          score: authorMatch.score,
-          bookCount: 1,
-        });
-      }
-    }
-
+    // Categories aggregate across books (one row per name).
     const categoryMatch = scoreText(tokens, book.category);
     if (categoryMatch) {
       const key = foldText(book.category);
@@ -405,15 +402,22 @@ export function searchCatalogue(
     }
   }
 
-  const authorResults: AuthorResult[] = [...authorHits.values()].map((hit) => ({
-    type: 'author',
-    id: `author:${foldText(hit.title)}`,
-    title: hit.title,
-    titleRanges: hit.ranges,
-    bookCount: hit.bookCount,
-    refineQuery: hit.title,
-    score: hit.score * WEIGHT_AUTHOR,
-  }));
+  // Author rows come from the author TABLE, not from book aggregation — an
+  // author is findable even before their first book is published.
+  const authorResults: AuthorResult[] = [];
+  for (const author of authors) {
+    const match = scoreText(tokens, author.name);
+    if (!match) continue;
+    authorResults.push({
+      type: 'author',
+      id: author.id,
+      title: author.name,
+      titleRanges: match.ranges,
+      bookCount: books.filter((book) => book.authorId === author.id).length,
+      refineQuery: author.name,
+      score: match.score * WEIGHT_AUTHOR,
+    });
+  }
 
   const categoryResults: CategoryResult[] = [...categoryHits.values()].map(
     (hit) => ({

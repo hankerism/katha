@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getAllBooks } from '@/lib/books';
+import { getAllAuthors } from '@/lib/authors';
 import { searchCatalogue, collectCategories } from '@/lib/search';
 import {
   getRecentSearches,
@@ -61,16 +62,22 @@ export default function SearchExperience() {
     setRecent(getRecentSearches());
   }, []);
 
-  // The catalogue is static per session; categories derive from it.
-  const books = useMemo(() => getAllBooks(), []);
-  const categories = useMemo(() => collectCategories(books), [books]);
+  // The two domain tables are static per session; categories derive from them.
+  const catalogue = useMemo(
+    () => ({ books: getAllBooks(), authors: getAllAuthors() }),
+    [],
+  );
+  const categories = useMemo(
+    () => collectCategories(catalogue.books),
+    [catalogue],
+  );
 
   // Instant search: filtering runs against the deferred query so fast typing
   // stays responsive, and the memo prevents re-searching on unrelated renders.
   const deferredQuery = useDeferredValue(query);
   const results = useMemo(
-    () => searchCatalogue(deferredQuery, books),
-    [deferredQuery, books],
+    () => searchCatalogue(deferredQuery, catalogue),
+    [deferredQuery, catalogue],
   );
   const hasQuery = deferredQuery.trim().length > 0;
 
