@@ -1,164 +1,339 @@
 import type { Metadata } from 'next';
+import type { SVGProps } from 'react';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getBookBySlug, getChapterBySlug } from '@/lib/books';
-import ReaderSidebar from '@/components/reader/ReaderSidebar';
-import ReaderToolbar from '@/components/reader/ReaderToolbar';
-import ReaderArticle from '@/components/reader/ReaderArticle';
-import ReaderNavigation from '@/components/reader/ReaderNavigation';
-import ReadingProgressTracker from '@/components/reader/ReadingProgressTracker';
-import ReaderPreferences from '@/components/reader/ReaderPreferences';
-import ParagraphScrollRestoration from '@/components/reader/ParagraphScrollRestoration';
-import type { ReadingLocation } from '@/lib/reading-location';
+import { getAllBooks, getBookBySlug, getRelatedBooks, type KathaBook } from '@/lib/books';
+import BookCard from '@/components/ui/BookCard';
+import BookCTA from '@/components/book/BookCTA';
 
 /* ---------------------------------------------------------------------------
- * KATHA · Reader Mode
- * app/library/[slug]/read/[chapter]/page.tsx
+ * KATHA · Book details
+ * app/library/[slug]/page.tsx
  *
- * Async server component. Resolves book + chapter from @/lib/books, 404s on a
- * miss, computes adjacent chapters once, and composes the reader.
+ * The hub of the product graph — every cover in the app (home shelves,
+ * library grids, search results, the reader's back link) lands here, and from
+ * here the reader, the related shelves, and the author are one step away.
  *
- * Layout — a two-column shell inside ReaderPreferences (so size/width/theme +
- * reader-surface apply to both columns):
- *   • lg+  : a persistent ReaderSidebar (sticky left TOC rail) + a main column
- *            holding the toolbar, the centered article, and prev/next paging.
- *            The content sits BESIDE the sidebar — no overlay, never covered.
- *   • <lg  : the sidebar is hidden; the toolbar's ReaderDrawer (hamburger)
- *            provides the table of contents as before.
- *
- * ReadingProgressTracker persists position. The toolbar's BookmarkButton stores
- * a complete bookmark from the current chapter's slug + title.
+ * Async server component, assembly only: everything renders from lib/books.ts.
+ * The single client leaf is BookCTA, which upgrades "Start Reading" to
+ * "Continue · Chapter N" when the saved position belongs to this book.
+ * Sections, in the approved order: hero + CTA · Contents · Related books ·
+ * About the author. Tokens only.
  * ------------------------------------------------------------------------- */
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string; chapter: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug, chapter } = await params;
+  const { slug } = await params;
   const book = getBookBySlug(slug);
-  const current = book ? getChapterBySlug(slug, chapter) : undefined;
-
-  if (!book || !current) {
-    return { title: 'Chapter not found' };
-  }
-
+  if (!book) return { title: 'Book not found' };
   return {
-    title: `${current.title} · ${book.title}`,
-    description: `Chapter ${current.number} of ${book.chapters.length} — ${book.title} by ${book.author}.`,
+    title: book.title,
+    description: book.synopsis,
   };
 }
 
-export default async function ReaderPage({
+/* -- Icons ------------------------------------------------------------------ */
+
+function ClockIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 3" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+/* -- Helpers ---------------------------------------------------------------- */
+
+function initialsOf(name: string): string {
+  return name
+    .split(' ')
+    .map((part) => part.charAt(0))
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function totalReadingMinutes(book: KathaBook): number {
+  return book.chapters.reduce(
+    (sum, chapter) => sum + chapter.estimatedReadingTime,
+    0,
+  );
+}
+
+/* -- Page ------------------------------------------------------------------- */
+
+export default async function BookDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string; chapter: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug, chapter } = await params;
-
+  const { slug } = await params;
   const book = getBookBySlug(slug);
   if (!book) notFound();
 
-  const current = getChapterBySlug(slug, chapter);
-  if (!current) notFound();
-
-  const total = book.chapters.length;
-  const prevChapter =
-    current.number > 1 ? book.chapters[current.number - 2] ?? null : null;
-  const nextChapter =
-    current.number < total ? book.chapters[current.number] ?? null : null;
-
-  const href = `/library/${book.slug}/read/${current.slug}`;
-
-  // Base reading location for this chapter (paragraph 0). The scroll-restoration
-  // leaf refines the paragraph index from any #p-{index} deep link, then records
-  // the visit. `preview` is intentionally empty — the History page resolves it
-  // from book content via resolvePreview(), so nothing is duplicated here.
-  const readingLocation: ReadingLocation = {
-    bookSlug: book.slug,
-    bookTitle: book.title,
-    chapterSlug: current.slug,
-    chapterTitle: current.title,
-    paragraphIndex: 0,
-    preview: '',
-    href,
-  };
+  const chapterCount = book.chapters.length;
+  const minutes = totalReadingMinutes(book);
+  const firstChapter = book.chapters[0];
+  const related = getRelatedBooks(book.slug).slice(0, 4);
+  const moreByAuthor = getAllBooks().filter(
+    (other) => other.author === book.author && other.slug !== book.slug,
+  );
 
   return (
-    <ReaderPreferences>
-      {/* Invisible: persists this position to localStorage on every visit */}
-      <ReadingProgressTracker
-        bookSlug={book.slug}
-        bookTitle={book.title}
-        chapterSlug={current.slug}
-        chapterTitle={current.title}
-        chapterNumber={current.number}
-        totalChapters={total}
-        href={href}
-      />
+    <>
+      {/* Hero ---------------------------------------------------------------- */}
+      <section
+        aria-labelledby="book-title"
+        className="relative overflow-hidden"
+      >
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-28 right-[-6rem] h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+          <div className="absolute top-16 left-[-8rem] h-80 w-80 rounded-full bg-secondary/30 blur-3xl" />
+        </div>
 
-      <div className="lg:flex lg:items-start">
-        {/* Desktop: persistent TOC rail (hidden < lg) */}
-        <ReaderSidebar
-          bookSlug={book.slug}
-          bookTitle={book.title}
-          currentChapterSlug={current.slug}
-        />
-
-        {/* Main column: toolbar spans full width; reading column centers */}
-        <div className="flex min-w-0 flex-1 flex-col">
-          <ReaderToolbar
-            bookSlug={book.slug}
-            bookTitle={book.title}
-            chapterSlug={current.slug}
-            chapterTitle={current.title}
-            chapterNumber={current.number}
-            totalChapters={total}
-            prevChapter={prevChapter}
-            nextChapter={nextChapter}
-          />
-
-          {/* Reading canvas — a calm sheet of paper floating on the reader
-              surface: centered, narrow measure, generous breathing room. */}
-          <main className="flex flex-1 justify-center px-4 py-8 sm:px-8 sm:py-12 lg:px-12">
-            <div className="w-full max-w-[680px]">
-              {/* The page — the warm reader surface (not a white card): a subtle
-                  border, soft elevation, a minimum page height so short chapters
-                  still fill the sheet, and an understated end-of-chapter footer
-                  pinned to its foot. */}
-              <div className="reading-surface flex min-h-[70dvh] w-full flex-col rounded-xl border border-border/50 px-8 py-14 shadow-[var(--ds-shadow-soft)] sm:px-12 sm:py-16 md:px-14 md:py-20">
-                <ReaderArticle
-                  bookTitle={book.title}
-                  author={book.author}
-                  chapterTitle={current.title}
-                  estimatedReadingTime={current.estimatedReadingTime}
-                  content={current.content}
-                />
-
-                {/* Client leaf: scrolls to a deep-linked #p-{index} after mount,
-                    and records this visit in Reading History (once per chapter
-                    navigation, at the arrival paragraph). */}
-                <ParagraphScrollRestoration location={readingLocation} />
-
-                <footer className="mt-auto pt-16 text-center">
-                  <div aria-hidden="true" className="mx-auto h-px w-10 bg-border" />
-                  <p className="mt-4 font-body text-[0.7rem] font-medium uppercase tracking-[0.25em] text-muted-foreground/70">
-                    End of Chapter {current.number}
+        <div className="container-katha grid gap-12 py-16 md:py-24 lg:grid-cols-[minmax(0,320px)_1fr] lg:gap-16">
+          {/* Cover — decorative, in the brand register */}
+          <div
+            aria-hidden="true"
+            className="mx-auto w-full max-w-[280px] lg:mx-0 lg:max-w-none"
+          >
+            <div className="relative aspect-[3/4] overflow-hidden rounded-[18px] bg-[linear-gradient(155deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_55%,#000))] shadow-xl ring-1 ring-black/10">
+              <span className="absolute inset-0 bg-[radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.16),transparent_55%)]" />
+              <span className="absolute inset-y-0 left-0 w-3 bg-[linear-gradient(to_right,rgba(0,0,0,0.30),transparent)]" />
+              <span className="absolute inset-y-0 left-3 w-px bg-brand-accent/40" />
+              <div className="relative flex h-full flex-col justify-between p-7">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-logo text-base font-semibold tracking-[0.18em] text-brand-secondary/90">
+                    KATHA
+                  </span>
+                  <span className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-brand-accent">
+                    {book.category}
+                  </span>
+                </div>
+                <div>
+                  <span className="mb-4 block h-px w-12 bg-brand-accent/70" />
+                  <p className="font-heading text-3xl font-bold leading-tight text-brand-secondary">
+                    {book.title}
                   </p>
-                </footer>
-              </div>
-
-              {/* Chapter navigation — below the page, on the reader surface */}
-              <div className="mt-8">
-                <ReaderNavigation
-                  bookSlug={book.slug}
-                  prevChapter={prevChapter}
-                  nextChapter={nextChapter}
-                />
+                  <p className="mt-3 font-logo text-lg italic text-brand-secondary/80">
+                    {book.author}
+                  </p>
+                </div>
               </div>
             </div>
-          </main>
+          </div>
+
+          {/* Details */}
+          <div className="flex flex-col justify-center">
+            <p className="font-body text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              {book.category}
+            </p>
+
+            <h1
+              id="book-title"
+              className="mt-4 font-heading text-4xl leading-[1.08] text-foreground sm:text-5xl"
+            >
+              {book.title}
+            </h1>
+
+            <p className="mt-3 font-logo text-xl italic text-muted-foreground">
+              by {book.author}
+            </p>
+
+            <p className="mt-6 max-w-2xl font-body text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {book.synopsis}
+            </p>
+
+            {/* Meta row */}
+            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 font-body text-sm text-muted-foreground">
+              <span
+                className={
+                  book.status === 'Completed' ? 'badge badge-forest' : 'badge badge-accent'
+                }
+              >
+                {book.status}
+              </span>
+              <span>
+                {chapterCount} {chapterCount === 1 ? 'chapter' : 'chapters'}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <ClockIcon className="size-4" />
+                about {minutes} min
+              </span>
+              <span>{book.language}</span>
+              <span>Updated {book.updated.toLowerCase()}</span>
+            </div>
+
+            <div className="mt-9">
+              <BookCTA
+                bookSlug={book.slug}
+                bookTitle={book.title}
+                firstChapterHref={`/library/${book.slug}/read/${firstChapter.slug}`}
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </ReaderPreferences>
+      </section>
+
+      {/* Contents -------------------------------------------------------------- */}
+      <section
+        aria-labelledby="book-contents-heading"
+        className="container-katha py-4 md:py-8"
+      >
+        <div className="flex items-end justify-between gap-4 border-t border-border pt-12">
+          <h2
+            id="book-contents-heading"
+            className="font-heading text-2xl text-foreground sm:text-3xl"
+          >
+            Contents
+          </h2>
+          <p className="font-body text-sm text-muted-foreground">
+            {chapterCount} {chapterCount === 1 ? 'chapter' : 'chapters'}
+          </p>
+        </div>
+
+        <ol className="mt-7 space-y-3">
+          {book.chapters.map((chapter) => (
+            <li key={chapter.slug}>
+              <Link
+                href={`/library/${book.slug}/read/${chapter.slug}`}
+                aria-label={`Read chapter ${chapter.number}: ${chapter.title} (${chapter.estimatedReadingTime} min)`}
+                className="group flex w-full items-center justify-between gap-4 rounded-xl border border-border/60 bg-card px-5 py-4 shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out hover:border-border-strong hover:shadow-md motion-safe:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <span className="min-w-0">
+                  <span className="block font-body text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    Chapter {chapter.number}
+                  </span>
+                  <span className="mt-1 block truncate font-heading text-lg text-foreground">
+                    {chapter.title}
+                  </span>
+                </span>
+                <span className="flex shrink-0 items-center gap-4">
+                  <span className="inline-flex items-center gap-1.5 font-body text-[0.78rem] text-muted-foreground">
+                    <ClockIcon className="size-3.5" />
+                    {chapter.estimatedReadingTime} min
+                  </span>
+                  <ArrowRightIcon className="size-[15px] text-muted-foreground transition-[color,transform] duration-200 group-hover:text-primary motion-safe:group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Related books ---------------------------------------------------------- */}
+      {related.length > 0 && (
+        <section
+          aria-labelledby="related-books-heading"
+          className="container-katha py-12 md:py-16"
+        >
+          <div className="flex items-end justify-between gap-4 border-t border-border pt-12">
+            <div>
+              <h2
+                id="related-books-heading"
+                className="font-heading text-2xl text-foreground sm:text-3xl"
+              >
+                Related books
+              </h2>
+              <p className="mt-1.5 font-body text-sm text-muted-foreground">
+                More from the KATHA shelves.
+              </p>
+            </div>
+            <Link
+              href="/library"
+              className="group inline-flex shrink-0 items-center gap-1.5 pb-1 font-body text-sm font-medium text-primary transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              View all
+              <ArrowRightIcon className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+
+          <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {related.map((other) => (
+              <BookCard
+                key={other.slug}
+                title={other.title}
+                author={other.author}
+                category={other.category}
+                chapters={other.chapters.length}
+                href={`/library/${other.slug}`}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* About the author -------------------------------------------------------- */}
+      <section
+        aria-labelledby="about-author-heading"
+        className="border-t border-border bg-secondary"
+      >
+        <div className="container-katha py-16 md:py-20">
+          <h2
+            id="about-author-heading"
+            className="font-heading text-2xl text-foreground sm:text-3xl"
+          >
+            About the author
+          </h2>
+
+          <div className="mt-7 flex flex-col gap-6 sm:flex-row sm:items-center">
+            <span
+              aria-hidden="true"
+              className="grid size-20 shrink-0 place-items-center rounded-full bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))] font-heading text-xl font-semibold text-brand-secondary shadow-sm ring-1 ring-black/10"
+            >
+              {initialsOf(book.author)}
+            </span>
+
+            <div className="min-w-0">
+              <p className="font-heading text-xl font-semibold text-foreground">
+                {book.author}
+              </p>
+              <p className="mt-1 font-body text-sm text-muted-foreground">
+                {1 + moreByAuthor.length}{' '}
+                {moreByAuthor.length === 0 ? 'book' : 'books'} on KATHA ·{' '}
+                {book.category}
+              </p>
+              <p className="mt-3 max-w-xl font-body text-sm leading-relaxed text-muted-foreground">
+                {moreByAuthor.length > 0
+                  ? `Also the author of ${moreByAuthor
+                      .map((other) => other.title)
+                      .join(', ')}.`
+                  : `${book.title} is ${book.author}'s first title on KATHA — more is on the way.`}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
