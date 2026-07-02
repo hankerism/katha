@@ -128,7 +128,7 @@ export default function SearchExperience() {
 
   return (
     <div>
-      <div className="mx-auto max-w-xl">
+      <div className="max-w-xl">
         <SearchBox value={query} onChange={setQuery} onSubmit={handleSubmit} />
       </div>
 
