@@ -40,23 +40,36 @@ export interface KathaAuthor {
   banner: string | null;
   /** Editorial pick — surfaces on the featured authors shelf. */
   featured?: boolean;
+  /** On the Writing Desk — in-progress manuscripts shown on the public
+   *  profile. Editorial content, not catalogue entries: these have no pages
+   *  in the library until the author places them there. */
+  desk?: Array<{ title: string; category: string; note?: string }>;
 }
 
 /** Authored as an array (a JSON payload / query result satisfies this shape
  *  directly); keyed into the record below by the stable id. */
 const AUTHORED_AUTHORS: KathaAuthor[] = [
   {
-    /* The platform's first author — linked to a real account (userId), so the
-     * ladder ADOPTS this profile rather than creating a second identity. */
+    /* The platform's first author — a PEN NAME linked to a real account
+     * (userId), so the ladder ADOPTS this profile rather than creating a
+     * second identity. The id is a stable internal key and never renders;
+     * the public identity is the displayName and slug. */
     id: 'auth-abigail-marte',
     userId: 'user-abigail-marte',
-    slug: 'abigail-marte',
-    displayName: 'Abigail Marte',
-    bio: 'KATHA’s first author. Writes about inherited libraries, dawn kitchens, and the correspondence hidden in ordinary rooms — margins, lists, and the hour before the house wakes.',
+    slug: 'hankerism',
+    displayName: 'Hankerism',
+    bio: 'Some stories begin with grand adventures. Mine usually begin with ordinary days, quiet conversations, and someone becoming your favorite notification.',
     location: 'Manila',
     avatar: null,
     banner: null,
     featured: true,
+    desk: [
+      {
+        title: 'Table for Two',
+        category: 'Contemporary Romance',
+        note: 'A novel in progress — its first pages are taking shape in the Studio.',
+      },
+    ],
   },
   {
     id: 'auth-lakambini-reyes',

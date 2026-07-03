@@ -22,6 +22,40 @@ import type { StudioWork, WorkLifecycle } from './work';
 
 export const WORKS_STORAGE_KEY = 'katha:studio:works';
 
+/* ── The house manuscript ────────────────────────────────────────────────────
+ * Hankerism's current draft lives on every desk this Studio opens on — the
+ * platform's first author is mid-book, and the deployed demo should say so.
+ * Seeded idempotently BY ID (present even alongside other works; re-planted
+ * if removed — it is the house fixture). The Prologue's manuscript is
+ * intentionally empty until the author's exact text is placed there;
+ * nothing here may invent her words. */
+const TABLE_FOR_TWO_SEED: StudioWork = {
+  id: 'work_table-for-two',
+  authorId: 'auth-abigail-marte',
+  lifecycle: 'draft',
+  createdAt: '2026-06-28T09:00:00.000Z',
+  updatedAt: '2026-07-02T21:15:00.000Z',
+  book: {
+    slug: 'table-for-two',
+    title: 'Table for Two',
+    category: 'Contemporary Romance',
+    language: 'Filipino / English',
+    status: 'Ongoing',
+    synopsis:
+      'Two regulars. One café table that keeps ending up shared. A love story measured in refills, receipts, and the seat left open on purpose.',
+    cover: null,
+  },
+  chapters: [
+    {
+      id: 'ch_ttf-prologue',
+      title: 'Prologue',
+      manuscript: '',
+    },
+  ],
+};
+
+const SEEDED_WORKS: StudioWork[] = [TABLE_FOR_TWO_SEED];
+
 /* ── Interface (what Supabase will implement) ────────────────────────────── */
 
 export interface WorkRepository {
@@ -87,8 +121,7 @@ function readAll(): StudioWork[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = window.localStorage.getItem(WORKS_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
     if (!Array.isArray(parsed)) return [];
 
     const seen = new Set<string>();
@@ -108,7 +141,16 @@ function readAll(): StudioWork[] {
         works.push(item);
       }
     }
-    if (changed) writeAll(works); // persist the cleanup once
+    // Plant the house manuscript(s) wherever absent — by id, so it stands
+    // beside whatever else is on the desk.
+    for (const seed of SEEDED_WORKS) {
+      if (!seen.has(seed.id)) {
+        works.push(seed);
+        changed = true;
+      }
+    }
+
+    if (changed) writeAll(works); // persist the cleanup + seeding once
     return works;
   } catch {
     return [];

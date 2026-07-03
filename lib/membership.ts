@@ -133,13 +133,15 @@ function migrateLegacy(legacy: LegacyRecord): MembershipRecord {
     joinedAt: legacy.joinedAt,
   };
   if (legacy.tier !== 'author') return { user };
+  // Reconstruct the PUBLIC identity (the pen name), never the account name.
+  const seeded = getAllAuthors().find((author) => author.userId === user.id);
   return {
     user,
-    author: {
+    author: seeded ?? {
       id: legacy.authorId ?? DEFAULT_STUDIO_AUTHOR_ID,
       userId: user.id,
-      slug: 'abigail-marte',
-      displayName: `${PRE_AUTH_FIRST_NAME} ${PRE_AUTH_LAST_NAME}`,
+      slug: 'hankerism',
+      displayName: 'Hankerism',
       bio: '',
       location: '',
       avatar: null,

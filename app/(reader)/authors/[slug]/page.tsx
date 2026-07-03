@@ -154,25 +154,60 @@ export default async function AuthorProfilePage({
           </p>
         </div>
 
+        {/* Published */}
         {books.length > 0 ? (
-          <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {books.map((book) => (
-              <BookCard
-                key={book.slug}
-                title={book.title}
-                author={author.displayName}
-                cover={book.cover}
-                category={book.category}
-                chapters={book.chapters.length}
-                featured={book.featured}
-                href={`/library/${book.slug}`}
-              />
-            ))}
-          </div>
+          <>
+            <h3 className="mt-8 font-body text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+              Published
+            </h3>
+            <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {books.map((book) => (
+                <BookCard
+                  key={book.slug}
+                  title={book.title}
+                  author={author.displayName}
+                  cover={book.cover}
+                  category={book.category}
+                  chapters={book.chapters.length}
+                  featured={book.featured}
+                  href={`/library/${book.slug}`}
+                />
+              ))}
+            </div>
+          </>
         ) : (
           <p className="mt-7 max-w-xl font-body text-base leading-relaxed text-muted-foreground">
             {author.displayName}&rsquo;s first title is on its way to the shelves.
           </p>
+        )}
+
+        {/* On the Writing Desk — manuscripts in progress, no covers-of-nothing */}
+        {author.desk && author.desk.length > 0 && (
+          <>
+            <h3 className="mt-12 font-body text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+              On the Writing Desk
+            </h3>
+            <ul className="mt-5 space-y-3">
+              {author.desk.map((item) => (
+                <li
+                  key={item.title}
+                  className="rounded-xl border border-dashed border-border bg-card/60 px-5 py-4"
+                >
+                  <p className="font-body text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-clay">
+                    {item.category}
+                  </p>
+                  <p className="mt-1 font-heading text-lg text-foreground">
+                    {item.title}
+                  </p>
+                  {item.note && (
+                    <p className="mt-1.5 font-body text-sm leading-relaxed text-muted-foreground">
+                      {item.note}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </section>
 
