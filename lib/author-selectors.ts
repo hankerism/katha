@@ -32,7 +32,7 @@ function humanizeAuthorId(authorId: string): string {
 
 /** Display name for an authorId, orphan-safe. */
 export function authorName(authorId: string): string {
-  return getAuthorById(authorId)?.name ?? humanizeAuthorId(authorId);
+  return getAuthorById(authorId)?.displayName ?? humanizeAuthorId(authorId);
 }
 
 /** The author record behind a book, if the reference resolves. */

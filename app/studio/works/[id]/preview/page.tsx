@@ -48,7 +48,7 @@ export default function WorkPreviewPage() {
     (sum, chapter) => sum + chapter.estimatedReadingTime,
     0,
   );
-  const authorName = author?.name ?? 'You';
+  const authorName = author?.displayName ?? 'You';
   const firstChapter = book.chapters[0];
 
   return (

@@ -79,7 +79,7 @@ export default function AuthorsPage() {
             return (
               <AuthorCard
                 key={author.id}
-                name={author.name}
+                name={author.displayName}
                 href={`/authors/${author.slug}`}
                 bio={author.bio}
                 genreLabel={stats.categories[0] ?? 'New voice'}

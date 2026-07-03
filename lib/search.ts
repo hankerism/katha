@@ -340,7 +340,7 @@ export function searchCatalogue(
   if (tokens.length === 0) return { query, ...EMPTY_RESULTS };
 
   // The one join the engine performs: authorId → display name.
-  const authorNameById = new Map(authors.map((a) => [a.id, a.name]));
+  const authorNameById = new Map(authors.map((a) => [a.id, a.displayName]));
 
   const bookResults: BookResult[] = [];
   const chapterResults: ChapterResult[] = [];
@@ -428,12 +428,12 @@ export function searchCatalogue(
   // author is findable even before their first book is published.
   const authorResults: AuthorResult[] = [];
   for (const author of authors) {
-    const match = scoreText(tokens, author.name);
+    const match = scoreText(tokens, author.displayName);
     if (!match) continue;
     authorResults.push({
       type: 'author',
       id: author.id,
-      title: author.name,
+      title: author.displayName,
       titleRanges: match.ranges,
       bookCount: books.filter((book) => book.authorId === author.id).length,
       slug: author.slug,

@@ -2,13 +2,15 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import {
-  becomeAuthor,
+  completeAuthorProfile,
   getViewer,
   joinAsReader,
   resetMembership,
   MEMBERSHIP_CHANGED_EVENT,
+  type AuthorProfileInput,
   type Viewer,
 } from '@/lib/membership';
+import { userFullName } from '@/lib/users';
 
 /* ---------------------------------------------------------------------------
  * KATHA · Membership — useViewer
@@ -36,11 +38,26 @@ export function useViewer() {
   }, [refresh]);
 
   const join = useCallback(() => setViewer(joinAsReader()), []);
-  const upgrade = useCallback(() => setViewer(becomeAuthor()), []);
+
+  /** Reader → Author: link the public writing identity (possibly a pen name)
+   *  to the same account. */
+  const completeProfile = useCallback(
+    (input: AuthorProfileInput) => setViewer(completeAuthorProfile(input)),
+    [],
+  );
+
+  /** Convenience: become an author under the account's own name. */
+  const becomeAuthor = useCallback(() => {
+    const user = getViewer().user;
+    setViewer(
+      completeAuthorProfile({ displayName: user ? userFullName(user) : '' }),
+    );
+  }, []);
+
   const reset = useCallback(() => {
     resetMembership();
     setViewer(getViewer());
   }, []);
 
-  return { viewer, loaded, join, becomeAuthor: upgrade, reset };
+  return { viewer, loaded, join, completeProfile, becomeAuthor, reset };
 }

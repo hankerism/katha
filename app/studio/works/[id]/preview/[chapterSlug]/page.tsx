@@ -72,7 +72,7 @@ export default function ChapterPreviewPage() {
       : null;
   const previewHref = (slug: string) =>
     `/studio/works/${work.id}/preview/${slug}`;
-  const authorName = getCurrentAuthor()?.name ?? 'You';
+  const authorName = getCurrentAuthor()?.displayName ?? 'You';
 
   return (
     <>

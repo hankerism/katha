@@ -22,9 +22,16 @@
 export interface KathaAuthor {
   /** Stable foreign key (what KathaBook.authorId stores). Never changes. */
   id: string;
-  /** URL-safe route segment for /authors/[slug]. Renameable, unlike `id`. */
+  /** The ACCOUNT this writing identity belongs to (User.id) — the person
+   *  behind the pen. Null for the sample catalogue authors, who predate
+   *  accounts; always set for author profiles created through the ladder.
+   *  Linking a profile never creates a second account. */
+  userId: string | null;
+  /** URL-safe route segment for /authors/[slug]. Renameable, unlike `id`.
+   *  Only authors have public slugs — readers never do. */
   slug: string;
-  name: string;
+  /** The public byline — the user's own name, or a pen name. */
+  displayName: string;
   bio: string;
   location: string;
   /** Profile media — null until authors can upload; the UI falls back to an
@@ -40,8 +47,9 @@ export interface KathaAuthor {
 const AUTHORED_AUTHORS: KathaAuthor[] = [
   {
     id: 'auth-lakambini-reyes',
+    userId: null,
     slug: 'lakambini-reyes',
-    name: 'Lakambini Reyes',
+    displayName: 'Lakambini Reyes',
     bio: 'Writes quiet literary fiction about memory, family, and the houses that keep both. Her chapters read like long afternoons in a coastal town.',
     location: 'Manila',
     avatar: null,
@@ -50,8 +58,9 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
   },
   {
     id: 'auth-j-salvador',
+    userId: null,
     slug: 'j-salvador',
-    name: 'J. Salvador',
+    displayName: 'J. Salvador',
     bio: 'Writes prose poems shaped like letters to the dark — brownouts, candlelight, and the hour after the last jeepney.',
     location: 'Quezon City',
     avatar: null,
@@ -60,8 +69,9 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
   },
   {
     id: 'auth-noemi-bautista',
+    userId: null,
     slug: 'noemi-bautista',
-    name: 'Noemi Bautista',
+    displayName: 'Noemi Bautista',
     bio: 'Tells stories in which impossible things happen politely, inside ordinary Philippine homes. Her houses have errands of their own.',
     location: 'Dumaguete',
     avatar: null,
@@ -70,8 +80,9 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
   },
   {
     id: 'auth-clara-mendoza',
+    userId: null,
     slug: 'clara-mendoza',
-    name: 'Clara Mendoza',
+    displayName: 'Clara Mendoza',
     bio: 'Writes slow, warm love stories that begin at flower stalls and take their time getting anywhere — on purpose.',
     location: 'Laguna',
     avatar: null,
@@ -80,8 +91,9 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
   },
   {
     id: 'auth-rafael-lim',
+    userId: null,
     slug: 'rafael-lim',
-    name: 'Rafael Lim',
+    displayName: 'Rafael Lim',
     bio: 'Rides the last train home and writes down everything the city was too tired to say out loud. Linked vignettes, wry and exact.',
     location: 'Makati',
     avatar: null,
@@ -89,8 +101,9 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
   },
   {
     id: 'auth-isa-navarro',
+    userId: null,
     slug: 'isa-navarro',
-    name: 'Isa Navarro',
+    displayName: 'Isa Navarro',
     bio: 'Writes rainy-season diaries for readers still figuring out who they are when nobody is asking them to be anything.',
     location: 'Marikina',
     avatar: null,
@@ -98,26 +111,19 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
   },
   {
     id: 'auth-tomas-reyes',
+    userId: null,
     slug: 'tomas-reyes',
-    name: 'Tomas Reyes',
+    displayName: 'Tomas Reyes',
     bio: 'Writes about coastal towns, changing flags, and the people history assigns to surviving. Formal cadence, salt air.',
     location: 'Iloilo',
     avatar: null,
     banner: null,
   },
   {
-    id: 'auth-abigail-marte',
-    slug: 'abigail-marte',
-    name: 'Abigail Marte',
-    bio: 'Writes in the Author Studio, where every KATHA story begins. Her first titles are still being written — quietly, and in her own time.',
-    location: 'Manila',
-    avatar: null,
-    banner: null,
-  },
-  {
     id: 'auth-mila-cruz',
+    userId: null,
     slug: 'mila-cruz',
-    name: 'Mila Cruz',
+    displayName: 'Mila Cruz',
     bio: 'Builds stations between worlds and prices every ticket in memories. Portal fantasy with a conductor’s patience.',
     location: 'Baguio',
     avatar: null,

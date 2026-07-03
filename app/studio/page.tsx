@@ -18,7 +18,7 @@ import { ArrowRightIcon, BookOpenIcon } from '@/components/ui/icons';
 
 export default function StudioHomePage() {
   const author = getCurrentAuthor();
-  const firstName = (author?.name ?? 'Writer').split(' ')[0];
+  const firstName = (author?.displayName ?? 'Writer').split(' ')[0];
   const { works, loaded } = useWorks(getCurrentAuthorId());
 
   const drafts = works.filter((work) => work.lifecycle === 'draft');

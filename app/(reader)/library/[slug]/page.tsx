@@ -68,7 +68,7 @@ export default async function BookDetailPage({
 
   // All author facts come from the Author domain via the selector layer.
   const author = getAuthorForBook(book);
-  const displayAuthor = author?.name ?? authorName(book.authorId);
+  const displayAuthor = author?.displayName ?? authorName(book.authorId);
   const moreByAuthor = getBibliography(book.authorId).filter(
     (other) => other.slug !== book.slug,
   );

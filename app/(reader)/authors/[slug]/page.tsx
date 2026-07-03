@@ -32,7 +32,7 @@ export async function generateMetadata({
   const profile = getAuthorProfile(slug);
   if (!profile) return { title: 'Author not found' };
   return {
-    title: profile.author.name,
+    title: profile.author.displayName,
     description: profile.author.bio,
   };
 }
@@ -75,7 +75,7 @@ export default async function AuthorProfilePage({
               // eslint-disable-next-line @next/next/no-img-element -- arbitrary uploaded avatar URLs; avoids next/image remote config
               <img
                 src={author.avatar}
-                alt={`Portrait of ${author.name}`}
+                alt={`Portrait of ${author.displayName}`}
                 className="size-24 shrink-0 rounded-full border-4 border-background object-cover shadow-md sm:size-28"
               />
             ) : (
@@ -83,7 +83,7 @@ export default async function AuthorProfilePage({
                 aria-hidden="true"
                 className="grid size-24 shrink-0 place-items-center rounded-full border-4 border-background font-heading text-2xl font-semibold text-brand-secondary shadow-md sm:size-28 bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))]"
               >
-                {initialsOf(author.name)}
+                {initialsOf(author.displayName)}
               </span>
             )}
 
@@ -92,7 +92,7 @@ export default async function AuthorProfilePage({
                 id="author-name"
                 className="font-heading text-3xl leading-tight text-foreground sm:text-4xl"
               >
-                {author.name}
+                {author.displayName}
               </h1>
               <p className="mt-1.5 font-body text-sm text-muted-foreground">
                 {author.location}
@@ -160,7 +160,7 @@ export default async function AuthorProfilePage({
               <BookCard
                 key={book.slug}
                 title={book.title}
-                author={author.name}
+                author={author.displayName}
                 category={book.category}
                 chapters={book.chapters.length}
                 featured={book.featured}
@@ -170,7 +170,7 @@ export default async function AuthorProfilePage({
           </div>
         ) : (
           <p className="mt-7 max-w-xl font-body text-base leading-relaxed text-muted-foreground">
-            {author.name}&rsquo;s first title is on its way to the shelves.
+            {author.displayName}&rsquo;s first title is on its way to the shelves.
           </p>
         )}
       </section>
@@ -198,7 +198,7 @@ export default async function AuthorProfilePage({
                 return (
                   <AuthorCard
                     key={other.id}
-                    name={other.name}
+                    name={other.displayName}
                     href={`/authors/${other.slug}`}
                     bio={other.bio}
                     genreLabel={otherStats.categories[0] ?? 'New voice'}

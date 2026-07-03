@@ -2,22 +2,22 @@
  * KATHA · Author Studio — current author
  * lib/studio/current-author.ts
  *
- * Who is writing — now answered by the membership domain: the Studio's author
- * identity is the VIEWER's authorId (an Author is a Reader whose viewer
- * carries one). Pre-authentication that resolves to Abigail Marte; with
- * sessions it resolves to whoever signed in. The fallback keeps the Studio
- * usable when reached without the author tier (the entry gate handles the
- * ladder; data written here always belongs to a real Author-domain row).
+ * Who is writing — the VIEWER's own Author profile, created when they
+ * completed it on the ladder (User and Author are separate domains linked by
+ * userId; the display name may be a pen name). Local profiles live on the
+ * membership record, not in the static catalogue table. The legacy id
+ * fallback keeps works written before the split resolving.
  * ------------------------------------------------------------------------- */
 
-import { getAuthorById, type KathaAuthor } from '../authors';
+import type { KathaAuthor } from '../authors';
 import { DEFAULT_STUDIO_AUTHOR_ID, getViewer } from '../membership';
 
 export function getCurrentAuthorId(): string {
   return getViewer().authorId ?? DEFAULT_STUDIO_AUTHOR_ID;
 }
 
-/** The current author's domain record (name, bio, avatar …). */
+/** The current author's profile (display name, bio, media …) — the viewer's
+ *  own writing identity. Undefined until the profile has been completed. */
 export function getCurrentAuthor(): KathaAuthor | undefined {
-  return getAuthorById(getCurrentAuthorId());
+  return getViewer().author;
 }

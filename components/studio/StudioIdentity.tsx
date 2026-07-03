@@ -1,6 +1,5 @@
 'use client';
 
-import { getAuthorById } from '@/lib/authors';
 import { initialsOf } from '@/lib/text';
 import { useViewer } from '@/components/membership/use-viewer';
 
@@ -15,9 +14,10 @@ import { useViewer } from '@/components/membership/use-viewer';
 
 export default function StudioIdentity() {
   const { viewer, loaded } = useViewer();
-  if (!loaded || viewer.tier !== 'author' || !viewer.authorId) return null;
+  if (!loaded || viewer.tier !== 'author') return null;
 
-  const author = getAuthorById(viewer.authorId);
+  // The viewer's OWN writing identity — possibly a pen name.
+  const author = viewer.author;
   if (!author) return null;
 
   return (
@@ -26,10 +26,10 @@ export default function StudioIdentity() {
         aria-hidden="true"
         className="grid size-7 place-items-center rounded-full bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))] font-heading text-[0.65rem] font-semibold text-brand-secondary"
       >
-        {initialsOf(author.name)}
+        {initialsOf(author.displayName)}
       </span>
       <span className="font-body text-sm text-muted-foreground">
-        {author.name}
+        {author.displayName}
       </span>
     </span>
   );

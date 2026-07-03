@@ -127,7 +127,7 @@ export default function ChapterEditorPage() {
 
   const words = manuscriptWordCount(manuscript);
   const paragraphs = parseManuscript(manuscript).length;
-  const authorName = getCurrentAuthor()?.name ?? 'You';
+  const authorName = getCurrentAuthor()?.displayName ?? 'You';
 
   return (
     <div>
