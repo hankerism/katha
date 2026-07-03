@@ -8,6 +8,8 @@ import {
 } from '@/lib/continue-reading';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { BookOpenIcon, ArrowRightIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
+import MembershipInvitation from '@/components/membership/MembershipInvitation';
 import {
   resolvePreview,
   getChapterNumber,
@@ -45,6 +47,8 @@ function composeEyebrow(record: ContinueReadingRecord): string {
 export default function ContinueReadingPage() {
   const [loaded, setLoaded] = useState(false);
   const [record, setRecord] = useState<ContinueReadingRecord | null>(null);
+  const { viewer, loaded: viewerLoaded } = useViewer();
+  const isGuest = viewerLoaded && viewer.tier === 'guest';
 
   // The position lives in localStorage — read once on mount via the persistence
   // layer (the UI never touches localStorage directly), then reveal.
@@ -64,17 +68,30 @@ export default function ContinueReadingPage() {
           <h1 className="mt-3 font-logo text-4xl font-semibold tracking-[-0.01em] text-foreground sm:text-5xl">
             Continue Reading
           </h1>
-          {loaded && record && (
+          {loaded && !isGuest && record && (
             <p className="mt-4 font-body text-[0.98rem] leading-relaxed text-muted-foreground">
               Pick up where you left off.
             </p>
           )}
         </header>
 
-        {loaded && record && <div className="mt-9 h-px w-full bg-border/70" />}
+        {/* Guests meet the invitation — a saved place already on this device
+            stays stored and reappears the moment they join. */}
+        {isGuest && (
+          <MembershipInvitation
+            heading="Pick up any book where you left it."
+            invitation="Continue Reading holds your place across the whole library. Join KATHA and never lose the page."
+            from="/continue-reading"
+          />
+        )}
 
-        {/* Storage-dependent region — mount-gated */}
+        {loaded && !isGuest && record && (
+          <div className="mt-9 h-px w-full bg-border/70" />
+        )}
+
+        {/* Storage-dependent region — mount-gated, members only */}
         {loaded &&
+          !isGuest &&
           (record ? (
             <div className="mt-11">
               <ReadingLocationCard

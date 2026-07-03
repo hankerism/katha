@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { getHistory, clearHistory, type HistoryEntry } from '@/lib/history';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { ClockIcon, ArrowRightIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
+import MembershipInvitation from '@/components/membership/MembershipInvitation';
 import {
   groupHistoryByBook,
   resolvePreview,
@@ -49,6 +51,8 @@ function pluralize(count: number, singular: string): string {
 export default function HistoryPage() {
   const [loaded, setLoaded] = useState(false);
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
+  const { viewer, loaded: viewerLoaded } = useViewer();
+  const isGuest = viewerLoaded && viewer.tier === 'guest';
 
   // History lives in localStorage — read once on mount via the persistence
   // layer (the UI never touches localStorage directly), then reveal.
@@ -78,7 +82,7 @@ export default function HistoryPage() {
           <h1 className="mt-3 font-logo text-4xl font-semibold tracking-[-0.01em] text-foreground sm:text-5xl">
             Reading History
           </h1>
-          {loaded && hasHistory && (
+          {loaded && !isGuest && hasHistory && (
             <div className="mt-4 flex items-baseline justify-between gap-4">
               <p className="font-body text-[0.98rem] leading-relaxed text-muted-foreground">
                 <span className="font-medium text-reader-foreground">
@@ -102,12 +106,23 @@ export default function HistoryPage() {
           )}
         </header>
 
-        {loaded && hasHistory && (
+        {/* Guests meet the invitation — any footprints already on this device
+            stay stored and reappear the moment they join. */}
+        {isGuest && (
+          <MembershipInvitation
+            heading="The library remembers members."
+            invitation="Reading History retraces every chapter you visit — newest first, back to the beginning. Join KATHA and start leaving footprints."
+            from="/history"
+          />
+        )}
+
+        {loaded && !isGuest && hasHistory && (
           <div className="mt-9 h-px w-full bg-border/70" />
         )}
 
-        {/* Storage-dependent region — mount-gated */}
+        {/* Storage-dependent region — mount-gated, members only */}
         {loaded &&
+          !isGuest &&
           (hasHistory ? (
             <div className="mt-11 space-y-14">
               {groups.map((group) => (

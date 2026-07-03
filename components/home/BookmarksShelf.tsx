@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { getBookmarks, type Bookmark } from '@/lib/bookmarks';
 import { getChapterNumber } from '@/lib/bookmark-selectors';
 import { BookmarkIcon, ArrowRightIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
 
 /* ---------------------------------------------------------------------------
  * KATHA · BookmarksShelf
@@ -23,6 +24,7 @@ const MAX_VISIBLE = 3;
 export default function BookmarksShelf() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const { viewer, loaded: viewerLoaded } = useViewer();
 
   useEffect(() => {
     setBookmarks(getBookmarks());
@@ -30,7 +32,8 @@ export default function BookmarksShelf() {
   }, []);
 
   // Until we've read storage, render nothing (matches the server pass).
-  if (!loaded) return null;
+  // Guests see no member shelves — home's one invitation lives elsewhere.
+  if (!loaded || !viewerLoaded || viewer.tier === 'guest') return null;
 
   const visible = bookmarks.slice(0, MAX_VISIBLE);
   const hasMore = bookmarks.length > MAX_VISIBLE;

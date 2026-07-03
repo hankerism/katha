@@ -49,7 +49,21 @@ export interface KathaBook {
   synopsis: string;
   /** Editorial pick — surfaces on the featured shelves. */
   featured?: boolean;
+  /** How many opening chapters guests may read (the free preview). Absent →
+   *  DEFAULT_FREE_CHAPTERS. Authors will set this per work in the Studio. */
+  freeChapters?: number;
   chapters: KathaChapter[];
+}
+
+export const DEFAULT_FREE_CHAPTERS = 1;
+
+/** Is this chapter part of the book's free preview? The ONE answer the
+ *  reader gate, the Studio preview, and the future server-side gate share. */
+export function isChapterFree(
+  book: Pick<KathaBook, 'freeChapters'>,
+  chapterNumber: number,
+): boolean {
+  return chapterNumber <= (book.freeChapters ?? DEFAULT_FREE_CHAPTERS);
 }
 
 /* -- Internal helpers ------------------------------------------------------ */

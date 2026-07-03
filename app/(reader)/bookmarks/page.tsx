@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { getBookmarks, removeBookmark, type Bookmark } from '@/lib/bookmarks';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { RibbonIcon, ArrowRightIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
+import MembershipInvitation from '@/components/membership/MembershipInvitation';
 import {
   groupBookmarksByBook,
   resolvePreview,
@@ -52,6 +54,8 @@ function pluralize(count: number, singular: string): string {
 export default function BookmarksPage() {
   const [loaded, setLoaded] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const { viewer, loaded: viewerLoaded } = useViewer();
+  const isGuest = viewerLoaded && viewer.tier === 'guest';
 
   // Bookmarks live in localStorage — read once on mount, then reveal.
   useEffect(() => {
@@ -81,7 +85,7 @@ export default function BookmarksPage() {
           <h1 className="mt-3 font-logo text-4xl font-semibold tracking-[-0.01em] text-foreground sm:text-5xl">
             Bookmarks
           </h1>
-          {loaded && hasBookmarks && (
+          {loaded && !isGuest && hasBookmarks && (
             <p className="mt-4 font-body text-[0.98rem] leading-relaxed text-muted-foreground">
               <span className="font-medium text-reader-foreground">
                 {pluralize(bookmarks.length, 'passage')} across{' '}
@@ -92,12 +96,23 @@ export default function BookmarksPage() {
           )}
         </header>
 
-        {loaded && hasBookmarks && (
+        {/* Guests meet the invitation — anything already marked on this
+            device stays stored and reappears the moment they join. */}
+        {isGuest && (
+          <MembershipInvitation
+            heading="Every marked passage, kept."
+            invitation="Members keep the passages worth returning to — tap the ribbon while reading and it waits here. Join KATHA and the library starts remembering."
+            from="/bookmarks"
+          />
+        )}
+
+        {loaded && !isGuest && hasBookmarks && (
           <div className="mt-9 h-px w-full bg-border/70" />
         )}
 
-        {/* Storage-dependent region — mount-gated */}
+        {/* Storage-dependent region — mount-gated, members only */}
         {loaded &&
+          !isGuest &&
           (hasBookmarks ? (
             <div className="mt-11 space-y-14">
               {groups.map((group) => (

@@ -5,6 +5,7 @@ import {
   saveContinueReading,
   type ContinueReadingInput,
 } from '@/lib/continue-reading';
+import { getViewer } from '@/lib/membership';
 
 /* ---------------------------------------------------------------------------
  * KATHA · ReadingProgressTracker
@@ -29,6 +30,8 @@ export default function ReadingProgressTracker({
   href,
 }: ContinueReadingInput) {
   useEffect(() => {
+    // The library only remembers members; a guest's visit leaves no trace.
+    if (getViewer().tier === 'guest') return;
     saveContinueReading({
       bookSlug,
       bookTitle,

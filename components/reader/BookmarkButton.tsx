@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { isBookmarked, toggleBookmark } from '@/lib/bookmarks';
 import { withParagraphAnchor } from '@/lib/reading-location';
 import { BookmarkIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
 
 /* ---------------------------------------------------------------------------
  * KATHA · BookmarkButton
@@ -52,6 +55,8 @@ export default function BookmarkButton({
 }: BookmarkButtonProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
+  const { viewer, loaded } = useViewer();
+  const pathname = usePathname();
 
   // Track the paragraph at the top of the reading area for this chapter.
   useEffect(() => {
@@ -107,6 +112,22 @@ export default function BookmarkButton({
         { bookSlug, chapterSlug, paragraphIndex: currentIndex },
         next,
       ),
+    );
+  }
+
+  // Guests see the ribbon as an invitation, not a control — bookmarks are a
+  // member's shelf. (Render nothing until the viewer is known: no flash.)
+  if (!loaded) return <span aria-hidden="true" className="size-9" />;
+  if (viewer.tier === 'guest') {
+    return (
+      <Link
+        href={`/join?from=${encodeURIComponent(pathname ?? '/library')}`}
+        aria-label="Members keep bookmarks — join KATHA"
+        title="Members keep bookmarks — join KATHA"
+        className="inline-flex size-9 items-center justify-center rounded-full text-primary-foreground/50 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <BookmarkIcon className="size-5" />
+      </Link>
     );
   }
 

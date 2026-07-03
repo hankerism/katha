@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getBookBySlug, getChapterBySlug } from '@/lib/books';
+import { getBookBySlug, getChapterBySlug, isChapterFree } from '@/lib/books';
 import { authorName } from '@/lib/author-selectors';
+import ChapterGate from '@/components/membership/ChapterGate';
 import ReaderSidebar from '@/components/reader/ReaderSidebar';
 import ReaderToolbar from '@/components/reader/ReaderToolbar';
 import ReaderArticle from '@/components/reader/ReaderArticle';
@@ -111,20 +112,30 @@ export default async function ReaderPage({
                   still fill the sheet, and an understated end-of-chapter footer
                   pinned to its foot. */}
               <div className="reading-surface flex min-h-[70dvh] w-full flex-col rounded-xl border border-border/50 px-8 py-14 shadow-[var(--ds-shadow-soft)] sm:px-12 sm:py-16 md:px-14 md:py-20">
-                <ReaderArticle
+                {/* The free-preview edge: the server decides whether this
+                    chapter is free; the gate decides who is reading. Guests
+                    read the whole preview untouched, then meet the editorial
+                    invitation on this same paper. */}
+                <ChapterGate
+                  free={isChapterFree(book, current.number)}
                   bookTitle={book.title}
-                  author={authorName(book.authorId)}
-                  chapterTitle={current.title}
-                  estimatedReadingTime={current.estimatedReadingTime}
-                  content={current.content}
-                />
+                  from={href}
+                >
+                  <ReaderArticle
+                    bookTitle={book.title}
+                    author={authorName(book.authorId)}
+                    chapterTitle={current.title}
+                    estimatedReadingTime={current.estimatedReadingTime}
+                    content={current.content}
+                  />
 
-                <footer className="mt-auto pt-16 text-center">
-                  <div aria-hidden="true" className="mx-auto h-px w-10 bg-border" />
-                  <p className="mt-4 font-body text-[0.7rem] font-medium uppercase tracking-[0.25em] text-muted-foreground/70">
-                    End of Chapter {current.number}
-                  </p>
-                </footer>
+                  <footer className="mt-auto pt-16 text-center">
+                    <div aria-hidden="true" className="mx-auto h-px w-10 bg-border" />
+                    <p className="mt-4 font-body text-[0.7rem] font-medium uppercase tracking-[0.25em] text-muted-foreground/70">
+                      End of Chapter {current.number}
+                    </p>
+                  </footer>
+                </ChapterGate>
               </div>
 
               {/* Chapter navigation — below the page, on the reader surface */}

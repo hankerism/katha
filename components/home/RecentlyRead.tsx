@@ -6,6 +6,7 @@ import { getHistory, type HistoryEntry } from '@/lib/history';
 import { groupHistoryByBook, getChapterNumber } from '@/lib/history-selectors';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { ClockIcon, ArrowRightIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
 
 /* ---------------------------------------------------------------------------
  * KATHA · RecentlyRead
@@ -33,6 +34,7 @@ const MAX_VISIBLE = 3;
 export default function RecentlyRead() {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const { viewer, loaded: viewerLoaded } = useViewer();
 
   useEffect(() => {
     setEntries(getHistory());
@@ -40,7 +42,8 @@ export default function RecentlyRead() {
   }, []);
 
   // Until we've read storage, render nothing (matches the server pass).
-  if (!loaded) return null;
+  // Guests see no member shelves — home's one invitation lives elsewhere.
+  if (!loaded || !viewerLoaded || viewer.tier === 'guest') return null;
 
   // One card per book, most-recently-visited book first; each card shows that
   // book's newest location. Orphaned books sort last and simply fall off the

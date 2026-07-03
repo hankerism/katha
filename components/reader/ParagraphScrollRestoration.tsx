@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { recordVisit } from '@/lib/history';
+import { getViewer } from '@/lib/membership';
 import {
   paragraphAnchorId,
   withParagraphAnchor,
@@ -80,7 +81,8 @@ export default function ParagraphScrollRestoration({
             href: withParagraphAnchor(location.href, paragraphIndex),
           };
     const key = `${visit.bookSlug}:${visit.chapterSlug}:${visit.paragraphIndex}`;
-    if (lastRecorded.current !== key) {
+    // Scroll restoration works for everyone; only members are remembered.
+    if (lastRecorded.current !== key && getViewer().tier !== 'guest') {
       lastRecorded.current = key;
       recordVisit(visit);
     }

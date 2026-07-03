@@ -9,6 +9,8 @@ import {
 import { readingProgress } from '@/lib/continue-reading-selectors';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { ArrowRightIcon, CheckIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
+import MembershipInvitation from '@/components/membership/MembershipInvitation';
 
 /* ---------------------------------------------------------------------------
  * KATHA · ContinueReading
@@ -25,12 +27,31 @@ import { ArrowRightIcon, CheckIcon } from '@/components/ui/icons';
 
 export default function ContinueReading() {
   const [record, setRecord] = useState<ContinueReadingRecord | null>(null);
+  const { viewer, loaded } = useViewer();
 
   // Read via the persistence layer (never localStorage directly); it validates
   // and returns null on the server / bad data, so the mount-gate stays clean.
   useEffect(() => {
     setRecord(getContinueReading());
   }, []);
+
+  // Home carries exactly ONE quiet membership ask — this slot. The other
+  // member shelves simply stay silent for guests.
+  if (loaded && viewer.tier === 'guest') {
+    return (
+      <section
+        aria-labelledby="continue-reading-heading"
+        className="container-katha py-16 md:py-20"
+      >
+        <MembershipInvitation
+          variant="card"
+          heading="Continue your reading journey."
+          invitation="Members pick up any book exactly where they left it. Join KATHA — free — and the library holds your place."
+          from="/"
+        />
+      </section>
+    );
+  }
 
   if (!record) return null;
 
