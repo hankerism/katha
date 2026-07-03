@@ -74,7 +74,9 @@ export default function AuthorCard({
       <div className="mt-auto w-full pt-5">
         <div className="flex items-center justify-between border-t border-border pt-4 text-sm">
           <span className="font-medium text-muted-foreground">
-            {bookCount} {bookCount === 1 ? 'Book' : 'Books'}
+            {bookCount === 0
+              ? 'Debut in progress'
+              : `${bookCount} ${bookCount === 1 ? 'Book' : 'Books'}`}
           </span>
           <span className="inline-flex items-center gap-1 font-semibold text-primary transition-colors duration-200 group-hover:text-clay dark:text-accent">
             View Profile

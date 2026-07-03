@@ -41,7 +41,7 @@ export default function FeaturedAuthors() {
                 name={author.displayName}
                 href={`/authors/${author.slug}`}
                 bio={author.bio}
-                genreLabel={stats.categories[0] ?? 'New voice'}
+                genreLabel={stats.categories[0] ?? author.desk?.[0]?.category ?? 'New voice'}
                 bookCount={stats.bookCount}
                 avatar={author.avatar}
               />

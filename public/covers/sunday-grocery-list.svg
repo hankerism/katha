@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- SLICE OF LIFE · domestic light study: the list, the mango notebook -->
+  <rect width="600" height="800" fill="#5C3B28"/>
+  <!-- morning light across the table -->
+  <path d="M0 0 L280 0 L120 800 L0 800 Z" fill="#D4A646" opacity="0.13"/>
+  <!-- the notebook page -->
+  <rect x="120" y="110" width="360" height="520" rx="6" fill="#FAFAF8" transform="rotate(-2 300 370)"/>
+  <g transform="rotate(-2 300 370)">
+    <g stroke="#D8D4CC" stroke-width="1.5">
+      <line x1="150" y1="200" x2="450" y2="200"/><line x1="150" y1="250" x2="450" y2="250"/>
+      <line x1="150" y1="300" x2="450" y2="300"/><line x1="150" y1="350" x2="450" y2="350"/>
+      <line x1="150" y1="400" x2="450" y2="400"/><line x1="150" y1="450" x2="450" y2="450"/>
+      <line x1="150" y1="500" x2="450" y2="500"/><line x1="150" y1="550" x2="450" y2="550"/>
+    </g>
+    <text x="150" y="170" font-size="24" font-weight="bold" letter-spacing="2" fill="#33210F">SUNDAY</text>
+    <text x="150" y="242" font-size="21" font-style="italic" fill="#5C3B28">rice (10kg)</text>
+    <text x="150" y="292" font-size="21" font-style="italic" fill="#5C3B28">eggs · tomatoes</text>
+    <text x="150" y="342" font-size="21" font-style="italic" fill="#5C3B28">coffee — the RED pack</text>
+    <text x="150" y="392" font-size="21" font-style="italic" fill="#5C3B28">bangus (have them clean it)</text>
+    <text x="150" y="442" font-size="21" font-style="italic" fill="#C45A3C">oobey ice cream</text>
+    <text x="150" y="492" font-size="21" font-style="italic" fill="#2E7D5B">maloongay — for Papa</text>
+    <!-- checkmarks -->
+    <g stroke="#B56A44" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M420 230 l8 10 l14 -18"/><path d="M420 280 l8 10 l14 -18"/><path d="M420 330 l8 10 l14 -18"/>
+    </g>
+  </g>
+  <!-- the mango -->
+  <g transform="translate(430,560) rotate(14)">
+    <ellipse rx="42" ry="30" fill="#D4A646"/>
+    <ellipse rx="42" ry="30" fill="#C45A3C" opacity="0.35" cx="10" cy="-6"/>
+    <path d="M-34 -18 q-14 -12 -8 -24" stroke="#2E7D5B" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M-40 -34 q14 -4 18 8" fill="#2E7D5B"/>
+  </g>
+  <text x="300" y="80" text-anchor="middle" font-size="14" letter-spacing="8" fill="#D4A646">KATHA · SLICE OF LIFE</text>
+  <text x="300" y="700" text-anchor="middle" font-size="46" font-weight="bold" fill="#F8F5F1">Sunday Grocery List</text>
+  <text x="300" y="744" text-anchor="middle" font-size="19" font-style="italic" fill="#D4A646">Migs Ferrer</text>
+</svg>

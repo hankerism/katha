@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- MYSTERY · bold, minimal, suspenseful: one door, one gap of light -->
+  <rect width="600" height="800" fill="#141210"/>
+  <!-- the corridor floor line -->
+  <rect y="660" width="600" height="140" fill="#1F1B17"/>
+  <!-- the door, ajar by a hand's width -->
+  <rect x="205" y="180" width="190" height="480" fill="#2A211A"/>
+  <rect x="205" y="180" width="190" height="480" fill="none" stroke="#3A2F26" stroke-width="3"/>
+  <!-- the gap of light -->
+  <path d="M395 180 L430 180 L430 660 L395 660 Z" fill="#D4A646" opacity="0.9"/>
+  <path d="M430 180 L520 240 L520 620 L430 660 Z" fill="#D4A646" opacity="0.14"/>
+  <!-- knob -->
+  <circle cx="378" cy="430" r="7" fill="#D4A646"/>
+  <!-- unit number, enormous -->
+  <text x="120" y="430" text-anchor="middle" font-size="150" font-weight="bold" fill="#F8F5F1" opacity="0.94">9B</text>
+  <text x="300" y="86" text-anchor="middle" font-size="15" letter-spacing="10" fill="#D4A646">KATHA · MYSTERY</text>
+  <text x="300" y="726" text-anchor="middle" font-size="42" font-weight="bold" letter-spacing="2" fill="#F8F5F1">APARTMENT 9B</text>
+  <text x="300" y="766" text-anchor="middle" font-size="18" font-style="italic" fill="#D4A646">Cesar Madrigal</text>
+</svg>

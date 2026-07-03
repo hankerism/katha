@@ -1,17 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
-  <!-- Ang Huling Tag-araw — the last summer: a low sun over a layered sea -->
+  <!-- LITERARY · painterly, textured: the last summer, in brush bands -->
   <rect width="600" height="800" fill="#F8F5F1"/>
-  <rect y="470" width="600" height="330" fill="#5C3B28"/>
-  <rect y="470" width="600" height="6" fill="#D4A646"/>
-  <circle cx="300" cy="470" r="120" fill="#D4A646" opacity="0.92"/>
-  <circle cx="300" cy="470" r="120" fill="none" stroke="#F8F5F1" stroke-width="2" opacity="0.5"/>
-  <path d="M0 560 Q150 540 300 560 T600 560" fill="none" stroke="#F8F5F1" stroke-width="2" opacity="0.35"/>
-  <path d="M0 620 Q150 600 300 620 T600 620" fill="none" stroke="#F8F5F1" stroke-width="2" opacity="0.25"/>
-  <path d="M0 680 Q150 660 300 680 T600 680" fill="none" stroke="#D4A646" stroke-width="2" opacity="0.35"/>
-  <text x="300" y="96" text-anchor="middle" font-size="17" letter-spacing="8" fill="#B56A44">KATHA</text>
-  <rect x="270" y="128" width="60" height="2" fill="#D4A646"/>
-  <text x="300" y="215" text-anchor="middle" font-size="58" font-weight="bold" fill="#33210F">Ang Huling</text>
-  <text x="300" y="285" text-anchor="middle" font-size="58" font-weight="bold" fill="#33210F">Tag-araw</text>
-  <text x="300" y="345" text-anchor="middle" font-size="21" font-style="italic" fill="#5C3B28">Lakambini Reyes</text>
-  <text x="300" y="756" text-anchor="middle" font-size="12" letter-spacing="5" fill="#F8F5F1" opacity="0.65">A KATHA NOVEL</text>
+  <!-- painterly sky wash -->
+  <path d="M0 0 H600 V210 Q450 190 300 208 Q150 226 0 202 Z" fill="#F3E3CE"/>
+  <!-- the sun, off-register like a hand-pulled print -->
+  <circle cx="306" cy="392" r="118" fill="#D4A646"/>
+  <circle cx="294" cy="384" r="118" fill="none" stroke="#C45A3C" stroke-width="3" opacity="0.55"/>
+  <!-- sea in loose brush bands -->
+  <path d="M0 470 Q140 452 300 468 Q460 484 600 462 V800 H0 Z" fill="#5C3B28"/>
+  <path d="M0 512 Q160 496 320 510 Q470 522 600 506" fill="none" stroke="#B56A44" stroke-width="9" opacity="0.65" stroke-linecap="round"/>
+  <path d="M0 566 Q180 552 340 564 Q480 574 600 560" fill="none" stroke="#F8F5F1" stroke-width="5" opacity="0.30" stroke-linecap="round"/>
+  <path d="M0 626 Q150 614 300 624 Q450 634 600 620" fill="none" stroke="#D4A646" stroke-width="6" opacity="0.40" stroke-linecap="round"/>
+  <path d="M0 690 Q170 680 330 688 Q480 696 600 684" fill="none" stroke="#F8F5F1" stroke-width="4" opacity="0.18" stroke-linecap="round"/>
+  <!-- texture flecks -->
+  <g fill="#33210F" opacity="0.06">
+    <circle cx="90" cy="120" r="2"/><circle cx="510" cy="90" r="2.5"/><circle cx="440" cy="300" r="2"/>
+    <circle cx="150" cy="330" r="2.5"/><circle cx="60" cy="260" r="1.8"/><circle cx="530" cy="240" r="2"/>
+  </g>
+  <text x="300" y="92" text-anchor="middle" font-size="14" letter-spacing="9" fill="#B56A44">KATHA · LITERARY FICTION</text>
+  <text x="300" y="188" text-anchor="middle" font-size="55" font-weight="bold" fill="#33210F">Ang Huling</text>
+  <text x="300" y="252" text-anchor="middle" font-size="55" font-weight="bold" fill="#33210F">Tag-araw</text>
+  <rect x="270" y="278" width="60" height="3" fill="#C45A3C"/>
+  <text x="300" y="756" text-anchor="middle" font-size="20" font-style="italic" fill="#F8F5F1">Lakambini Reyes</text>
 </svg>

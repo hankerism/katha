@@ -1,32 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
-  <!-- Sa Ilalim ng Sampaguita — blossoms drifting over warm clay -->
-  <rect width="600" height="800" fill="#B56A44"/>
-  <rect y="560" width="600" height="240" fill="#F8F5F1"/>
-  <rect y="556" width="600" height="4" fill="#D4A646"/>
-  <g id="blossom" fill="#F8F5F1">
-    <g transform="translate(150,180)">
-      <ellipse rx="16" ry="30" transform="rotate(0)"/><ellipse rx="16" ry="30" transform="rotate(72)"/>
-      <ellipse rx="16" ry="30" transform="rotate(144)"/><ellipse rx="16" ry="30" transform="rotate(216)"/>
-      <ellipse rx="16" ry="30" transform="rotate(288)"/><circle r="9" fill="#D4A646"/>
-    </g>
-    <g transform="translate(452,120) scale(0.7)">
-      <ellipse rx="16" ry="30"/><ellipse rx="16" ry="30" transform="rotate(72)"/>
-      <ellipse rx="16" ry="30" transform="rotate(144)"/><ellipse rx="16" ry="30" transform="rotate(216)"/>
-      <ellipse rx="16" ry="30" transform="rotate(288)"/><circle r="9" fill="#D4A646"/>
-    </g>
-    <g transform="translate(360,320) scale(0.5)" opacity="0.85">
-      <ellipse rx="16" ry="30"/><ellipse rx="16" ry="30" transform="rotate(72)"/>
-      <ellipse rx="16" ry="30" transform="rotate(144)"/><ellipse rx="16" ry="30" transform="rotate(216)"/>
-      <ellipse rx="16" ry="30" transform="rotate(288)"/><circle r="9" fill="#D4A646"/>
-    </g>
-    <g transform="translate(110,400) scale(0.4)" opacity="0.7">
-      <ellipse rx="16" ry="30"/><ellipse rx="16" ry="30" transform="rotate(72)"/>
-      <ellipse rx="16" ry="30" transform="rotate(144)"/><ellipse rx="16" ry="30" transform="rotate(216)"/>
-      <ellipse rx="16" ry="30" transform="rotate(288)"/><circle r="9" fill="#D4A646"/>
-    </g>
+  <!-- MAGICAL REALISM · the hedge at night, blooming out of season; one parcel on the step -->
+  <rect width="600" height="800" fill="#173B2C"/>
+  <!-- moon, early and out of season too -->
+  <circle cx="480" cy="120" r="52" fill="#F8F5F1" opacity="0.92"/>
+  <circle cx="462" cy="108" r="52" fill="#173B2C"/>
+  <!-- the hedge: a dark mass with polite white blossoms -->
+  <path d="M0 560 Q80 460 170 500 Q240 420 330 470 Q420 410 500 480 Q560 450 600 500 L600 640 L0 640 Z" fill="#0F2A1F"/>
+  <path d="M0 600 Q100 520 220 560 Q340 500 470 560 Q540 530 600 570 L600 660 L0 660 Z" fill="#2E7D5B" opacity="0.35"/>
+  <!-- sampaguita: five white petals, small, exact -->
+  <g fill="#F8F5F1">
+    <g transform="translate(140,510)"><ellipse rx="5" ry="11"/><ellipse rx="5" ry="11" transform="rotate(72)"/><ellipse rx="5" ry="11" transform="rotate(144)"/><ellipse rx="5" ry="11" transform="rotate(216)"/><ellipse rx="5" ry="11" transform="rotate(288)"/><circle r="3.5" fill="#D4A646"/></g>
+    <g transform="translate(250,478) scale(0.85)"><ellipse rx="5" ry="11"/><ellipse rx="5" ry="11" transform="rotate(72)"/><ellipse rx="5" ry="11" transform="rotate(144)"/><ellipse rx="5" ry="11" transform="rotate(216)"/><ellipse rx="5" ry="11" transform="rotate(288)"/><circle r="3.5" fill="#D4A646"/></g>
+    <g transform="translate(352,498)"><ellipse rx="5" ry="11"/><ellipse rx="5" ry="11" transform="rotate(72)"/><ellipse rx="5" ry="11" transform="rotate(144)"/><ellipse rx="5" ry="11" transform="rotate(216)"/><ellipse rx="5" ry="11" transform="rotate(288)"/><circle r="3.5" fill="#D4A646"/></g>
+    <g transform="translate(452,510) scale(0.8)"><ellipse rx="5" ry="11"/><ellipse rx="5" ry="11" transform="rotate(72)"/><ellipse rx="5" ry="11" transform="rotate(144)"/><ellipse rx="5" ry="11" transform="rotate(216)"/><ellipse rx="5" ry="11" transform="rotate(288)"/><circle r="3.5" fill="#D4A646"/></g>
+    <!-- one blossom falling, mid-air -->
+    <g transform="translate(300,340) scale(0.7)" opacity="0.9"><ellipse rx="5" ry="11"/><ellipse rx="5" ry="11" transform="rotate(72)"/><ellipse rx="5" ry="11" transform="rotate(144)"/><ellipse rx="5" ry="11" transform="rotate(216)"/><ellipse rx="5" ry="11" transform="rotate(288)"/><circle r="3.5" fill="#D4A646"/></g>
   </g>
-  <text x="300" y="640" text-anchor="middle" font-size="46" font-weight="bold" fill="#33210F">Sa Ilalim ng</text>
-  <text x="300" y="696" text-anchor="middle" font-size="46" font-weight="bold" fill="#33210F">Sampaguita</text>
-  <text x="300" y="744" text-anchor="middle" font-size="20" font-style="italic" fill="#B56A44">Clara Mendoza</text>
-  <text x="300" y="80" text-anchor="middle" font-size="17" letter-spacing="8" fill="#F8F5F1">KATHA</text>
+  <!-- the doorstep, and the parcel wrapped in two leaves -->
+  <rect x="0" y="660" width="600" height="140" fill="#33210F"/>
+  <rect x="200" y="660" width="200" height="18" fill="#F8F5F1" opacity="0.85"/>
+  <g transform="translate(300,712)">
+    <ellipse rx="34" ry="15" fill="#2E7D5B"/>
+    <ellipse rx="24" ry="11" fill="#3B9A72"/>
+    <line x1="-30" y1="0" x2="30" y2="0" stroke="#D4A646" stroke-width="2.5"/>
+    <line x1="0" y1="-13" x2="0" y2="13" stroke="#D4A646" stroke-width="2.5"/>
+  </g>
+  <text x="300" y="110" text-anchor="middle" font-size="14" letter-spacing="8" fill="#D4A646">KATHA · MAGICAL REALISM</text>
+  <text x="300" y="196" text-anchor="middle" font-size="50" font-weight="bold" fill="#F8F5F1">Sa Ilalim ng</text>
+  <text x="300" y="256" text-anchor="middle" font-size="50" font-weight="bold" fill="#F8F5F1">Sampaguita</text>
+  <text x="300" y="300" text-anchor="middle" font-size="20" font-style="italic" fill="#D4A646">Noemi Bautista</text>
+  <text x="300" y="775" text-anchor="middle" font-size="13" fill="#F8F5F1" opacity="0.55">it returns only what was buried on purpose</text>
 </svg>

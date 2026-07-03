@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- CONTEMPORARY ROMANCE · the flower stall: many stems, one sunflower kept back -->
+  <rect width="600" height="800" fill="#F8F5F1"/>
+  <!-- stall counter -->
+  <rect x="0" y="620" width="600" height="14" fill="#5C3B28"/>
+  <rect x="70" y="634" width="16" height="120" fill="#5C3B28"/>
+  <rect x="514" y="634" width="16" height="120" fill="#5C3B28"/>
+  <!-- buckets of flowers, arranged by argument -->
+  <g>
+    <path d="M110 620 L170 620 L162 540 L118 540 Z" fill="#B56A44"/>
+    <g stroke="#2E7D5B" stroke-width="5" fill="none">
+      <line x1="128" y1="545" x2="118" y2="470"/><line x1="140" y1="545" x2="140" y2="460"/><line x1="152" y1="545" x2="162" y2="472"/>
+    </g>
+    <circle cx="116" cy="462" r="14" fill="#C45A3C"/><circle cx="140" cy="450" r="14" fill="#C45A3C"/><circle cx="164" cy="464" r="14" fill="#B56A44"/>
+  </g>
+  <g>
+    <path d="M250 620 L310 620 L302 540 L258 540 Z" fill="#5C3B28"/>
+    <g stroke="#2E7D5B" stroke-width="5" fill="none">
+      <line x1="268" y1="545" x2="258" y2="468"/><line x1="280" y1="545" x2="280" y2="456"/><line x1="292" y1="545" x2="302" y2="470"/>
+    </g>
+    <circle cx="256" cy="460" r="13" fill="#D4A646" opacity="0.85"/><circle cx="280" cy="446" r="13" fill="#C45A3C"/><circle cx="304" cy="462" r="13" fill="#D4A646" opacity="0.85"/>
+  </g>
+  <!-- the tin pitcher, kept under-counter apart: one sunflower, the best one -->
+  <g>
+    <path d="M410 620 L462 620 L456 552 L416 552 Z" fill="#8B8B85"/>
+    <line x1="436" y1="556" x2="436" y2="430" stroke="#2E7D5B" stroke-width="6"/>
+    <g transform="translate(436,412)">
+      <g fill="#D4A646">
+        <ellipse rx="9" ry="22"/><ellipse rx="9" ry="22" transform="rotate(30)"/><ellipse rx="9" ry="22" transform="rotate(60)"/>
+        <ellipse rx="9" ry="22" transform="rotate(90)"/><ellipse rx="9" ry="22" transform="rotate(120)"/><ellipse rx="9" ry="22" transform="rotate(150)"/>
+      </g>
+      <circle r="13" fill="#5C3B28"/>
+    </g>
+  </g>
+  <!-- yesterday's newspaper, ready to wrap -->
+  <rect x="330" y="600" width="60" height="20" rx="2" fill="#EDE7DE" stroke="#5C3B28" stroke-width="1.5" transform="rotate(-6 360 610)"/>
+  <text x="60" y="110" font-size="14" letter-spacing="8" fill="#C45A3C">KATHA · CONTEMPORARY ROMANCE</text>
+  <text x="60" y="190" font-size="58" font-weight="bold" fill="#33210F">Saturday,</text>
+  <text x="60" y="258" font-size="58" font-style="italic" fill="#C45A3C">Maybe</text>
+  <text x="60" y="308" font-size="20" font-style="italic" fill="#5C3B28">Clara Mendoza</text>
+  <text x="60" y="775" font-size="13" fill="#5C3B28" opacity="0.7">one sunflower a week, on purpose</text>
+</svg>

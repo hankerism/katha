@@ -26,15 +26,15 @@ export const WORKS_STORAGE_KEY = 'katha:studio:works';
  * Hankerism's current draft lives on every desk this Studio opens on — the
  * platform's first author is mid-book, and the deployed demo should say so.
  * Seeded idempotently BY ID (present even alongside other works; re-planted
- * if removed — it is the house fixture). The Prologue's manuscript is
- * intentionally empty until the author's exact text is placed there;
- * nothing here may invent her words. */
+ * if removed — it is the house fixture). The Prologue's manuscript is the
+ * author's own text, VERBATIM — it must never be rewritten, summarized, or
+ * "improved" here; only she edits her words. */
 const TABLE_FOR_TWO_SEED: StudioWork = {
   id: 'work_table-for-two',
   authorId: 'auth-abigail-marte',
   lifecycle: 'draft',
   createdAt: '2026-06-28T09:00:00.000Z',
-  updatedAt: '2026-07-02T21:15:00.000Z',
+  updatedAt: '2026-07-04T10:30:00.000Z',
   book: {
     slug: 'table-for-two',
     title: 'Table for Two',
@@ -49,7 +49,93 @@ const TABLE_FOR_TWO_SEED: StudioWork = {
     {
       id: 'ch_ttf-prologue',
       title: 'Prologue',
-      manuscript: '',
+      manuscript: `Some people fall in love all at once.
+
+At least, that's how the stories usually tell it.
+
+One glance across a crowded room.
+
+One unforgettable conversation.
+
+One perfect moment that changes everything.
+
+Lianne never believed in that.
+
+Maybe because she spent most of her waking hours talking to people she had never met. Eight hours every night, five nights a week, she answered emails, joined meetings, and solved problems for clients who only knew her through a webcam and a profile picture.
+
+You'd be surprised how much of a person's life could exist behind a screen.
+
+And how much of it couldn't.
+
+Adrian believed in routines.
+
+Not in a boring way.
+
+Just... quietly.
+
+He liked arriving ten minutes early. Drinking the same coffee. Taking the same route home. Replying when he said he would. There was comfort in knowing what tomorrow looked like.
+
+He didn't think that made him predictable.
+
+He thought it made life a little easier.
+
+If someone had asked either of them that Tuesday afternoon what they wanted from a dating app, neither would've had an interesting answer.
+
+"Conversation, maybe."
+
+"Let's see."
+
+Nothing dramatic.
+
+Nothing worth writing a novel about.
+
+Because that's the funny thing about ordinary days.
+
+Most of them don't announce that they're about to change your life.
+
+They just begin like any other Tuesday.
+
+One person waking up at four in the afternoon.
+
+Another packing up his laptop before six.
+
+One person walking through familiar streets in Silang.
+
+Another sitting in traffic somewhere in Alabang.
+
+Two routines.
+
+Two different clocks.
+
+One message.
+
+It wasn't love at first sight.
+
+It wasn't destiny.
+
+It wasn't even good timing.
+
+It was simply two people who, without meaning to, started making room for each other inside lives that were already full.
+
+Neither of them knew it yet.
+
+But years later, if someone asked them where everything started...
+
+Neither would remember the exact date.
+
+They'd remember something much smaller.
+
+A notification.
+
+A question about carbonara.
+
+And the strange feeling that talking to a complete stranger somehow felt... easy.
+
+Maybe that's how some love stories begin.
+
+Not with fireworks.
+
+Just with someone who quietly becomes your favorite notification.`,
     },
   ],
 };

@@ -1,21 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
-  <!-- Mga Liham sa Dilim — letters to the dark: one candle in the ink -->
+  <!-- POETRY · typography-first: the title is the whole night -->
   <rect width="600" height="800" fill="#1F1F1F"/>
-  <radialGradient id="glow" cx="0.5" cy="0.62" r="0.5">
-    <stop offset="0" stop-color="#D4A646" stop-opacity="0.55"/>
-    <stop offset="0.5" stop-color="#D4A646" stop-opacity="0.12"/>
-    <stop offset="1" stop-color="#D4A646" stop-opacity="0"/>
-  </radialGradient>
-  <rect width="600" height="800" fill="url(#glow)"/>
-  <rect x="284" y="520" width="32" height="110" rx="4" fill="#F8F5F1" opacity="0.9"/>
-  <path d="M300 470 C312 492 310 506 300 516 C290 506 288 492 300 470 Z" fill="#D4A646"/>
-  <ellipse cx="300" cy="640" rx="90" ry="10" fill="#D4A646" opacity="0.18"/>
-  <path d="M180 700 L300 748 L420 700" fill="none" stroke="#F8F5F1" stroke-width="1.5" opacity="0.35"/>
-  <rect x="180" y="700" width="240" height="0.01" stroke="#F8F5F1" stroke-width="1.5" opacity="0.35"/>
-  <text x="300" y="96" text-anchor="middle" font-size="17" letter-spacing="8" fill="#D4A646">KATHA</text>
-  <rect x="270" y="128" width="60" height="2" fill="#D4A646"/>
-  <text x="300" y="220" text-anchor="middle" font-size="54" font-weight="bold" fill="#F8F5F1">Mga Liham</text>
-  <text x="300" y="286" text-anchor="middle" font-size="54" font-weight="bold" fill="#F8F5F1">sa Dilim</text>
-  <text x="300" y="344" text-anchor="middle" font-size="21" font-style="italic" fill="#D4A646">J. Salvador</text>
-  <text x="300" y="775" text-anchor="middle" font-size="12" letter-spacing="5" fill="#F8F5F1" opacity="0.5">PROSE POEMS</text>
+  <text x="52" y="200" font-size="92" font-style="italic" fill="#F8F5F1" opacity="0.94">mga</text>
+  <text x="52" y="330" font-size="112" font-style="italic" font-weight="bold" fill="#F8F5F1">liham</text>
+  <text x="52" y="440" font-size="72" font-style="italic" fill="#8A8580">sa</text>
+  <text x="52" y="590" font-size="118" font-style="italic" font-weight="bold" fill="#D4A646">dilim</text>
+  <!-- one candle, reduced to a mark of punctuation -->
+  <rect x="514" y="536" width="10" height="40" rx="3" fill="#F8F5F1" opacity="0.85"/>
+  <path d="M519 516 C525 526 524 532 519 536 C514 532 513 526 519 516 Z" fill="#D4A646"/>
+  <circle cx="519" cy="524" r="26" fill="#D4A646" opacity="0.12"/>
+  <!-- a single line, like a rule in a letter -->
+  <rect x="52" y="648" width="220" height="2" fill="#8A8580" opacity="0.6"/>
+  <text x="52" y="692" font-size="19" font-style="italic" fill="#F8F5F1" opacity="0.85">J. Salvador</text>
+  <text x="52" y="754" font-size="13" letter-spacing="9" fill="#D4A646" opacity="0.8">KATHA · POETRY</text>
 </svg>
