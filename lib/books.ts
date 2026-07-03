@@ -571,7 +571,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     status: 'Ongoing',
     updated: '3 days ago',
     publishedAt: '2026-05-08',
-    cover: null,
+    cover: '/covers/coffee-after-five.svg',
     synopsis:
       'The café closes at nine, but the good table — the one by the window, the one that fits exactly two — starts mattering at five. Dani makes the coffee. Marco keeps almost saying something. A warm, slow-burning romance about overtime hearts, shared outlets, and the ten minutes after your shift that quietly become the point of the day.',
     chapters: buildChapters([
@@ -592,7 +592,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     status: 'Completed',
     updated: '2 weeks ago',
     publishedAt: '2025-08-30',
-    cover: null,
+    cover: '/covers/window-seat.svg',
     synopsis:
       'The 11:42 is the most honest train in the city, and Rafael Lim has the window seat. A cake that missed its party, nurses comparing blisters like carpenters, an apology rehearsed until it breaks — linked stories that ride the last train home and find the whole city in one carriage. Wry, exact, and quietly devastating at closing time.',
     chapters: buildChapters([
@@ -612,7 +612,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     status: 'Ongoing',
     updated: 'Yesterday',
     publishedAt: '2026-06-21',
-    cover: null,
+    cover: '/covers/tomorrow-same-time.svg',
     synopsis:
       'Eleven days of rain. One two-word message, still unanswered. A notebook that has been warned not to laugh. Isa Navarro\'s rainy-season diary is funny the way your best friend is funny — right up until it isn\'t, and you realize you\'ve been holding your breath about a boy named Migs for forty pages. For everyone who ever drafted "hey" seventeen times.',
     chapters: buildChapters([
@@ -673,7 +673,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     status: 'Completed',
     updated: '2 weeks ago',
     publishedAt: '2025-10-21',
-    cover: null,
+    cover: '/covers/apartment-9b.svg',
     synopsis:
       'For eleven years, the tenant in 9B paid his rent in person, on time, to the minute — which any superintendent will tell you is not a virtue but an alibi. Then the envelopes stop, the corridor smells of bleach, and Agapito Reyes lets himself into an apartment that has been emptied of everything except three items squared neatly to the kitchen table. One of them is his own private notebook. A locked-room mystery told in a building where the superintendent knows everything — and someone knows the superintendent.',
     chapters: buildChapters([
@@ -693,7 +693,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     status: 'Ongoing',
     updated: 'This week',
     publishedAt: '2026-01-30',
-    cover: null,
+    cover: '/covers/shelf-life.svg',
     featured: true,
     synopsis:
       'Silid Aklatan opens at ten (meaning 10:20), keeps a cat named Margination on the poetry shelf, and lives by one hand-lettered rule: CHECK INSIDE THE BOOKS. When a box man\'s twine-tied carton yields a 1968 yearbook and an unsent love letter addressed to his father — dated before his parents ever met — Odette puts the kettle on. A warm, bookish charmer about secondhand stories, the things people leave between pages, and a shop where every carton is somebody\'s whole heart, appraised kindly.',
@@ -714,7 +714,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     status: 'Completed',
     updated: 'Last month',
     publishedAt: '2025-12-05',
-    cover: null,
+    cover: '/covers/the-things-we-never-sent.svg',
     synopsis:
       'You have 247 unsent drafts, and you know the number the way other people know their weight. Then at 2:14 a.m. a message arrives from a contact who has been dead for two years — quoting a draft you never sent, from a folder that has never left your hand. A psychological thriller about the versions of ourselves we keep locked in the drafts folder, and what happens when something on the other end starts drafting back. Read with the phone face-down.',
     chapters: buildChapters([
@@ -734,7 +734,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     status: 'Ongoing',
     updated: 'Yesterday',
     publishedAt: '2025-07-18',
-    cover: null,
+    cover: '/covers/ang-ikatlong-katok.svg',
     synopsis:
       'In their town, doors are answered on the second knock. Never the first — the first is for testing. Never the third, because by the third it is no longer asking the house. It is asking you, in the voice of someone you love. A quietly terrifying novel of embroidered rules, nailed-shut kitchen doors, and a lola who keeps stitching while something patient waits out the rain on the porch. Cua\'s dread does not raise its voice. It doesn\'t need to.',
     chapters: buildChapters([
@@ -754,7 +754,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     status: 'Completed',
     updated: 'Last week',
     publishedAt: '2026-03-27',
-    cover: null,
+    cover: '/covers/sunday-grocery-list.svg',
     synopsis:
       'For eleven years his wife wrote the Sunday list and he did the buying. Now the mango-covered notebook is four pages from the end, the market has been briefed from beyond, and a seven-year-old auditor has added OOBEY ICE CREAM in pencil, spelling preserved forever. A year of grocery lists that is secretly a book about grief, fatherhood, and the red coffee, NOT the gold. You will laugh, and then somewhere around the tinola you will not.',
     chapters: buildChapters([

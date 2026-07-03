@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Inter, Helvetica, Arial, sans-serif">
+  <!-- CONTEMPORARY · minimal geometry: one train window at night, lights streaking -->
+  <rect width="600" height="800" fill="#33210F"/>
+  <!-- the window -->
+  <rect x="90" y="140" width="420" height="380" rx="28" fill="#1A2733"/>
+  <rect x="90" y="140" width="420" height="380" rx="28" fill="none" stroke="#5C3B28" stroke-width="10"/>
+  <!-- passing city, streaked -->
+  <g stroke-linecap="round">
+    <line x1="130" y1="240" x2="240" y2="240" stroke="#D4A646" stroke-width="6" opacity="0.9"/>
+    <line x1="300" y1="280" x2="360" y2="280" stroke="#F8F5F1" stroke-width="4" opacity="0.6"/>
+    <line x1="170" y1="330" x2="330" y2="330" stroke="#D4A646" stroke-width="5" opacity="0.5"/>
+    <line x1="380" y1="230" x2="470" y2="230" stroke="#F8F5F1" stroke-width="3" opacity="0.4"/>
+    <line x1="120" y1="410" x2="200" y2="410" stroke="#B56A44" stroke-width="5" opacity="0.7"/>
+    <line x1="350" y1="440" x2="480" y2="440" stroke="#D4A646" stroke-width="4" opacity="0.6"/>
+  </g>
+  <!-- faint reflection of a passenger -->
+  <circle cx="410" cy="360" r="46" fill="#F8F5F1" opacity="0.05"/>
+  <path d="M370 520 a40 46 0 0 1 80 0" fill="#F8F5F1" opacity="0.05"/>
+  <!-- seat line -->
+  <rect x="90" y="580" width="420" height="14" rx="7" fill="#5C3B28"/>
+  <text x="90" y="98" font-size="14" letter-spacing="9" fill="#D4A646">KATHA · CONTEMPORARY</text>
+  <text x="90" y="672" font-size="58" font-weight="800" fill="#F8F5F1" letter-spacing="-1">WINDOW</text>
+  <text x="90" y="736" font-size="58" font-weight="800" fill="#D4A646" letter-spacing="-1">SEAT</text>
+  <text x="90" y="774" font-size="18" font-style="italic" fill="#F8F5F1" font-family="Georgia, serif" opacity="0.8">Rafael Lim</text>
+</svg>
