@@ -45,6 +45,9 @@ export interface WorkBookMeta {
   /** Serial status shown to readers ('Ongoing' / 'Completed'). */
   status: string;
   synopsis: string;
+  /** Uploaded cover as a downscaled data URL; null → the branded placeholder.
+   *  With storage buckets this becomes an uploaded-file URL — same field. */
+  cover: string | null;
 }
 
 export interface StudioWork {
@@ -138,6 +141,7 @@ export function createWork(input: NewWorkInput): StudioWork {
       language: input.language?.trim() || 'Filipino / English',
       status: input.status?.trim() || 'Ongoing',
       synopsis: input.synopsis?.trim() ?? '',
+      cover: null,
     },
     chapters: [
       {
@@ -177,7 +181,7 @@ export function workToBook(work: StudioWork): KathaBook {
     status: work.book.status,
     updated: 'This week',
     publishedAt: work.publishedAt ?? work.updatedAt,
-    cover: null,
+    cover: work.book.cover ?? null,
     synopsis: work.book.synopsis,
     chapters: buildChapters(
       work.chapters.map((chapter, index) => ({

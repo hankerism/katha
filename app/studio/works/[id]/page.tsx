@@ -17,6 +17,10 @@ import {
 } from '@/lib/studio/work';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { ArrowRightIcon, ClockIcon } from '@/components/ui/icons';
+import {
+  fileToCoverDataUrl,
+  CoverFileError,
+} from '@/components/studio/cover-file';
 
 /* ---------------------------------------------------------------------------
  * KATHA · Author Studio — work workspace
@@ -53,6 +57,7 @@ export default function WorkWorkspacePage() {
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [confirmingRemove, setConfirmingRemove] = useState<string | null>(null);
+  const [coverError, setCoverError] = useState<string | null>(null);
   const [siblings, setSiblings] = useState<StudioWork[]>([]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -85,6 +90,25 @@ export default function WorkWorkspacePage() {
 
   function patchMeta(patch: Partial<WorkBookMeta>) {
     setMeta((current) => (current ? { ...current, ...patch } : current));
+  }
+
+  async function handleCoverFile(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0];
+    event.target.value = ''; // allow re-selecting the same file
+    if (!file) return;
+    setCoverError(null);
+    try {
+      const dataUrl = await fileToCoverDataUrl(file);
+      patchMeta({ cover: dataUrl });
+    } catch (error) {
+      setCoverError(
+        error instanceof CoverFileError
+          ? error.message
+          : 'That image couldn’t be processed.',
+      );
+    }
   }
 
   function handleTitleChange(title: string) {
@@ -340,6 +364,54 @@ export default function WorkWorkspacePage() {
         </p>
 
         <div className="mt-7 grid gap-6 sm:grid-cols-2">
+          {/* Cover — uploaded and previewed exactly as the library shows it */}
+          <div className="sm:col-span-2">
+            <span className={labelClass}>Cover</span>
+            <div className="mt-3 flex items-start gap-5">
+              {meta.cover ? (
+                // eslint-disable-next-line @next/next/no-img-element -- author-uploaded data URL
+                <img
+                  src={meta.cover}
+                  alt="Your cover, as readers will see it"
+                  className="aspect-[3/4] w-28 rounded-xl object-cover shadow-sm ring-1 ring-black/10"
+                />
+              ) : (
+                <div
+                  aria-hidden="true"
+                  className="flex aspect-[3/4] w-28 items-center justify-center rounded-xl bg-[linear-gradient(155deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_55%,#000))] shadow-sm ring-1 ring-black/10"
+                >
+                  <span className="font-logo text-xs tracking-[0.18em] text-brand-secondary/80">
+                    KATHA
+                  </span>
+                </div>
+              )}
+              <div className="flex flex-col gap-2 pt-1">
+                <label className="inline-flex w-fit cursor-pointer items-center rounded-full border border-border bg-card px-5 py-2.5 font-body text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-secondary/50 focus-within:ring-2 focus-within:ring-ring">
+                  {meta.cover ? 'Replace the cover' : 'Upload a cover'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={(event) => void handleCoverFile(event)}
+                  />
+                </label>
+                {meta.cover && (
+                  <button
+                    type="button"
+                    onClick={() => patchMeta({ cover: null })}
+                    className="w-fit font-body text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                  >
+                    Remove — use the KATHA placeholder
+                  </button>
+                )}
+                <p className="max-w-[36ch] font-body text-xs leading-relaxed text-muted-foreground/70">
+                  {coverError ??
+                    'JPG or PNG, portrait reads best. Readers see it exactly as the library shows covers.'}
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="sm:col-span-2">
             <label htmlFor="meta-title" className={labelClass}>
               Title

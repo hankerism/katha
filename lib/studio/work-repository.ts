@@ -65,6 +65,9 @@ function isStudioWork(value: unknown): value is StudioWork {
     typeof book.language === 'string' &&
     typeof book.status === 'string' &&
     typeof book.synopsis === 'string' &&
+    (book.cover === undefined ||
+      book.cover === null ||
+      typeof book.cover === 'string') &&
     Array.isArray(w.chapters) &&
     (w.chapters as unknown[]).every((chapter) => {
       if (!chapter || typeof chapter !== 'object') return false;
@@ -97,7 +100,13 @@ function readAll(): StudioWork[] {
         continue;
       }
       seen.add(item.id);
-      works.push(item);
+      // Works saved before covers existed gain the field on read.
+      if (item.book.cover === undefined) {
+        works.push({ ...item, book: { ...item.book, cover: null } });
+        changed = true;
+      } else {
+        works.push(item);
+      }
     }
     if (changed) writeAll(works); // persist the cleanup once
     return works;
