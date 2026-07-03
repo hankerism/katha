@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- CONTEMPORARY FICTION · the platform before the 11:42: bench, unplayed guitar, departed light -->
+  <rect width="600" height="800" fill="#1F1F1F"/>
+  <!-- the 11:19 leaving: a smear of window-light exiting the frame -->
+  <g opacity="0.8">
+    <rect x="360" y="180" width="70" height="46" rx="6" fill="#D4A646" opacity="0.55"/>
+    <rect x="448" y="180" width="70" height="46" rx="6" fill="#D4A646" opacity="0.4"/>
+    <rect x="536" y="180" width="64" height="46" rx="6" fill="#D4A646" opacity="0.25"/>
+  </g>
+  <line x1="0" y1="246" x2="600" y2="246" stroke="#8B8B85" stroke-width="3" opacity="0.5"/>
+  <!-- station clock -->
+  <g transform="translate(120,170)">
+    <circle r="44" fill="#F8F5F1"/>
+    <circle r="44" fill="none" stroke="#33210F" stroke-width="6"/>
+    <line x1="0" y1="0" x2="0" y2="-30" stroke="#33210F" stroke-width="5"/>
+    <line x1="0" y1="0" x2="22" y2="14" stroke="#33210F" stroke-width="4"/>
+    <circle r="4" fill="#C45A3C"/>
+  </g>
+  <!-- platform edge: the yellow line -->
+  <rect x="0" y="640" width="600" height="90" fill="#33210F"/>
+  <rect x="0" y="640" width="600" height="16" fill="#D4A646"/>
+  <!-- the bench and the guitar that is never played -->
+  <g>
+    <rect x="150" y="560" width="300" height="16" rx="4" fill="#5C3B28"/>
+    <rect x="150" y="596" width="300" height="12" rx="4" fill="#5C3B28"/>
+    <rect x="166" y="576" width="14" height="66" fill="#5C3B28"/>
+    <rect x="420" y="576" width="14" height="66" fill="#5C3B28"/>
+    <g transform="rotate(14 470 560)">
+      <ellipse cx="470" cy="560" rx="34" ry="42" fill="#B56A44"/>
+      <ellipse cx="470" cy="524" rx="22" ry="26" fill="#B56A44"/>
+      <circle cx="470" cy="548" r="11" fill="#33210F"/>
+      <rect x="466" y="452" width="8" height="60" fill="#5C3B28"/>
+      <rect x="460" y="444" width="20" height="14" rx="3" fill="#5C3B28"/>
+      <line x1="470" y1="458" x2="470" y2="548" stroke="#F8F5F1" stroke-width="1.5" opacity="0.8"/>
+    </g>
+  </g>
+  <text x="60" y="110" font-size="14" letter-spacing="8" fill="#D4A646">KATHA · CONTEMPORARY FICTION</text>
+  <text x="60" y="360" font-size="52" font-weight="bold" fill="#F8F5F1">Before the</text>
+  <text x="60" y="422" font-size="52" font-weight="bold" fill="#F8F5F1">Last Train</text>
+  <text x="60" y="470" font-size="20" font-style="italic" fill="#D4A646">Rafael Lim</text>
+  <text x="60" y="775" font-size="13" fill="#F8F5F1" opacity="0.5">the hour that belongs to no one</text>
+</svg>

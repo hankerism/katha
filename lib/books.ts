@@ -450,6 +450,115 @@ const GROCERY_OPENING: string[] = [
   'Four pages from the end, I said. I have decided what happens when the mango notebook runs out: nothing. It does not run out. Lists continue on other paper; that is the whole secret of lists. You keep buying the rice. You keep the rules past the reasons. And on Sundays, if your handwriting happens to drift a little toward hers — the market is open early, and nobody there will mention it.',
 ];
 
+/** Saturday, Maybe — Clara Mendoza; the flower stall courtship. Romance
+ *  that refuses to hurry: one sunflower a week, on purpose. */
+const SABADO_CONTENT: string[] = [
+  'The market sets up in the dark and pretends it didn\'t. By six the flowers are arranged by argument — roses up front to do the negotiating, the sunflowers behind them like tall cousins at a reunion, sure of their welcome.',
+  'He bought one sunflower every Saturday. One. "Para kay Lola," he said, the first week, and Ana wrapped it in yesterday\'s newspaper and thought nothing of it, because grandsons are a common species at flower stalls on Saturdays.',
+  'It was the fourth Saturday when she did the math on the lola. Nobody\'s lola needs a sunflower a week. A lola with a weekly sunflower habit would have said something by now — lolas audit. Either the lola did not exist, or the lola existed and was in on it.',
+  'She started keeping the best one back. Not the biggest — the best, the one that had opened overnight and hadn\'t told the others. She kept it under the counter, in the tin pitcher, and if you had asked her who it was for she would have said inventory.',
+  '"Sabado ulit?" he asked, paying, not leaving. "Saturday," she agreed, making change slowly. "Maybe," they both added, at the same time, which is how the word got into the story and never left.',
+];
+
+const SABADO_OPENING: string[] = [
+  'Ana\'s stall was third from the corner, between the man who sold knives that never needed sharpening and the woman who sold herbs for conditions you had to whisper. Flowers, in that company, felt almost frivolous — until you watched who bought them, and learned that nobody buys flowers for no reason. The reason walks up to the stall holding money and looking like it isn\'t there.',
+  'She could read the reasons by now. Anniversary, apology, anniversary-of-an-apology. New love, all cellophane and overcommitment. Hospital flowers, chosen quiet. Funeral flowers, chosen fast, because grief cannot stand in a market long. Eleven years at a stall and you learn the whole dictionary.',
+  'The sunflower man did not fit the dictionary. He arrived at seven-forty, every Saturday, in a jacket too warm for the weather, and bought one sunflower — para kay Lola — and then stood there for exactly as long as it took her to wrap it, asking questions with the pacing of a man who had rationed them all week. What time does the market open. Do the flowers mind the rain. Is it hard, getting up in the dark. Normal questions, thrown badly on purpose, the way you throw a game of tumbang preso for a child.',
+  'She answered every one. Four. The market opens at four. The flowers don\'t mind the rain, the sellers mind the rain. And no, getting up in the dark is not hard — the dark is the good part; the flowers are more honest before they\'ve been looked at all day. She heard herself say that last one and thought: huy. That is not a thing you tell a customer. That is a thing you tell a person.',
+  'On the twelfth Saturday it rained the way it only rains on market days, sideways and personally offended. The knife man packed up. The whisper-herb woman packed up. Ana stayed, under the tarp, on principle and one stubborn feeling she declined to name, and at seven-forty exactly the sunflower man arrived, drowned to the collar, jacket finally correct for the weather, holding — she took a moment to understand it — a thermos.',
+  '"Kape," he said, unnecessary and soaked. "In case you were open." The market was a river. Nothing was open. Everything about him said he had known that since the fifth week, and had come anyway, and the sunflower he bought that morning was, for the first time, visibly, provably, for no lola at all: he stood under her dripping tarp and gave it back to her, stem first, wet newspaper and all. "Sabado ulit?" he said. "Saturday," said Ana. Neither of them said maybe. That was the whole news of the day: nobody said maybe.',
+];
+
+/** Before the Last Train — Rafael Lim; the platform before the 11:42.
+ *  Companion book to Window Seat: the not-going-home-yet hour. */
+const BAGO_CONTENT: string[] = [
+  'The 11:42 has a waiting room, and the waiting room has a census. By 11:15 they are all present: the overtime class, the almost-drunk, the nurses mid-shift-swap, the man with the guitar who never plays it here, out of a courtesy the platform has never had to request.',
+  'Nobody on this platform is early for the train. Understand this and you understand the hour. They are late for everything else — dinner, apologies, their own beds — and the platform is the one place in the city where lateness has stopped counting.',
+  'The vendor at the top of the stairs sells coffee, candy, and load. At this hour she also sells the last ensaymada at a discount she calls closing price and everyone else calls kindness with a receipt.',
+  'Guard Bautista checks bags with a flashlight that has needed batteries since June. Everyone opens their bags anyway. It is not security. It is two people agreeing, nightly, to keep a small ceremony alive.',
+];
+
+const BAGO_OPENING: string[] = [
+  'There is an hour in this city that belongs to no one, and it runs from the moment you could still make the earlier train to the moment you decide, quietly, not to. I have watched hundreds of people make that decision on the northbound platform, and it is always visible: the shoulders drop half an inch, the phone goes into the pocket, and the person joins the true congregation of the 11:42 — those who could have gone home at 11:19 and did not.',
+  'I am not judging them. I am one of them. My apartment is fourteen minutes from my office by the 11:19 and I have taken it perhaps six times in three years, because the apartment at 11:33 is the same apartment at 11:56, and the platform, between those trains, is better company than the ceiling.',
+  'The platform between trains is the city\'s most honest waiting room. Upstairs, at street level, everyone is still performing — hurrying, mattering, being expected somewhere. Down here the performance is cancelled nightly. The nurses take off the day shift the way you take off shoes. The call-center kids run their accents down like engines. The man with the guitar sets it against the bench and does not play it, which after two years I have come to understand IS the performance: a man showing the day that he could, and declining.',
+  'At 11:26 the vendor begins her closing arithmetic out loud. The last ensaymada drops to fifteen pesos. The second-to-last coffee is free with anything, "para hindi masayang ang init" — so the heat won\'t go to waste. An economist would find nothing to study at her stall and a priest would find everything.',
+  'I started writing these pages on this platform, standing up, in the notes app, because of a thing I saw on a Tuesday: a woman arrived at 11:18 at a dead run, heels in her hand, and made the 11:19 — doors closing, bag caught, the whole cinema of it — and then, as the train pulled out, I watched her through the window realize she had not wanted to catch it. You can see that realization through glass. It travels.',
+  'She was back Thursday. 11:20 this time, unhurried, shoes on, a woman who had renegotiated something with her own evening. She bought the fifteen-peso ensaymada, sat on the bench beside the unplayed guitar, and waited for the last train like the rest of us: people not going home yet, together, for twenty-three more minutes.',
+];
+
+/** Sa Ilalim ng Sampaguita — Noemi Bautista; the hedge that returns what was
+ *  buried on purpose. Polite impossibility, one bloom at a time. */
+const SAMPAGUITA_CONTENT: string[] = [
+  'The rules of the hedge, as the family keeps them: it returns only what was buried on purpose. It returns one thing per flowering. It returns things politely — at the doorstep, wrapped in leaves, before six in the morning — and it does not accept returns of its returns. The hedge is not a lending library.',
+  'Lost things do not interest it. Drop your ring in the grass and the hedge will let it rust; the hedge has no sympathy for carelessness. But bury a thing at its roots with intention — bury it the way you bury a decision — and the sampaguita takes custody, and considers, and someday, on a morning it selects with no visible logic, gives it back.',
+  'Tiya Loleng buried her engagement ring in 1974, three days before the wedding was called off, and the hedge kept it forty years before returning it — the same week her granddaughter met a boy from the same family. The family holds two positions on whether this was kindness. The family holds two positions on most things the hedge does.',
+  'What everyone agrees: you do not plant sampaguita over a secret unless you are prepared, someday, to answer the door.',
+];
+
+const SAMPAGUITA_OPENING: string[] = [
+  'The sampaguita hedge at the Villareal house has flowered every June for ninety years, and every June, on the first morning of blooming, it gives something back. The family does not find this remarkable. Families never find their own impossibilities remarkable; that is what makes them families and not case studies.',
+  'The returns are small and exact. A hair comb, buried 1953, returned 1961, teeth intact, smelling of the perfume of a woman by then eight years abroad. A medal from the war that a great-uncle had buried "so it would stop looking at him," returned the June after he died, polished, as if to say: he is out of the room now, you may look at this again. A milk tooth. A letter, unopened, its seal somehow younger than its paper. The hedge has taste. It has never once returned money.',
+  'Marisol Villareal was twenty-six, home for the summer to help her mother pack up the house — the house was being sold, this is what the story is about, although nobody in it will say so for some chapters — when the hedge, three weeks early and out of season, put its first bloom out in May and left on the doorstep a small object wrapped in two leaves, tied with a blade of grass, addressed in no handwriting to no one.',
+  'Her mother saw it from the window and sat down slowly at the kitchen table, which in that house is what people do instead of screaming.',
+  '"Anak," she said, in the voice of a woman selecting each word from a drawer of sharper ones, "before you open that, I need to tell you what your Lola buried the year you were born. And then I need you to understand na hindi tayo nagbebenta ng bahay dahil kailangan natin ng pera." We are not selling the house because we need money.',
+  'Marisol, who had a return ticket for August and a life in another city arranged neatly around not knowing things like this, looked at the little leaf parcel on her palm. It weighed what a key weighs. The sampaguita by the gate stood there flowering out of season, ninety years old, patient as a relative, having started — in its polite and unanswerable way — the conversation the whole family had spent twenty-six years agreeing not to have.',
+];
+
+/** After Midnight — J. Salvador; timestamped prose poems for the hours
+ *  no one supervises. Companion cycle to Mga Liham sa Dilim. */
+const HATINGGABI_CONTENT: string[] = [
+  '12:47. The city does not sleep, but it stops pretending to be awake. These are different conditions. Ask any window.',
+  '1:33. Somewhere below my window a tricycle idles like a sentence the driver can\'t finish. Go home, kuya. Or don\'t. At this hour we are all idling in the same language.',
+  '2:15. The refrigerator hums the only hymn it knows. I open it for the light, not the food. After midnight, hunger is mostly a wish to be lit from somewhere.',
+  '3:58. The roosters begin their rumor. The rumor is morning. Like all rumors it arrives first in the poorer streets, who have to get up and check.',
+];
+
+const HATINGGABI_OPENING: string[] = [
+  '12:01. Officially, nothing. The date has changed and no one felt it. Somewhere a security guard initials a logbook, and that signature is the only proof the old day made it out alive. This book is a logbook. I am initialing the hours.',
+  '12:24. Streetlight through the jalousies files the room into strips: bed, floor, chair, me. Filed under what, I don\'t know yet. That is what the writing is for.',
+  '12:58. Texted no one. Composed, polished, deleted — the full ritual. After midnight the drafts folder is the most honest room in the phone, and I have decided to live in it. Kung nabasa mo ito: hindi ko sinend. That was the point.',
+  '1:41. The last jeepney passes with its lights on and nobody in it, upholstered in orange light, patient as a confessional. Every city has one vehicle that drives around all night carrying only the idea of passengers. Tonight I saluted it from the window. The driver did not see me. Attendance was still taken.',
+  '2:30. My neighbor\'s baby practices crying and stops, mid-note, as if remembering the assignment isn\'t due till morning. The wall between us is thin as a page. For a moment the whole building listens together — one creature with forty windows — and then lets itself be a building again.',
+  '3:12. This is the hour the letters used to go out, when there were letters: the hour with no supervision, no witnesses, no weather. Whatever is said at 3:12 is said under oath. Whatever is written survives on one condition — that it never, ever gets sent. Here. I am keeping all of it. Consider this book the evidence room.',
+];
+
+/** Alamat ng Huling Diwata — Elia Navarro; the bargain in the last acacia,
+ *  and the girl who inherits it. Myth kept as family paperwork. */
+const DIWATA_CONTENT: string[] = [
+  'The bargain, as recorded in the notebook: the tree stands, the town drinks. Six generations have kept it, and the keeping is not incense and moonlight. The keeping is attendance. Someone sits with the tree on the last night of every month, because the one thing a diwata cannot survive is being believed in by no one.',
+  'She is not beautiful the way the komiks drew them. She is beautiful the way weather is — approximately, and from a respectful distance, and differently every time you check.',
+  'What she remembers is the forest. Four hundred hectares of it, and every tree had a tenant, and on certain nights the whole ridge would light up with them like a town seen from the sea. She is the last because she was the stubbornest. She would like this recorded: not the strongest. The stubbornest.',
+  'The road survey crew came on a Tuesday. Orange vests, a theodolite, spray paint. They marked the acacia with an X and the diwata read it from inside the bark the way you\'d read a doctor\'s face, and that night she asked Amparo\'s granddaughter, very quietly, how many people would you say believe in me now. Be honest, apo. I can count the lights from here.',
+];
+
+const DIWATA_OPENING: string[] = [
+  'Every family keeps something. Some keep land titles, some keep grudges, some keep a saint dressed and fed on her feast day. My family keeps a diwata, and has since 1897, and if you think that sounds romantic you have never had to explain to a diwata why the electric cooperative needs to trim her tree.',
+  'She lives in the last acacia on the provincial road, the enormous one at kilometer eleven that the road bends around — and the road bends around it, you should understand, because in 1963 my Lolo Underong stood in front of the bulldozer for six days with a packed lunch, and the story made the papers as SUPERSTITION HALTS PROGRESS, and the diwata, who reads everything over your shoulder, thought the headline was very funny and has called herself Superstition in conversation ever since.',
+  'I inherited her the way you inherit everything in this country: suddenly, at a funeral, with paperwork. Lola Amparo\'s notebook came to me in a biscuit tin — sixty years of entries in four handwritings, the bargain on the first page in ink gone brown as bark: ANG PUNO AY NAKATAYO, ANG BAYAN AY UMIINOM. The tree stands, the town drinks. Under it, in my lola\'s hand, the operating instructions: Last night of the month, sit with her. Bring nothing. Believe everything. Do not sign anything she gives you.',
+  'I was nineteen and had a scholarship in the city and I want it noted that I tried to give the tin to my mother, who raised both hands like the notebook was a summons, and then to my Tito Bayani, who suddenly remembered work in Cebu. The notebook chooses, my lola had written on the last page, in the shaky letters of her final year. It has chosen four times. It is about to be very funny a fifth time.',
+  'The last night of that month, I walked to kilometer eleven with a flashlight and my lola\'s tin and the specific anger of the newly chosen. The acacia at night is not a tree so much as a district — four hundred years of branches, a barangay of shadows — and I sat down between two roots the size of carabaos and said, out loud, to no one, feeling like an idiot: "Ako na raw. Ako na ang bahala sa\'yo." It\'s me now. I\'m in charge of you now.',
+  'The laugh came from directly overhead, warm and old, like the ember-end of a bonfire remembering itself. "Ay," said the last diwata of the ridge, unseen, delighted, in the voice my family has been writing down phonetically for six generations. "The scholar. Sige. Sit up straight, apo ni Amparo — and get out your notebook, because I am going to tell you what your lola was too polite to write down about how this bargain actually ends."',
+];
+
+/** The Bookshop Beside the Bakery — Odette Ramas; Silid Aklatan, the party
+ *  wall, and the 4 a.m. smell of pandesal in the paperbacks. */
+const PANADERIA_CONTENT: string[] = [
+  'The wall between the shops is one brick thick and has never once done its job. Heat comes through it, and the smell of pandesal at four in the morning, and the low sound of Nardo singing to his dough, which he denies, and which I have stopped reporting, because some testimony only makes the witness less believable.',
+  'The trade agreement was never written down, which is how you know it is binding. Bread crosses the wall in the morning; books cross back at night. Nardo reads exactly one genre — sea stories, the wetter the better — and pays in ensaymada at an exchange rate he recalculates according to how the ending treated the boat.',
+  'Customers say the books smell like mornings. They pick one up, open it, and get bread, warmth, six o\'clock — the whole panaderia, filed in the pages. I have stopped explaining the wall. Let them think the books do it themselves. In a good shop, after enough years, it comes to the same thing.',
+  'Margination the cat holds dual citizenship. Mornings on the flour sacks, afternoons on the poetry shelf. Both establishments claim her on their signage. She has signed nothing.',
+];
+
+const PANADERIA_OPENING: string[] = [
+  'Silid Aklatan shares a wall with Panaderia Luna, and the wall takes Luna\'s side. At four in the morning, when Nardo fires his ovens, the heat comes through the bricks into my back room, and with it the smell — pandesal first, then the ensaymada around five, then that last brown toasted note that means the day\'s first batch is already becoming somebody\'s breakfast. I have kept a bookshop beside a bakery for nineteen years. Every book in this shop has been proofing in that smell the whole time.',
+  'I mention this because of what the customers say. They say the books smell like mornings. They say it the way people report a small miracle to a bored priest — shyly, ready to be laughed at. A woman once stood at the biographies inhaling a life of Magellan and said, "Ma\'am, bakit amoy almusal ang libro n\'yo?" Why do your books smell like breakfast? And I gave her the only true answer I have: because they have never known anything else.',
+  'Nardo and I have run our two shops on either side of that wall since before either of us had gray hair to argue about. We have never had a contract, a partnership, or a single conversation about feelings. What we have is the ledge — the low window in the party wall, painter\'s-shelf width, that some sensible dead builder left there in another century — and across that ledge, for nineteen years, has moved the entire economy that matters: bread going east, books going west.',
+  'It started with a flood, the way half the arrangements in this town did. The water came into his shop and not mine — the street tilts, the street has opinions — and Nardo passed his account books through the ledge for safekeeping, and I passed back coffee, and at some point near dawn, waiting out the rain, he asked, gruff as a man asking for contraband, kung may libro ba ako tungkol sa dagat. Did I have any books about the sea.',
+  'I had thirty. I have since sold him — traded him — every one, plus every sea book I could hunt down at estate sales and Sunday markets for two decades, and I am not ashamed to say I have bought entire dead men\'s libraries because I spotted one storm-soaked Conrad in the carton. The baker beside me has never seen the ocean. He rises at three and feeds a town and sails, exclusively, between four and six a.m., by ladder, one shelf-window at a time.',
+  'This book is the log of the two shops: the wall, the ledge, the cat who commutes over it, the customers who came in for bread and left with poetry or came in for poetry and left, always, with bread. Nineteen years of small trades faithfully recorded. Kettle\'s on. The ovens are lit next door — I can feel it in the bricks, right through the local history section. Everything in here smells like morning. Now you know why.',
+];
+
 /* -- Catalogue ------------------------------------------------------------- */
 
 /** Authored as an array (a JSON payload / query result satisfies this shape
@@ -763,6 +872,124 @@ const AUTHORED_BOOKS: KathaBook[] = [
       { slug: 'aling-susan', title: 'Aling Susan', content: GROCERY_CONTENT },
       { slug: 'oobey', title: 'Oobey', content: GROCERY_CONTENT },
       { slug: 'four-pages-left', title: 'Four Pages Left', content: GROCERY_CONTENT },
+    ]),
+  },
+  {
+    slug: 'saturday-maybe',
+    title: 'Saturday, Maybe',
+    authorId: 'auth-clara-mendoza',
+    category: 'Contemporary Romance',
+    language: 'Filipino / English',
+    status: 'Completed',
+    updated: 'Last month',
+    publishedAt: '2025-10-11',
+    cover: '/covers/saturday-maybe.svg',
+    synopsis:
+      'One sunflower, every Saturday, "para kay Lola" — except nobody\'s lola needs a sunflower a week, and by the fourth market day Ana has done the math. A courtship conducted at a flower stall, one wrapped stem and one rationed question at a time, until the morning it rains sideways and somebody shows up anyway, holding a thermos. Clara Mendoza\'s gentlest, surest romance: the whole plot is two people slowly retiring the word maybe.',
+    chapters: buildChapters([
+      { slug: 'para-kay-lola', title: 'Para Kay Lola', content: SABADO_OPENING },
+      { slug: 'ang-pinakamagandang-bulaklak', title: 'Ang Pinakamagandang Bulaklak', content: SABADO_CONTENT },
+      { slug: 'closing-price', title: 'Closing Price', content: SABADO_CONTENT },
+      { slug: 'ulan-sa-palengke', title: 'Ulan sa Palengke', content: SABADO_CONTENT },
+      { slug: 'walang-maybe', title: 'Walang Maybe', content: SABADO_CONTENT },
+    ]),
+  },
+  {
+    slug: 'before-the-last-train',
+    title: 'Before the Last Train',
+    authorId: 'auth-rafael-lim',
+    category: 'Contemporary Fiction',
+    language: 'English / Filipino',
+    status: 'Ongoing',
+    updated: '4 days ago',
+    publishedAt: '2026-05-22',
+    cover: '/covers/before-the-last-train.svg',
+    synopsis:
+      'The companion book to Window Seat — same platform, twenty-three minutes earlier. This is the hour that belongs to no one: the people who could have caught the 11:19 and quietly, nightly, decide not to. The vendor\'s closing arithmetic, the guard\'s dead flashlight, the guitar that is never played and always brought. Rafael Lim rides nothing this time; he just stands on the platform and takes the whole city\'s attendance.',
+    chapters: buildChapters([
+      { slug: 'the-11-19', title: 'The 11:19', content: BAGO_OPENING },
+      { slug: 'closing-arithmetic', title: 'Closing Arithmetic', content: BAGO_CONTENT },
+      { slug: 'ang-gitara', title: 'Ang Gitara', content: BAGO_CONTENT },
+      { slug: 'flashlight-ni-bautista', title: 'Flashlight ni Bautista', content: BAGO_CONTENT },
+    ]),
+  },
+  {
+    slug: 'sa-ilalim-ng-sampaguita',
+    title: 'Sa Ilalim ng Sampaguita',
+    authorId: 'auth-noemi-bautista',
+    category: 'Magical Realism',
+    language: 'Filipino / English',
+    status: 'Ongoing',
+    updated: 'This week',
+    publishedAt: '2026-06-05',
+    cover: '/covers/sa-ilalim-ng-sampaguita.svg',
+    synopsis:
+      'The sampaguita hedge at the Villareal house returns things — only things buried on purpose, only one per flowering, always politely, wrapped in leaves at the doorstep before six. For ninety years the family has kept its rules and its silences. Then the house goes up for sale, the hedge blooms three weeks early, and it leaves on the step a small parcel addressed to no one that everyone recognizes. Noemi Bautista at her most quietly devastating: an impossibility with excellent manners, starting the one conversation a family swore never to have.',
+    chapters: buildChapters([
+      { slug: 'ang-unang-bulaklak', title: 'Ang Unang Bulaklak', content: SAMPAGUITA_OPENING },
+      { slug: 'mga-patakaran-ng-halaman', title: 'Mga Patakaran ng Halaman', content: SAMPAGUITA_CONTENT },
+      { slug: 'ang-singsing-ni-tiya-loleng', title: 'Ang Singsing ni Tiya Loleng', content: SAMPAGUITA_CONTENT },
+      { slug: 'for-sale', title: 'For Sale', content: SAMPAGUITA_CONTENT },
+      { slug: 'ang-sagot-sa-pinto', title: 'Ang Sagot sa Pinto', content: SAMPAGUITA_CONTENT },
+    ]),
+  },
+  {
+    slug: 'after-midnight',
+    title: 'After Midnight',
+    authorId: 'auth-j-salvador',
+    category: 'Poetry',
+    language: 'English / Filipino',
+    status: 'Ongoing',
+    updated: 'Yesterday',
+    publishedAt: '2026-04-18',
+    cover: '/covers/after-midnight.svg',
+    synopsis:
+      'The hours after twelve, taken down under oath. J. Salvador\'s second cycle timestamps the city nobody supervises — the empty jeepney upholstered in orange light, the refrigerator\'s one hymn, the drafts folder as the most honest room in the phone. Where Mga Liham sa Dilim wrote to the dark, After Midnight keeps its logbook: composed, polished, never sent. Kung nabasa mo ito — hindi ko sinend. That was the point.',
+    chapters: buildChapters([
+      { slug: 'logbook', title: 'Logbook', content: HATINGGABI_OPENING },
+      { slug: 'ang-huling-jeep', title: 'Ang Huling Jeep', content: HATINGGABI_CONTENT },
+      { slug: 'drafts-folder', title: 'Drafts Folder', content: HATINGGABI_CONTENT },
+      { slug: 'alas-tres', title: 'Alas Tres', content: HATINGGABI_CONTENT },
+    ]),
+  },
+  {
+    slug: 'alamat-ng-huling-diwata',
+    title: 'Alamat ng Huling Diwata',
+    authorId: 'auth-elia-navarro',
+    category: 'Fantasy',
+    language: 'Filipino / English',
+    status: 'Ongoing',
+    updated: '3 days ago',
+    publishedAt: '2026-05-30',
+    cover: '/covers/alamat-ng-huling-diwata.svg',
+    synopsis:
+      'Some families keep land titles. The Navarros keep a diwata — in the last acacia at kilometer eleven, under a bargain written in 1897: the tree stands, the town drinks. Now the notebook has chosen a fifth keeper, a nineteen-year-old with a city scholarship and no patience for inheritance, and the road survey crew has marked the trunk with an X. Elia Navarro retells the old stories from the inside — myth as family paperwork, kept by hand, six generations deep, with the funniest and saddest diwata in Philippine fantasy waiting overhead.',
+    chapters: buildChapters([
+      { slug: 'ang-lata-ng-biskwit', title: 'Ang Lata ng Biskwit', content: DIWATA_OPENING },
+      { slug: 'ang-kasunduan', title: 'Ang Kasunduan', content: DIWATA_CONTENT },
+      { slug: 'superstition', title: 'Superstition', content: DIWATA_CONTENT },
+      { slug: 'ang-ekis-sa-puno', title: 'Ang Ekis sa Puno', content: DIWATA_CONTENT },
+      { slug: 'huling-gabi-ng-buwan', title: 'Huling Gabi ng Buwan', content: DIWATA_CONTENT },
+    ]),
+  },
+  {
+    slug: 'the-bookshop-beside-the-bakery',
+    title: 'The Bookshop Beside the Bakery',
+    authorId: 'auth-odette-ramas',
+    category: 'Cozy Fiction',
+    language: 'English / Filipino',
+    status: 'Completed',
+    updated: 'Last week',
+    publishedAt: '2026-06-19',
+    cover: '/covers/the-bookshop-beside-the-bakery.svg',
+    synopsis:
+      'Silid Aklatan shares a wall with Panaderia Luna, and the wall takes the bakery\'s side: nineteen years of 4 a.m. ovens have proofed every book in the shop, and customers swear the paperbacks smell like mornings. Through the ledge in the party wall runs the only economy that matters — bread going east, books going west, sea stories priced in ensaymada by a baker who has never seen the ocean. Odette Ramas\'s warmest book yet: two shops, one cat with dual citizenship, and a friendship conducted entirely in trade.',
+    chapters: buildChapters([
+      { slug: 'ang-pader', title: 'Ang Pader', content: PANADERIA_OPENING },
+      { slug: 'the-ledge', title: 'The Ledge', content: PANADERIA_CONTENT },
+      { slug: 'sea-stories', title: 'Sea Stories', content: PANADERIA_CONTENT },
+      { slug: 'amoy-almusal', title: 'Amoy Almusal', content: PANADERIA_CONTENT },
+      { slug: 'dual-citizenship', title: 'Dual Citizenship', content: PANADERIA_CONTENT },
     ]),
   },
 ];
