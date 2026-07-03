@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { getCurrentAuthor } from '@/lib/studio/current-author';
-import { initialsOf } from '@/lib/text';
+import StudioIdentity from '@/components/studio/StudioIdentity';
 
 /* ---------------------------------------------------------------------------
  * KATHA · Author Studio — shell
@@ -14,9 +13,6 @@ import { initialsOf } from '@/lib/text';
  * ------------------------------------------------------------------------- */
 
 export default function StudioShell({ children }: { children: ReactNode }) {
-  const author = getCurrentAuthor();
-  const name = author?.name ?? 'Writer';
-
   return (
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="border-b border-border/70 bg-[#FCFAF6]">
@@ -39,17 +35,7 @@ export default function StudioShell({ children }: { children: ReactNode }) {
           </Link>
 
           <div className="flex items-center gap-4">
-            <span className="hidden items-center gap-2.5 sm:inline-flex">
-              <span
-                aria-hidden="true"
-                className="grid size-7 place-items-center rounded-full bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))] font-heading text-[0.65rem] font-semibold text-brand-secondary"
-              >
-                {initialsOf(name)}
-              </span>
-              <span className="font-body text-sm text-muted-foreground">
-                {name}
-              </span>
-            </span>
+            <StudioIdentity />
 
             <Link
               href="/"

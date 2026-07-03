@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import StudioShell from '@/components/studio/StudioShell';
+import StudioGate from '@/components/studio/StudioGate';
 
 /* ---------------------------------------------------------------------------
  * KATHA · Author Studio — product layout
@@ -21,5 +22,11 @@ export const metadata: Metadata = {
 };
 
 export default function StudioLayout({ children }: { children: ReactNode }) {
-  return <StudioShell>{children}</StudioShell>;
+  return (
+    <StudioShell>
+      {/* The ladder's last rung: guests are pointed to the library door,
+          readers may open their Studio, authors write. */}
+      <StudioGate>{children}</StudioGate>
+    </StudioShell>
+  );
 }
