@@ -40,9 +40,8 @@ export default function NewWorkPage() {
     event.preventDefault();
     if (!ready || creating) return;
     setCreating(true);
-    await begin({ title, category, synopsis });
-    // Land on the desk for now; Phase 3 retargets this to the new workspace.
-    router.push('/studio');
+    const work = await begin({ title, category, synopsis });
+    router.push(`/studio/works/${work.id}`);
   }
 
   return (
