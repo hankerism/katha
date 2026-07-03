@@ -8,6 +8,8 @@
  * separate from the markup.
  * ------------------------------------------------------------------------- */
 
+import { initialsOf } from '@/lib/text';
+
 type Testimonial = {
   quote: string;
   name: string;
@@ -32,15 +34,6 @@ const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-function initialsOf(name: string): string {
-  return name
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-}
-
 export default function ReaderLove() {
   return (
     <section aria-labelledby="reader-love-heading" className="bg-background">
@@ -63,7 +56,7 @@ export default function ReaderLove() {
           {TESTIMONIALS.map((testimonial) => (
             <figure
               key={testimonial.name}
-              className="flex h-full flex-col rounded-[18px] border border-border bg-card p-7 shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-border-strong hover:shadow-md"
+              className="flex h-full flex-col rounded-[18px] border border-border bg-card p-7 shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out motion-safe:hover:-translate-y-1 hover:border-border-strong hover:shadow-md"
             >
               <span
                 aria-hidden="true"

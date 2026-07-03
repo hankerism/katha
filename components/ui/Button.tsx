@@ -57,7 +57,7 @@ const variants: Record<ButtonVariant, string> = {
   // Katha Brown — primary actions
   primary: cx(
     'bg-primary text-primary-foreground shadow-sm',
-    'hover:-translate-y-px hover:brightness-105 hover:shadow-md',
+    'motion-safe:hover:-translate-y-px hover:brightness-105 hover:shadow-md',
     'active:translate-y-0 active:brightness-100',
   ),
   // Sampaguita — quiet secondary surface with a hairline border
@@ -74,7 +74,7 @@ const variants: Record<ButtonVariant, string> = {
   // Terracotta — destructive actions
   danger: cx(
     'bg-destructive text-destructive-foreground shadow-sm',
-    'hover:-translate-y-px hover:brightness-105 hover:shadow-md',
+    'motion-safe:hover:-translate-y-px hover:brightness-105 hover:shadow-md',
     'active:translate-y-0 active:brightness-100',
   ),
 };

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- Bayan ng mga Alon — a town written by waves, 1898 -->
+  <rect width="600" height="800" fill="#F8F5F1"/>
+  <g fill="none" stroke-width="4">
+    <path d="M-40 560 Q0 530 40 560 T120 560 T200 560 T280 560 T360 560 T440 560 T520 560 T600 560 T680 560" stroke="#2E7D5B"/>
+    <path d="M-40 610 Q0 580 40 610 T120 610 T200 610 T280 610 T360 610 T440 610 T520 610 T600 610 T680 610" stroke="#5C3B28"/>
+    <path d="M-40 660 Q0 630 40 660 T120 660 T200 660 T280 660 T360 660 T440 660 T520 660 T680 660" stroke="#B56A44"/>
+    <path d="M-40 710 Q0 680 40 710 T120 710 T200 710 T280 710 T360 710 T440 710 T520 710 T600 710 T680 710" stroke="#D4A646"/>
+    <path d="M-40 760 Q0 730 40 760 T120 760 T200 760 T280 760 T360 760 T440 760 T520 760 T600 760 T680 760" stroke="#2E7D5B" opacity="0.5"/>
+  </g>
+  <!-- the town: a bell tower and low roofs on the horizon -->
+  <g fill="#5C3B28">
+    <rect x="272" y="430" width="24" height="90"/>
+    <path d="M268 430 L284 406 L300 430 Z"/>
+    <rect x="279" y="446" width="10" height="14" fill="#D4A646"/>
+    <rect x="200" y="480" width="52" height="40"/>
+    <path d="M196 480 L226 462 L256 480 Z"/>
+    <rect x="320" y="486" width="58" height="34"/>
+    <path d="M316 486 L349 466 L382 486 Z"/>
+  </g>
+  <line x1="120" y1="520" x2="480" y2="520" stroke="#33210F" stroke-width="3"/>
+  <text x="300" y="96" text-anchor="middle" font-size="17" letter-spacing="8" fill="#B56A44">KATHA</text>
+  <rect x="270" y="128" width="60" height="2" fill="#D4A646"/>
+  <text x="300" y="225" text-anchor="middle" font-size="54" font-weight="bold" fill="#33210F">Bayan ng</text>
+  <text x="300" y="291" text-anchor="middle" font-size="54" font-weight="bold" fill="#33210F">mga Alon</text>
+  <text x="300" y="348" text-anchor="middle" font-size="20" font-style="italic" fill="#5C3B28">Tomas Reyes</text>
+</svg>

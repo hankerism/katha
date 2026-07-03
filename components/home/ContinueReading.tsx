@@ -1,118 +1,149 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import {
+  getContinueReading,
+  type ContinueReadingRecord,
+} from '@/lib/continue-reading';
+import { readingProgress } from '@/lib/continue-reading-selectors';
+import { relativeTimeLabel } from '@/lib/relative-time';
+import { ArrowRightIcon, CheckIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
+import MembershipInvitation from '@/components/membership/MembershipInvitation';
 
-type ReadingProgress = {
-  title: string;
-  author: string;
-  slug: string;
-  currentChapter: number;
-  progress: number;
-};
-
-const CONTINUE_READING: ReadingProgress[] = [
-  {
-    title: 'Ang Huling Tag-araw',
-    author: 'Lakambini Reyes',
-    slug: 'ang-huling-tag-araw',
-    currentChapter: 5,
-    progress: 64,
-  },
-  {
-    title: 'Ang Bahay sa Buwan',
-    author: 'Noemi Bautista',
-    slug: 'ang-bahay-sa-buwan',
-    currentChapter: 3,
-    progress: 22,
-  },
-  {
-    title: 'Huling Tren Pauwi',
-    author: 'Rafael Lim',
-    slug: 'huling-tren-pauwi',
-    currentChapter: 8,
-    progress: 88,
-  },
-];
+/* ---------------------------------------------------------------------------
+ * KATHA · ContinueReading
+ * components/home/ContinueReading.tsx
+ *
+ * Homepage "pick up where you left off" card. Client component: the saved
+ * position is read via the persistence layer (getContinueReading) in an effect
+ * after mount — the server pass and first client render both produce null (no
+ * card), keeping hydration clean. Renders nothing until a valid record is found.
+ *
+ * At 100% progress it reads as "Completed" rather than a full bar; the relative
+ * "Opened …" label is derived from updatedAt. Tokens only — no new colours.
+ * ------------------------------------------------------------------------- */
 
 export default function ContinueReading() {
+  const [record, setRecord] = useState<ContinueReadingRecord | null>(null);
+  const { viewer, loaded } = useViewer();
+
+  // Read via the persistence layer (never localStorage directly); it validates
+  // and returns null on the server / bad data, so the mount-gate stays clean.
+  useEffect(() => {
+    setRecord(getContinueReading());
+  }, []);
+
+  // Home carries exactly ONE quiet membership ask — this slot. The other
+  // member shelves simply stay silent for guests.
+  if (loaded && viewer.tier === 'guest') {
+    return (
+      <section
+        aria-labelledby="continue-reading-heading"
+        className="container-katha py-16 md:py-20"
+      >
+        <MembershipInvitation
+          variant="card"
+          heading="Continue your reading journey."
+          invitation="Members pick up any book exactly where they left it. Join KATHA — free — and the library holds your place."
+          from="/"
+        />
+      </section>
+    );
+  }
+
+  if (!record) return null;
+
+  const progress = readingProgress(record);
+  const isCompleted = progress === 100;
+  const opened = relativeTimeLabel(record.updatedAt, 'Opened');
+
   return (
-    <section aria-labelledby="continue-reading-heading" className="bg-background">
-      <div className="container-katha py-20">
-        <div className="max-w-xl">
-          <h2
-            id="continue-reading-heading"
-            className="font-heading text-3xl font-bold tracking-tight text-foreground"
-          >
-            Continue Reading
-          </h2>
-          <p className="mt-2 text-base text-muted-foreground">
-            Pick up right where you left off—your place is saved down to the chapter.
-          </p>
+    <section
+      aria-labelledby="continue-reading-heading"
+      className="container-katha py-16 md:py-20"
+    >
+      <h2
+        id="continue-reading-heading"
+        className="font-heading text-2xl text-foreground sm:text-3xl"
+      >
+        Continue Reading
+      </h2>
+      <p className="mt-1.5 font-body text-sm text-muted-foreground">
+        Pick up where you left off.
+      </p>
+
+      <div className="mt-7 flex flex-col gap-6 rounded-[18px] border border-border bg-card p-6 shadow-sm sm:flex-row sm:items-center">
+        {/* Mini cover (decorative) */}
+        <div
+          aria-hidden="true"
+          className="relative hidden aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-[12px] bg-primary text-primary-foreground shadow-sm sm:block"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-foreground/10 via-transparent to-foreground/20" />
+          <div className="absolute inset-y-0 left-0 w-1.5 bg-foreground/15" />
+          <div className="relative flex h-full items-end p-2">
+            <span className="font-logo text-[10px] uppercase tracking-[0.2em] text-primary-foreground/70">
+              Katha
+            </span>
+          </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {CONTINUE_READING.map((book) => {
-            const progress = Math.max(0, Math.min(100, Math.round(book.progress)));
+        {/* Details */}
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-body text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            {record.bookTitle}
+          </p>
+          <p className="mt-2 truncate font-heading text-lg text-foreground">
+            {record.chapterTitle}
+          </p>
+          <p className="mt-1 font-body text-sm text-muted-foreground">
+            Chapter {record.chapterNumber} of {record.totalChapters}
+            <span aria-hidden="true" className="mx-2 text-muted-foreground/50">
+              ·
+            </span>
+            {opened}
+          </p>
 
-            return (
-              <Link
-                key={book.slug}
-                href={`/read/${book.slug}`}
-                aria-label={`Continue reading ${book.title} by ${book.author}, chapter ${book.currentChapter}, ${progress}% complete`}
-                className="group flex h-full gap-4 rounded-[18px] border border-border bg-card p-4 shadow-sm transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-border-strong hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          {isCompleted ? (
+            <p className="mt-4">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 font-body text-xs font-semibold uppercase tracking-[0.12em] text-foreground">
+                <CheckIcon className="size-3.5 text-primary" />
+                Completed
+              </span>
+            </p>
+          ) : (
+            <div className="mt-4 flex items-center gap-3">
+              <div
+                role="progressbar"
+                aria-valuenow={progress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`Progress through ${record.bookTitle}`}
+                className="h-1.5 w-full overflow-hidden rounded-full bg-secondary"
               >
                 <div
-                  aria-hidden="true"
-                  className="relative aspect-[3/4] w-16 shrink-0 overflow-hidden rounded-[10px] bg-[linear-gradient(155deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_55%,#000))] shadow-sm ring-1 ring-black/10 sm:w-[4.5rem]"
-                >
-                  <span className="absolute inset-0 bg-[radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.16),transparent_55%)]" />
-                  <span className="absolute inset-y-0 left-0 w-1.5 bg-[linear-gradient(to_right,rgba(0,0,0,0.30),transparent)]" />
-                  <span className="absolute inset-0 grid place-items-center font-logo text-2xl font-semibold text-brand-secondary/85">
-                    {book.title.charAt(0)}
-                  </span>
-                </div>
+                  className="h-full rounded-full bg-primary"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <span className="shrink-0 font-body text-xs font-medium tabular-nums text-muted-foreground">
+                {progress}%
+              </span>
+            </div>
+          )}
+        </div>
 
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <h3 className="truncate font-heading text-base font-semibold leading-snug text-foreground">
-                    {book.title}
-                  </h3>
-
-                  <p className="mt-0.5 truncate text-sm text-muted-foreground">
-                    {book.author}
-                  </p>
-
-                  <div className="mt-auto space-y-2 pt-4">
-                    <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-                      <span>Chapter {book.currentChapter}</span>
-                      <span>{progress}%</span>
-                    </div>
-
-                    <div
-                      role="progressbar"
-                      aria-valuenow={progress}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-label={`${progress}% complete`}
-                      className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
-                    >
-                      <div
-                        className="h-full rounded-full bg-accent transition-all duration-500 ease-out group-hover:bg-primary dark:group-hover:bg-accent"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-
-                    <span className="inline-flex items-center gap-1 pt-1 text-sm font-semibold text-primary transition-colors duration-200 group-hover:text-clay dark:text-accent">
-                      Continue Reading
-                      <span
-                        aria-hidden="true"
-                        className="transition-transform duration-200 group-hover:translate-x-0.5"
-                      >
-                        →
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+        {/* CTA */}
+        <div className="shrink-0">
+          <Link
+            href={record.href}
+            aria-label={`Resume ${record.bookTitle}, chapter ${record.chapterNumber}`}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 font-body text-sm font-semibold text-primary-foreground shadow-sm transition-colors duration-200 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto"
+          >
+            Resume
+            <ArrowRightIcon className="size-4" />
+          </Link>
         </div>
       </div>
     </section>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { SVGProps } from 'react';
+import { ChaptersIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
  * KATHA · BookCard
@@ -30,23 +30,6 @@ export interface BookCardProps {
   featured?: boolean;
   chapters?: number;
   href: string;
-}
-
-function ChaptersIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M5 6h14M5 12h14M5 18h9" />
-    </svg>
-  );
 }
 
 /** CSS-only fallback cover, themed from the brand palette (stable in light + dark). */
@@ -122,7 +105,7 @@ export default function BookCard({
       className={cx(
         'group flex h-full w-full flex-col overflow-hidden rounded-[18px] border border-border bg-card shadow-sm',
         'transition-[transform,box-shadow,border-color] duration-300 ease-out',
-        'hover:-translate-y-1 hover:border-border-strong hover:shadow-md',
+        'motion-safe:hover:-translate-y-1 hover:border-border-strong hover:shadow-md',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
       )}
     >
@@ -135,10 +118,10 @@ export default function BookCard({
             alt={`Cover of ${title} by ${author}`}
             loading="lazy"
             decoding="async"
-            className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            className="size-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-105"
           />
         ) : (
-          <div className="size-full transition-transform duration-500 ease-out group-hover:scale-105">
+          <div className="size-full transition-transform duration-500 ease-out motion-safe:group-hover:scale-105">
             <PlaceholderCover title={title} author={author} category={category} />
           </div>
         )}

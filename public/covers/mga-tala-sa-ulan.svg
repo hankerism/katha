@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- Mga Tala sa Ulan — notebook rain: soft strokes over paper, one umbrella -->
+  <rect width="600" height="800" fill="#F8F5F1"/>
+  <g stroke="#2E7D5B" stroke-width="3" stroke-linecap="round" opacity="0.55">
+    <line x1="80" y1="60" x2="70" y2="120"/><line x1="160" y1="110" x2="150" y2="170"/>
+    <line x1="250" y1="50" x2="240" y2="110"/><line x1="340" y1="120" x2="330" y2="180"/>
+    <line x1="430" y1="60" x2="420" y2="120"/><line x1="520" y1="110" x2="510" y2="170"/>
+    <line x1="120" y1="210" x2="110" y2="270"/><line x1="290" y1="220" x2="280" y2="280"/>
+    <line x1="470" y1="210" x2="460" y2="270"/>
+  </g>
+  <g stroke="#D4A646" stroke-width="3" stroke-linecap="round" opacity="0.8">
+    <line x1="210" y1="140" x2="200" y2="200"/><line x1="380" y1="40" x2="370" y2="100"/>
+    <line x1="60" y1="330" x2="50" y2="390"/><line x1="540" y1="320" x2="530" y2="380"/>
+  </g>
+  <!-- umbrella -->
+  <path d="M180 430 A120 120 0 0 1 420 430 Z" fill="#B56A44"/>
+  <path d="M180 430 A120 120 0 0 1 420 430" fill="none" stroke="#33210F" stroke-width="3"/>
+  <path d="M180 430 Q210 414 240 430 Q270 414 300 430 Q330 414 360 430 Q390 414 420 430" fill="none" stroke="#33210F" stroke-width="3"/>
+  <line x1="300" y1="430" x2="300" y2="540" stroke="#33210F" stroke-width="5"/>
+  <path d="M300 540 Q300 566 326 560" fill="none" stroke="#33210F" stroke-width="5" stroke-linecap="round"/>
+  <text x="300" y="640" text-anchor="middle" font-size="52" font-weight="bold" fill="#33210F">Mga Tala</text>
+  <text x="300" y="702" text-anchor="middle" font-size="52" font-weight="bold" fill="#33210F">sa Ulan</text>
+  <text x="300" y="748" text-anchor="middle" font-size="20" font-style="italic" fill="#B56A44">Isa Navarro</text>
+  <text x="300" y="775" text-anchor="middle" font-size="0.1" fill="none">.</text>
+  <rect x="270" y="762" width="60" height="2" fill="#D4A646"/>
+</svg>

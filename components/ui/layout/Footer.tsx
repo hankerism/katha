@@ -15,24 +15,23 @@ const NAV_GROUPS = [
     links: [
       { label: 'Library', href: '/library' },
       { label: 'Authors', href: '/authors' },
-      { label: 'Community', href: '/community' },
+      { label: 'Search', href: '/search' },
     ],
   },
   {
-    heading: 'Resources',
+    heading: 'Your shelf',
     links: [
-      { label: 'Become an Author', href: '/authors' },
-      { label: 'Help Center', href: '/help' },
-      { label: 'Privacy', href: '/privacy' },
-      { label: 'Terms', href: '/terms' },
+      { label: 'Continue Reading', href: '/continue-reading' },
+      { label: 'Bookmarks', href: '/bookmarks' },
+      { label: 'Reading History', href: '/history' },
     ],
   },
 ] as const;
 
-const SOCIAL_LINKS = [
-  { label: 'Instagram', href: 'https://instagram.com' },
-  { label: 'Facebook', href: 'https://facebook.com' },
-  { label: 'X', href: 'https://x.com' },
+/* External contact — mailto until real profiles exist (v2). */
+const CONNECT_LINKS = [
+  { label: 'Become an Author', href: 'mailto:authors@katha.ph?subject=Becoming%20a%20KATHA%20author' },
+  { label: 'Email us', href: 'mailto:hello@katha.ph' },
 ] as const;
 
 const linkClass =
@@ -42,7 +41,7 @@ const headingClass = 'text-xs font-semibold uppercase tracking-[0.18em] text-for
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-secondary">
+    <footer className="site-footer border-t border-border bg-secondary">
       <div className="container-katha py-16">
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
           {/* Brand */}
@@ -81,22 +80,16 @@ export default function Footer() {
             );
           })}
 
-          {/* Connect (external) */}
+          {/* Connect (email) */}
           <nav aria-labelledby="footer-connect">
             <h2 id="footer-connect" className={headingClass}>
               Connect
             </h2>
             <ul className="mt-4 space-y-3">
-              {SOCIAL_LINKS.map((social) => (
-                <li key={social.label}>
-                  <a
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`KATHA on ${social.label} (opens in a new tab)`}
-                    className={linkClass}
-                  >
-                    {social.label}
+              {CONNECT_LINKS.map((link) => (
+                <li key={link.label}>
+                  <a href={link.href} className={linkClass}>
+                    {link.label}
                   </a>
                 </li>
               ))}

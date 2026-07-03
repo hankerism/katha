@@ -11,6 +11,7 @@
    3. Static theme tokens (brand colors, fonts, radii, motion, animation)
    4. Semantic tokens — Light Mode (:root)
    5. Semantic tokens — Dark Mode (.dark)
+   5.1 Semantic tokens — Sepia reader theme (.reader-theme-sepia)
    6. Theme mapping (@theme inline → Tailwind utilities)
    7. Base layer (reset, typography, selection, focus, scrollbar)
    8. Components layer (buttons, cards, inputs, reader, helpers)
@@ -18,11 +19,22 @@
    ========================================================================== */
 
 /* 1 · IMPORTS ------------------------------------------------------------- */
-/* Loaded here so the stylesheet is self-contained. In production you can
-   swap these for `next/font` and feed the variables into --font-* below.   */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;450;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400;1,7..72,500&display=swap');
+/* Typefaces load via next/font in app/layout.tsx (self-hosted, no render-
+   blocking request); it sets --font-cormorant / --font-literata /
+   --font-inter on <html>, consumed by the --font-* role tokens below.      */
 
 @import "tailwindcss";
+
+/* 1.1 · CONTENT SOURCES --------------------------------------------------- */
+/* Explicitly register the app + component trees so every utility class is
+   compiled — including responsive classes (e.g. the reader's `lg:flex` /
+   `lg:hidden`) that live only in components/reader. These are ADDITIVE to
+   Tailwind v4's automatic detection: they don't replace it, they just
+   guarantee newly added component files are always scanned. Paths are relative
+   to this file and resolve correctly for both `app/globals.css` and
+   `src/app/globals.css` layouts (app + components are siblings in both). */
+@source "../app/**/*.{ts,tsx,js,jsx,mdx}";
+@source "../components/**/*.{ts,tsx,js,jsx,mdx}";
 
 /* 2 · DARK MODE VARIANT --------------------------------------------------- */
 /* Class-based so readers can toggle (and persist) their preference.
@@ -43,13 +55,13 @@
   --color-brand-clay:       #B56A44;  /* Clay       · burnt sienna     */
   --color-brand-terracotta: #C45A3C;  /* Terracotta · warm red-orange  */
 
-  /* — Typeface roles ———————————————————————————————————— */
-  --font-logo:    "Cormorant Garamond", "Literata", ui-serif, Georgia, serif;
-  --font-heading: "Literata", ui-serif, Georgia, Cambria, "Times New Roman", serif;
-  --font-body:    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-reader:  "Literata", ui-serif, Georgia, Cambria, serif;
-  --font-sans:    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-serif:   "Literata", ui-serif, Georgia, Cambria, serif;
+  /* — Typeface roles (families arrive from next/font via app/layout.tsx) — */
+  --font-logo:    var(--font-cormorant), "Literata", ui-serif, Georgia, serif;
+  --font-heading: var(--font-literata), ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --font-body:    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-reader:  var(--font-literata), ui-serif, Georgia, Cambria, serif;
+  --font-sans:    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif:   var(--font-literata), ui-serif, Georgia, Cambria, serif;
   --font-mono:    ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
 
   /* — Radius scale ——————————————————————————————————————— */
@@ -114,11 +126,6 @@
   --reader-bg:            #FBF8F2;
   --reader-foreground:    #2B2620;
   --reader-muted:         #6B6258;
-  --reader-highlight:     rgba(212, 166, 70, 0.30);
-
-  /* Selection */
-  --selection:            rgba(212, 166, 70, 0.32);
-  --selection-foreground: #1F1F1F;
 
   /* Scrollbar */
   --scrollbar-thumb:       #DBD2C4;
@@ -178,10 +185,6 @@
   --reader-bg:            #1A1510;  /* dark sepia, gentle on eyes */
   --reader-foreground:    #DCD3C5;
   --reader-muted:         #998D7B;
-  --reader-highlight:     rgba(224, 182, 90, 0.22);
-
-  --selection:            rgba(224, 182, 90, 0.26);
-  --selection-foreground: #FFF8EC;
 
   --scrollbar-thumb:       #3A3128;
   --scrollbar-thumb-hover: #4C4136;
@@ -194,6 +197,52 @@
   --ds-shadow-lg:   0 10px 28px rgba(0, 0, 0, 0.58), 0 28px 64px rgba(0, 0, 0, 0.50);
   --ds-shadow-xl:   0 16px 36px rgba(0, 0, 0, 0.62), 0 44px 88px rgba(0, 0, 0, 0.55);
   --ds-shadow-glow: 0 0 0 1px rgba(224, 182, 90, 0.40), 0 6px 24px rgba(224, 182, 90, 0.24);
+}
+
+/* 5.1 · SEMANTIC TOKENS — SEPIA READER THEME ------------------------------ */
+/* A warm "aged paper" reading theme. Reuses the EXACT semantic token names
+   from light/dark — no second design system, only the values change. Applied
+   as a class on the reader wrapper (`.reader-theme-sepia`), it cascades to
+   everything inside, exactly like `.dark`. It is a light-type theme, so it
+   intentionally inherits the warm :root elevation (--ds-shadow-*) rather than
+   redefining it.                                                            */
+.reader-theme-sepia {
+  color-scheme: light;
+
+  --background:           #F3E9D2;  /* aged paper */
+  --foreground:           #463A2A;  /* soft sepia ink */
+  --card:                 #F8F0DC;
+  --card-foreground:      #463A2A;
+  --popover:              #F8F0DC;
+  --popover-foreground:   #463A2A;
+
+  --primary:              #5C3B28;  /* brand coffee reads beautifully on paper */
+  --primary-foreground:   #F8F0DC;
+  --secondary:            #EADFC2;
+  --secondary-foreground: #463A2A;
+  --accent:               #B5852E;  /* gold, slightly deepened to sit on cream */
+  --accent-foreground:    #2A2010;
+  --muted:                #E7DBBE;
+  --muted-foreground:     #7C6E52;
+
+  --forest:               #2E7D5B;
+  --forest-foreground:    #F3FBF7;
+  --clay:                 #A85C39;
+  --clay-foreground:      #FFF7F2;
+  --destructive:          #B8502F;
+  --destructive-foreground: #FFF6F2;
+
+  --border:               #E2D5B6;
+  --border-strong:        #D2C097;
+  --input:                #E2D5B6;
+  --ring:                 #B5852E;
+
+  --reader-bg:            #F5ECD6;  /* paper, a touch warmer than the UI */
+  --reader-foreground:    #463A2A;
+  --reader-muted:         #7C6E52;
+
+  --scrollbar-thumb:       #D8C9A6;
+  --scrollbar-thumb-hover: #C3B084;
 }
 
 /* 6 · THEME MAPPING ------------------------------------------------------- */
@@ -373,8 +422,12 @@
 
   /* — Selection ————————————————————————————————————————————— */
   ::selection {
-    background: var(--selection);
-    color: var(--selection-foreground);
+    /* Warm, translucent brand selection — a quiet editorial highlight pulled
+       from --primary, so it adapts across the light, dark, and sepia themes
+       instead of the old fluorescent amber. `inherit` keeps selected text its
+       own colour for maximum legibility while reading. */
+    background: color-mix(in srgb, var(--primary) 18%, transparent);
+    color: inherit;
     text-shadow: none;
   }
 
@@ -567,8 +620,8 @@
   .reader {
     font-family: var(--font-reader);
     color: var(--reader-foreground);
-    font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);
-    line-height: 1.85;
+    font-size: var(--reader-font-size, clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem));
+    line-height: var(--reader-line-height, 1.85);
     letter-spacing: 0.002em;
     max-width: var(--spacing-measure);
     margin-inline: auto;
@@ -586,7 +639,7 @@
   }
   .reader a { color: var(--clay); text-decoration-color: color-mix(in oklab, var(--clay) 40%, transparent); }
   .reader blockquote { margin-block: 1.6em; font-size: 1.05em; }
-  .reader ::selection { background: var(--reader-highlight); }
+  .reader ::selection { background: color-mix(in srgb, var(--primary) 18%, transparent); }
   /* Optional literary flourish: <div class="reader reader-dropcap"> */
   .reader-dropcap > p:first-of-type::first-letter {
     font-family: var(--font-logo);
@@ -599,6 +652,19 @@
     color: var(--primary);
   }
   .dark .reader-dropcap > p:first-of-type::first-letter { color: var(--accent); }
+
+  /* — Reader preferences (text size · width) ————————————————————— */
+  /* Set on the reading-surface wrapper. `--reader-font-size` and
+     `--reader-line-height` cascade into `.reader`; `--reader-measure` feeds the
+     reading column's width (e.g. `max-width: var(--reader-measure)`).
+     The Medium values mirror what `.reader` already used, so Medium = default. */
+  .reader-size-small  { --reader-font-size: 1rem;                                  --reader-line-height: 1.8;  }
+  .reader-size-medium { --reader-font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);   --reader-line-height: 1.85; }
+  .reader-size-large  { --reader-font-size: clamp(1.1875rem, 1.05rem + 0.7vw, 1.4375rem); --reader-line-height: 1.9;  }
+
+  .reader-width-narrow { --reader-measure: 58ch; }
+  .reader-width-medium { --reader-measure: 68ch; }
+  .reader-width-wide   { --reader-measure: 82ch; }
 
   /* — Utility flourishes ———————————————————————————————————— */
   .text-gold-gradient {
@@ -653,4 +719,11 @@
 @keyframes shimmer {
   from { background-position: 100% 0; }
   to   { background-position: -100% 0; }
+}
+/* ── Reader chrome gate ──────────────────────────────────────────────────────
+   The immersive reader (its page carries data-reader-page) hides the
+   site-wide footer rendered by the root layout. Pure CSS via :has(), so the
+   server-rendered HTML is already correct — no client gate, no flash. */
+body:has([data-reader-page]) .site-footer {
+  display: none;
 }

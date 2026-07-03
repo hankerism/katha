@@ -4,8 +4,9 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import type { SVGProps } from 'react';
 import Button from '../Button';
+import { SearchIcon, MenuIcon, CloseIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
 /* ---------------------------------------------------------------------------
  * KATHA · Navbar
  * components/layout/Navbar.tsx
@@ -27,63 +28,11 @@ const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Library', href: '/library' },
   { label: 'Authors', href: '/authors' },
-  { label: 'Community', href: '/community' },
 ] as const;
 
 function isActivePath(pathname: string, href: string): boolean {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(`${href}/`);
-}
-
-/* — Icons (currentColor, decorative) ————————————————————————————————————— */
-function SearchIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.2-3.2" />
-    </svg>
-  );
-}
-
-function MenuIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M4 7h16M4 12h16M4 17h16" />
-    </svg>
-  );
-}
-
-function CloseIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M6 6l12 12M18 6 6 18" />
-    </svg>
-  );
 }
 
 /* Shared square icon-button affordance (search + mobile toggle) */
@@ -111,7 +60,7 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
         aria-hidden="true"
         className={cx(
           'pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left rounded-full bg-accent',
-          'transition-transform duration-300 ease-out',
+          'motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out',
           active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
         )}
       />
@@ -123,6 +72,8 @@ export default function Navbar() {
   const pathname = usePathname() ?? '/';
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const { viewer, loaded } = useViewer();
+  const isGuest = loaded && viewer.tier === 'guest';
 
   // Close the mobile menu whenever the route changes.
   useEffect(() => {
@@ -194,11 +145,15 @@ export default function Navbar() {
               <SearchIcon className="size-[1.15rem]" />
             </button>
 
-            <div className="hidden sm:block">
-              <Button variant="primary" size="sm" onClick={() => router.push('/sign-in')}>
-                Sign In
-              </Button>
-            </div>
+            {/* The invitation, quietly — guests only; members carry no chrome */}
+            {isGuest && (
+              <Link
+                href="/join"
+                className="hidden items-center rounded-full bg-primary px-5 py-2 font-body text-sm font-semibold text-primary-foreground shadow-sm transition-colors duration-200 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:inline-flex"
+              >
+                Join KATHA
+              </Link>
+            )}
 
             <button
               type="button"
@@ -254,16 +209,18 @@ export default function Navbar() {
           >
             Search
           </Button>
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={() => {
-              setOpen(false);
-              router.push('/sign-in');
-            }}
-          >
-            Sign In
-          </Button>
+          {isGuest && (
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={() => {
+                setOpen(false);
+                router.push('/join');
+              }}
+            >
+              Join KATHA
+            </Button>
+          )}
         </nav>
       </div>
     </header>

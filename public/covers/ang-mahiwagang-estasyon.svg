@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- Ang Mahiwagang Estasyon — an arch between weathers, fare payable in memory -->
+  <rect width="600" height="800" fill="#5C3B28"/>
+  <g stroke="#D4A646" stroke-width="2" opacity="0.5">
+    <line x1="300" y1="430" x2="300" y2="40"/>
+    <line x1="300" y1="430" x2="90" y2="100"/><line x1="300" y1="430" x2="510" y2="100"/>
+    <line x1="300" y1="430" x2="40" y2="260"/><line x1="300" y1="430" x2="560" y2="260"/>
+  </g>
+  <!-- the arch -->
+  <path d="M190 620 L190 430 A110 110 0 0 1 410 430 L410 620 Z" fill="#F8F5F1"/>
+  <path d="M214 620 L214 444 A86 86 0 0 1 386 444 L386 620 Z" fill="#33210F"/>
+  <!-- the light inside, and the small traveler -->
+  <circle cx="300" cy="470" r="26" fill="#D4A646" opacity="0.9"/>
+  <g fill="#F8F5F1">
+    <circle cx="300" cy="536" r="9"/>
+    <path d="M292 548 L308 548 L306 588 L294 588 Z"/>
+  </g>
+  <rect x="160" y="620" width="280" height="8" fill="#D4A646"/>
+  <text x="300" y="96" text-anchor="middle" font-size="17" letter-spacing="8" fill="#D4A646">KATHA</text>
+  <text x="300" y="700" text-anchor="middle" font-size="44" font-weight="bold" fill="#F8F5F1">Ang Mahiwagang</text>
+  <text x="300" y="752" text-anchor="middle" font-size="44" font-weight="bold" fill="#F8F5F1">Estasyon</text>
+  <text x="300" y="790" text-anchor="middle" font-size="19" font-style="italic" fill="#D4A646">Mila Cruz</text>
+</svg>
