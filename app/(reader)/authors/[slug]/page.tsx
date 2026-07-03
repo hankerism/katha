@@ -108,7 +108,7 @@ export default async function AuthorProfilePage({
             </div>
           </div>
 
-          <p className="mt-7 max-w-2xl font-body text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="mt-7 max-w-2xl text-pretty font-body text-base leading-relaxed text-muted-foreground sm:text-lg">
             {author.bio}
           </p>
 

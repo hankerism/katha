@@ -132,6 +132,8 @@
   <!-- ── the table, and the evidence ───────────────────────────────────── -->
   <path d="M28 668 Q300 640 572 668 L572 800 L28 800 Z" fill="url(#tft-table)"/>
   <path d="M28 668 Q300 640 572 668 L572 678 Q300 650 28 678 Z" fill="#FFF6EA" opacity="0.18"/>
+  <!-- window light, spilling onto the wood -->
+  <ellipse cx="300" cy="700" rx="240" ry="60" fill="url(#tft-glow)" opacity="0.5"/>
 
   <!-- carbonara, the opening question -->
   <g transform="translate(196,706)">
@@ -152,6 +154,8 @@
   </g>
 
   <!-- two coffees, two clocks -->
+  <ellipse cx="392" cy="722" rx="42" ry="10" fill="#7A3B21" opacity="0.35"/>
+  <ellipse cx="478" cy="740" rx="36" ry="9" fill="#7A3B21" opacity="0.35"/>
   <g transform="translate(392,690)">
     <ellipse cx="0" cy="26" rx="34" ry="10" fill="#F3E3C8"/>
     <rect x="-22" y="-8" width="44" height="34" rx="9" fill="#FFF6EA"/>
@@ -168,6 +172,7 @@
   </g>
 
   <!-- the phone, face up, one unread -->
+  <ellipse cx="98" cy="774" rx="44" ry="11" fill="#7A3B21" opacity="0.35"/>
   <g transform="translate(96,724) rotate(-8)">
     <rect x="-26" y="-40" width="54" height="86" rx="10" fill="#2A2430"/>
     <rect x="-20" y="-33" width="42" height="70" rx="6" fill="#9ED4CC"/>
@@ -178,10 +183,19 @@
   </g>
 
   <!-- a note, handwritten, not sent either -->
+  <ellipse cx="312" cy="778" rx="34" ry="8" fill="#7A3B21" opacity="0.3"/>
   <g transform="translate(310,758) rotate(5)">
     <rect x="-30" y="-16" width="60" height="34" rx="3" fill="#FFF6EA"/>
     <path d="M-20 -6 h40 M-20 2 h32 M-20 10 h24" stroke="#B0623E" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
   </g>
+
+  <!-- rim light on the chairs, facing the window -->
+  <path d="M82 596 h68 a18 18 0 0 1 18 18 v2 h-4 v-2 a14 14 0 0 0 -14 -14 h-68 Z" fill="#FFD98A" opacity="0.35"/>
+  <path d="M450 596 h68 a18 18 0 0 1 18 18 v2 h-4 v-2 a14 14 0 0 0 -14 -14 h-68 Z" fill="#FFD98A" opacity="0.35"/>
+
+  <!-- the quiet vignette that makes it a jacket, not a diagram -->
+  <rect width="600" height="800" fill="#3E2A3C" opacity="0.05"/>
+  <path d="M0 0 h600 v800 h-600 Z M40 40 Q300 8 560 40 L560 760 Q300 792 40 760 Z" fill-rule="evenodd" fill="#3E2A3C" opacity="0.06"/>
 
   <!-- colophon -->
   <text x="300" y="792" text-anchor="middle" font-size="12" letter-spacing="5" fill="#FFF6EA" opacity="0.8">KATHA · CONTEMPORARY ROMANCE</text>

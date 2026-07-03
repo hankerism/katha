@@ -285,12 +285,21 @@ export default async function BookDetailPage({
           </h2>
 
           <div className="mt-7 flex flex-col gap-6 sm:flex-row sm:items-center">
-            <span
-              aria-hidden="true"
-              className="grid size-20 shrink-0 place-items-center rounded-full bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))] font-heading text-xl font-semibold text-brand-secondary shadow-sm ring-1 ring-black/10"
-            >
-              {initialsOf(displayAuthor)}
-            </span>
+            {author?.avatar ? (
+              // eslint-disable-next-line @next/next/no-img-element -- uploaded avatar URLs; avoids next/image remote config
+              <img
+                src={author.avatar}
+                alt=""
+                className="size-20 shrink-0 rounded-full object-cover shadow-sm ring-1 ring-black/10"
+              />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="grid size-20 shrink-0 place-items-center rounded-full bg-[linear-gradient(150deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_58%,#000))] font-heading text-xl font-semibold text-brand-secondary shadow-sm ring-1 ring-black/10"
+              >
+                {initialsOf(displayAuthor)}
+              </span>
+            )}
 
             <div className="min-w-0">
               <p className="font-heading text-xl font-semibold text-foreground">

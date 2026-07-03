@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import Button from '@/components/ui/Button';
@@ -78,7 +79,7 @@ export default function HomePage() {
           </div>
 
           <div className="relative mx-auto w-full max-w-sm">
-            <a
+            <Link
               href="/library/table-for-two"
               aria-label="Read Table for Two by Hankerism"
               className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background rounded-[18px]"
@@ -91,7 +92,7 @@ export default function HomePage() {
                   className="h-full w-full object-cover"
                 />
               </article>
-            </a>
+            </Link>
           </div>
         </section>
       </section>

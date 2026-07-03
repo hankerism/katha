@@ -31,20 +31,26 @@ export default function FinalCTA() {
             beautiful Filipino storytelling in one peaceful place.
           </p>
 
-          {/* Buttons */}
+          {/* Buttons — the design system's radius, motion, and focus ring */}
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/library"
-              className="inline-flex h-14 items-center justify-center rounded-xl bg-secondary px-8 font-semibold text-secondary-foreground transition hover:opacity-90"
+              className="inline-flex h-14 items-center justify-center rounded-[18px] bg-secondary px-8 font-semibold text-secondary-foreground shadow-sm transition-[transform,box-shadow,filter] duration-200 ease-out motion-safe:hover:-translate-y-px hover:shadow-md hover:brightness-[1.02] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
             >
               Explore Library
             </Link>
 
             <Link
               href="/authors"
-              className="font-semibold text-primary-foreground hover:text-accent transition"
+              className="group inline-flex items-center gap-1.5 rounded-sm font-semibold text-primary-foreground transition-colors duration-200 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
             >
-              Become an Author →
+              Become an Author
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-200 motion-safe:group-hover:translate-x-0.5"
+              >
+                →
+              </span>
             </Link>
           </div>
         </div>
