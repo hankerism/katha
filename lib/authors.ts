@@ -46,6 +46,19 @@ export interface KathaAuthor {
  *  directly); keyed into the record below by the stable id. */
 const AUTHORED_AUTHORS: KathaAuthor[] = [
   {
+    /* The platform's first author — linked to a real account (userId), so the
+     * ladder ADOPTS this profile rather than creating a second identity. */
+    id: 'auth-abigail-marte',
+    userId: 'user-abigail-marte',
+    slug: 'abigail-marte',
+    displayName: 'Abigail Marte',
+    bio: 'KATHA’s first author. Writes about inherited libraries, dawn kitchens, and the correspondence hidden in ordinary rooms — margins, lists, and the hour before the house wakes.',
+    location: 'Manila',
+    avatar: null,
+    banner: null,
+    featured: true,
+  },
+  {
     id: 'auth-lakambini-reyes',
     userId: null,
     slug: 'lakambini-reyes',
@@ -87,7 +100,6 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
     location: 'Laguna',
     avatar: null,
     banner: null,
-    featured: true,
   },
   {
     id: 'auth-rafael-lim',

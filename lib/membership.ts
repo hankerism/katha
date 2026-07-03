@@ -265,6 +265,11 @@ export function completeAuthorProfile(input: AuthorProfileInput): Viewer {
   const displayName =
     input.displayName.trim() || `${user.firstName} ${user.lastName}`.trim();
 
+  // A catalogue author row already linked to this account (a seeded first
+  // author, or later a server-provisioned profile) is ADOPTED, not shadowed:
+  // its id and slug stay, so its published books connect to this Studio.
+  const seeded = getAllAuthors().find((author) => author.userId === user.id);
+
   const author: KathaAuthor = existing?.author
     ? {
         ...existing.author,
@@ -272,16 +277,23 @@ export function completeAuthorProfile(input: AuthorProfileInput): Viewer {
         bio: input.bio?.trim() ?? existing.author.bio,
         location: input.location?.trim() ?? existing.author.location,
       }
-    : {
-        id: newAuthorProfileId(),
-        userId: user.id,
-        slug: authorSlugFor(displayName),
-        displayName,
-        bio: input.bio?.trim() ?? '',
-        location: input.location?.trim() ?? '',
-        avatar: null,
-        banner: null,
-      };
+    : seeded
+      ? {
+          ...seeded,
+          displayName,
+          bio: input.bio?.trim() || seeded.bio,
+          location: input.location?.trim() || seeded.location,
+        }
+      : {
+          id: newAuthorProfileId(),
+          userId: user.id,
+          slug: authorSlugFor(displayName),
+          displayName,
+          bio: input.bio?.trim() ?? '',
+          location: input.location?.trim() ?? '',
+          avatar: null,
+          banner: null,
+        };
 
   writeRecord({ user, author });
   return getViewer();
