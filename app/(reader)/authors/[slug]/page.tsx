@@ -165,7 +165,21 @@ export default async function AuthorProfilePage({
             <h3 className="mt-8 font-body text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
               In the Library
             </h3>
-            <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {/* The grid caps its column count AND its width to the number of
+                titles, so a one- or two-book shelf reads as a deliberate,
+                curated row rather than a lone card stranded in an empty track.
+                Card width stays ~280px at every count. */}
+            <div
+              className={`mt-5 grid grid-cols-1 gap-6 ${
+                books.length === 1
+                  ? 'sm:max-w-[280px]'
+                  : books.length === 2
+                    ? 'sm:grid-cols-2 sm:max-w-[584px]'
+                    : books.length === 3
+                      ? 'sm:grid-cols-2 lg:grid-cols-3 lg:max-w-[888px]'
+                      : 'sm:grid-cols-2 lg:grid-cols-4'
+              }`}
+            >
               {books.map((book) => (
                 <BookCard
                   key={book.slug}
