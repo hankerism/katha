@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Button from '../Button';
 import { SearchIcon, MenuIcon, CloseIcon } from '@/components/ui/icons';
+import { useViewer } from '@/components/membership/use-viewer';
 /* ---------------------------------------------------------------------------
  * KATHA · Navbar
  * components/layout/Navbar.tsx
@@ -71,6 +72,8 @@ export default function Navbar() {
   const pathname = usePathname() ?? '/';
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const { viewer, loaded } = useViewer();
+  const isGuest = loaded && viewer.tier === 'guest';
 
   // Close the mobile menu whenever the route changes.
   useEffect(() => {
@@ -142,6 +145,16 @@ export default function Navbar() {
               <SearchIcon className="size-[1.15rem]" />
             </button>
 
+            {/* The invitation, quietly — guests only; members carry no chrome */}
+            {isGuest && (
+              <Link
+                href="/join"
+                className="hidden items-center rounded-full bg-primary px-5 py-2 font-body text-sm font-semibold text-primary-foreground shadow-sm transition-colors duration-200 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:inline-flex"
+              >
+                Join KATHA
+              </Link>
+            )}
+
             <button
               type="button"
               aria-label={open ? 'Close menu' : 'Open menu'}
@@ -196,6 +209,18 @@ export default function Navbar() {
           >
             Search
           </Button>
+          {isGuest && (
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={() => {
+                setOpen(false);
+                router.push('/join');
+              }}
+            >
+              Join KATHA
+            </Button>
+          )}
         </nav>
       </div>
     </header>
