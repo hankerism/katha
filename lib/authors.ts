@@ -60,16 +60,9 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
     displayName: 'Hankerism',
     bio: 'Some stories begin with grand adventures. Mine usually begin with ordinary days, quiet conversations, and someone becoming your favorite notification.',
     location: 'Philippines',
-    avatar: null,
+    avatar: '/authors/hankerism.jpg',
     banner: null,
     featured: true,
-    desk: [
-      {
-        title: 'Table for Two',
-        category: 'Contemporary Romance',
-        note: 'Currently writing — the first pages are taking shape inside KATHA’s Writing Studio.',
-      },
-    ],
   },
   {
     id: 'auth-lakambini-reyes',

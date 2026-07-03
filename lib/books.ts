@@ -559,11 +559,80 @@ const PANADERIA_OPENING: string[] = [
   'This book is the log of the two shops: the wall, the ledge, the cat who commutes over it, the customers who came in for bread and left with poetry or came in for poetry and left, always, with bread. Nineteen years of small trades faithfully recorded. Kettle\'s on. The ovens are lit next door — I can feel it in the bricks, right through the local history section. Everything in here smells like morning. Now you know why.',
 ];
 
+/** Table for Two — Hankerism; the house novel, serialized as it is written.
+ *  The prologue is the author's own text, VERBATIM (see also the Studio seed
+ *  in lib/studio/work-repository.ts) — never rewritten, never summarized. */
+const TABLE_FOR_TWO_PROLOGUE: string[] = [
+  'Some people fall in love all at once.',
+  'At least, that\'s how the stories usually tell it.',
+  'One glance across a crowded room.',
+  'One unforgettable conversation.',
+  'One perfect moment that changes everything.',
+  'Lianne never believed in that.',
+  'Maybe because she spent most of her waking hours talking to people she had never met. Eight hours every night, five nights a week, she answered emails, joined meetings, and solved problems for clients who only knew her through a webcam and a profile picture.',
+  'You\'d be surprised how much of a person\'s life could exist behind a screen.',
+  'And how much of it couldn\'t.',
+  'Adrian believed in routines.',
+  'Not in a boring way.',
+  'Just... quietly.',
+  'He liked arriving ten minutes early. Drinking the same coffee. Taking the same route home. Replying when he said he would. There was comfort in knowing what tomorrow looked like.',
+  'He didn\'t think that made him predictable.',
+  'He thought it made life a little easier.',
+  'If someone had asked either of them that Tuesday afternoon what they wanted from a dating app, neither would\'ve had an interesting answer.',
+  '"Conversation, maybe."',
+  '"Let\'s see."',
+  'Nothing dramatic.',
+  'Nothing worth writing a novel about.',
+  'Because that\'s the funny thing about ordinary days.',
+  'Most of them don\'t announce that they\'re about to change your life.',
+  'They just begin like any other Tuesday.',
+  'One person waking up at four in the afternoon.',
+  'Another packing up his laptop before six.',
+  'One person walking through familiar streets in Silang.',
+  'Another sitting in traffic somewhere in Alabang.',
+  'Two routines.',
+  'Two different clocks.',
+  'One message.',
+  'It wasn\'t love at first sight.',
+  'It wasn\'t destiny.',
+  'It wasn\'t even good timing.',
+  'It was simply two people who, without meaning to, started making room for each other inside lives that were already full.',
+  'Neither of them knew it yet.',
+  'But years later, if someone asked them where everything started...',
+  'Neither would remember the exact date.',
+  'They\'d remember something much smaller.',
+  'A notification.',
+  'A question about carbonara.',
+  'And the strange feeling that talking to a complete stranger somehow felt... easy.',
+  'Maybe that\'s how some love stories begin.',
+  'Not with fireworks.',
+  'Just with someone who quietly becomes your favorite notification.',
+];
+
 /* -- Catalogue ------------------------------------------------------------- */
 
 /** Authored as an array (a JSON payload / query result satisfies this shape
  *  directly); keyed into the record below. Order here is catalogue order. */
 const AUTHORED_BOOKS: KathaBook[] = [
+  {
+    /* The flagship — the platform's own author, publishing as she writes.
+     * Leads the catalogue so the newest release fronts every shelf. */
+    slug: 'table-for-two',
+    title: 'Table for Two',
+    authorId: 'auth-abigail-marte',
+    category: 'Contemporary Romance',
+    language: 'English / Filipino',
+    status: 'Ongoing',
+    updated: 'Today',
+    publishedAt: '2026-07-04',
+    cover: '/covers/table-for-two.svg',
+    featured: true,
+    synopsis:
+      'Lianne answers other people\'s emails all night from Silang. Adrian likes the same coffee at the same time in Alabang. Between them: a dating app neither expected much from, a question about carbonara, and two schedules that should never have lined up. Hankerism\'s debut novel is a quiet, hopeful romance about slow burns, late-night conversations, and the person who — without fireworks, without warning — becomes your favorite notification. New chapters as they are written.',
+    chapters: buildChapters([
+      { slug: 'prologue', title: 'Prologue', content: TABLE_FOR_TWO_PROLOGUE },
+    ]),
+  },
   {
     slug: 'ang-mga-pahina-ni-lola',
     title: 'Ang Mga Pahina ni Lola',
@@ -615,7 +684,6 @@ const AUTHORED_BOOKS: KathaBook[] = [
     updated: 'This week',
     publishedAt: '2026-03-14',
     cover: '/covers/ang-huling-tag-araw.svg',
-    featured: true,
     synopsis:
       'Ligaya comes home to sign the papers — nothing else, she tells the bus, the town, herself. But the blue gate still catches on the second push, the sea still keeps its appointment with the shore, and in a drawer upstairs her mother\'s letters have been holding their breath for eleven years. A luminous novel about the last summer a house is yours, and everything a family never said out loud.',
     chapters: buildChapters([

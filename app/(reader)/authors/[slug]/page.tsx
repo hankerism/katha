@@ -163,7 +163,7 @@ export default async function AuthorProfilePage({
         {books.length > 0 ? (
           <>
             <h3 className="mt-8 font-body text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-              Published
+              In the Library
             </h3>
             <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {books.map((book) => (

@@ -38,72 +38,60 @@ export default function HomePage() {
             <p className="flex items-center gap-3">
               <span className="h-px w-8 bg-accent" />
               <span className="text-xs font-semibold uppercase tracking-[0.22em] text-clay">
-                A Filipino-inspired digital library
+                New from KATHA · Contemporary Romance
               </span>
             </p>
 
             <h1 className="mt-6 text-[clamp(2.6rem,1.6rem+4vw,4.5rem)] font-bold leading-[1.05] tracking-tight">
-              Stories deserve a{' '}
-              <span className="font-logo italic text-primary">
-                beautiful
-              </span>{' '}
-              place to live.
+              Table{' '}
+              <span className="font-logo italic text-primary">for</span> Two
             </h1>
 
+            <p className="mt-3 font-logo text-lg italic text-muted-foreground">
+              by Hankerism
+            </p>
+
             <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              KATHA is a calm home for Filipino literature—novels, serials, and
-              short fiction gathered in one beautifully typeset space.
+              Two busy lives, one dating app, and a question about carbonara. A
+              quiet contemporary romance about timing, late-night
+              conversations, and the people who slowly become home — serialized
+              here as it is written.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button
                 variant="primary"
                 size="lg"
-                onClick={() => router.push('/library')}
+                onClick={() => router.push('/library/table-for-two')}
               >
-                Explore Library
+                Start Reading
               </Button>
 
               <Button
                 variant="secondary"
                 size="lg"
-                onClick={() => router.push('/authors')}
+                onClick={() => router.push('/library')}
               >
-                Become an Author
+                Explore Library
               </Button>
             </div>
           </div>
 
           <div className="relative mx-auto w-full max-w-sm">
-            <article className="aspect-[3/4] overflow-hidden rounded-[18px] bg-[linear-gradient(155deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_55%,#000))] shadow-xl ring-1 ring-black/10">
-              <div className="flex h-full flex-col justify-between p-8">
-                <div className="flex justify-between">
-                  <span className="font-logo text-lg tracking-[0.18em] text-brand-secondary">
-                    KATHA
-                  </span>
-
-                  <span className="text-xs uppercase text-brand-accent">
-                    Literary Fiction
-                  </span>
-                </div>
-
-                <div>
-                  <span className="mb-4 block h-px w-12 bg-brand-accent" />
-
-                  <h2 className="font-heading text-4xl font-bold text-brand-secondary">
-                    Ang Huling Tag-araw
-                  </h2>
-
-                  <p className="mt-3 text-brand-secondary/70">
-                    A KATHA Featured Novel
-                  </p>
-
-                  <p className="mt-6 font-logo text-xl italic text-brand-secondary">
-                    Lakambini Reyes
-                  </p>
-                </div>
-              </div>
-            </article>
+            <a
+              href="/library/table-for-two"
+              aria-label="Read Table for Two by Hankerism"
+              className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background rounded-[18px]"
+            >
+              <article className="aspect-[3/4] overflow-hidden rounded-[18px] shadow-xl ring-1 ring-black/10 transition-transform duration-300 ease-out motion-safe:group-hover:-translate-y-1.5">
+                {/* eslint-disable-next-line @next/next/no-img-element -- local SVG cover art */}
+                <img
+                  src="/covers/table-for-two.svg"
+                  alt="Cover of Table for Two by Hankerism"
+                  className="h-full w-full object-cover"
+                />
+              </article>
+            </a>
           </div>
         </section>
       </section>
