@@ -106,6 +106,15 @@ const AUTHORED_AUTHORS: KathaAuthor[] = [
     banner: null,
   },
   {
+    id: 'auth-abigail-marte',
+    slug: 'abigail-marte',
+    name: 'Abigail Marte',
+    bio: 'Writes in the Author Studio, where every KATHA story begins. Her first titles are still being written — quietly, and in her own time.',
+    location: 'Manila',
+    avatar: null,
+    banner: null,
+  },
+  {
     id: 'auth-mila-cruz',
     slug: 'mila-cruz',
     name: 'Mila Cruz',

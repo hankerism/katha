@@ -1,5 +1,3 @@
-import Navbar from '@/components/ui/layout/Navbar';
-import Footer from '@/components/ui/layout/Footer';
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Inter, Literata } from 'next/font/google';
 import './globals.css';
@@ -31,9 +29,10 @@ const inter = Inter({
  * KATHA · Root layout
  * app/layout.tsx
  *
- * The app shell: brand metadata (a `%s · KATHA` title template that every
- * page's title composes into), the self-hosted brand typefaces, and the
- * sticky Navbar above the routed content.
+ * The html shell only: brand metadata (a `%s · KATHA` title template that
+ * every page's title composes into) and the self-hosted brand typefaces.
+ * Product chrome lives with each product — app/(reader)/layout.tsx carries
+ * the Navbar + Footer, app/studio/layout.tsx carries the Studio shell.
  * ------------------------------------------------------------------------- */
 
 export const metadata: Metadata = {
@@ -66,18 +65,7 @@ export default function RootLayout({
       lang="en"
       className={`${cormorant.variable} ${literata.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Navbar />
-
-        <main id="main-content" className="flex-1">
-          {children}
-        </main>
-
-        {/* Site-wide footer. The immersive reader opts out via a CSS gate:
-            its page carries data-reader-page, and globals.css hides the
-            footer with body:has() — server-rendered correctly, no JS. */}
-        <Footer />
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

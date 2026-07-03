@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Navbar from '@/components/ui/layout/Navbar';
+import Footer from '@/components/ui/layout/Footer';
 import { BookOpenIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
@@ -15,9 +17,14 @@ export const metadata: Metadata = {
   title: 'Page not found',
 };
 
+/* Sits at the app root (outside the product route groups) so it catches every
+ * unmatched URL; it composes the reader chrome explicitly since the root
+ * layout carries none. */
 export default function NotFound() {
   return (
-    <div className="flex min-h-[70dvh] items-center justify-center px-5">
+    <>
+      <Navbar />
+      <div className="flex min-h-[70dvh] items-center justify-center px-5">
       <div className="flex max-w-md flex-col items-center text-center">
         <BookOpenIcon className="size-9 text-primary/40" />
         <p className="mt-6 font-body text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
@@ -45,7 +52,9 @@ export default function NotFound() {
             Search instead →
           </Link>
         </div>
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }

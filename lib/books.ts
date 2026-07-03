@@ -62,10 +62,12 @@ function estimateReadingTime(content: string[]): number {
 }
 
 /** Stamps `number` + `estimatedReadingTime` onto authored chapter data so those
- *  fields can never drift out of sync with order or content. */
-type AuthoredChapter = Pick<KathaChapter, 'slug' | 'title' | 'content'>;
+ *  fields can never drift out of sync with order or content. Exported: the
+ *  Author Studio runs the SAME transform when turning a draft into a book, so
+ *  derivation is never duplicated. */
+export type AuthoredChapter = Pick<KathaChapter, 'slug' | 'title' | 'content'>;
 
-function buildChapters(authored: AuthoredChapter[]): KathaChapter[] {
+export function buildChapters(authored: AuthoredChapter[]): KathaChapter[] {
   return authored.map((chapter, index) => ({
     number: index + 1,
     slug: chapter.slug,
