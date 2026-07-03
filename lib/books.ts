@@ -458,14 +458,13 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'ang-mga-pahina-ni-lola',
     title: 'Ang Mga Pahina ni Lola',
-    authorId: 'auth-abigail-marte',
+    authorId: 'auth-lakambini-reyes',
     category: 'Literary Fiction',
     language: 'Filipino / English',
     status: 'Completed',
     updated: 'Last month',
     publishedAt: '2025-06-12',
     cover: '/covers/ang-mga-pahina-ni-lola.svg',
-    featured: true,
     synopsis:
       'The will said: the library goes to the one who will talk back to it. Fourteen boxes arrive on a Tuesday — Lola\'s whole reading life, sixty years of margins, arguments, pressed jacaranda, and one word written at the end of every finished sitting. A novel about inheritance measured in annotations, and a granddaughter who finally takes up her half of the correspondence.',
     chapters: buildChapters([
@@ -480,7 +479,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'liwanag-sa-kusina',
     title: 'Liwanag sa Kusina',
-    authorId: 'auth-abigail-marte',
+    authorId: 'auth-migs-ferrer',
     category: 'Slice of Life',
     language: 'Filipino / English',
     status: 'Ongoing',
@@ -488,7 +487,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     publishedAt: '2026-02-07',
     cover: '/covers/liwanag-sa-kusina.svg',
     synopsis:
-      'The kitchen wakes before the house does, and these stories keep it company — the 5:41 light, the rice sighing in the pot, the fifth plate set on the second of the month for a sister eleven years gone. Hankerism\'s dawn vignettes serve small mercies warm: read one with your first coffee and try not to call your mother.',
+      'The kitchen wakes before the house does, and these stories keep it company — the 5:41 light, the rice sighing in the pot, the fifth plate set on the second of the month for a sister eleven years gone. Migs Ferrer\'s dawn vignettes serve small mercies warm: read one with your first coffee and try not to call your mother.',
     chapters: buildChapters([
       { slug: 'alas-singko-kwarenta-y-uno', title: 'Alas-Singko Kwarenta y Uno', content: KUSINA_OPENING },
       { slug: 'ang-unang-tricycle', title: 'Ang Unang Tricycle', content: KUSINA_CONTENT },
@@ -572,6 +571,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
     updated: '3 days ago',
     publishedAt: '2026-05-08',
     cover: '/covers/coffee-after-five.svg',
+    featured: true,
     synopsis:
       'The café closes at nine, but the good table — the one by the window, the one that fits exactly two — starts mattering at five. Dani makes the coffee. Marco keeps almost saying something. A warm, slow-burning romance about overtime hearts, shared outlets, and the ten minutes after your shift that quietly become the point of the day.',
     chapters: buildChapters([
@@ -606,7 +606,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'tomorrow-same-time',
     title: 'Tomorrow, Same Time?',
-    authorId: 'auth-isa-navarro',
+    authorId: 'auth-bea-cruz',
     category: 'Young Adult',
     language: 'Filipino / English',
     status: 'Ongoing',
@@ -626,7 +626,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'bayan-ng-mga-alon',
     title: 'Bayan ng mga Alon',
-    authorId: 'auth-tomas-reyes',
+    authorId: 'auth-emilio-santiago',
     category: 'Historical Fiction',
     language: 'Filipino / English',
     status: 'Ongoing',
@@ -667,7 +667,7 @@ const AUTHORED_BOOKS: KathaBook[] = [
   {
     slug: 'apartment-9b',
     title: 'Apartment 9B',
-    authorId: 'auth-cesar-madrigal',
+    authorId: 'auth-tomas-reyes',
     category: 'Mystery',
     language: 'English / Filipino',
     status: 'Completed',

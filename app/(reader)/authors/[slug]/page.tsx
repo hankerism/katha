@@ -96,8 +96,13 @@ export default async function AuthorProfilePage({
               </h1>
               <p className="mt-1.5 font-body text-sm text-muted-foreground">
                 {author.location}
-                {stats.categories.length > 0 && (
+                {stats.categories.length > 0 ? (
                   <> · {stats.categories.join(' · ')}</>
+                ) : (
+                  author.desk &&
+                  author.desk.length > 0 && (
+                    <> · {author.desk[0].category}</>
+                  )
                 )}
               </p>
             </div>
@@ -176,9 +181,14 @@ export default async function AuthorProfilePage({
             </div>
           </>
         ) : (
-          <p className="mt-7 max-w-xl font-body text-base leading-relaxed text-muted-foreground">
-            {author.displayName}&rsquo;s first title is on its way to the shelves.
-          </p>
+          /* No published titles AND no manuscript underway → the gentle line.
+             When the desk section follows, it speaks for itself. */
+          (!author.desk || author.desk.length === 0) && (
+            <p className="mt-7 max-w-xl font-body text-base leading-relaxed text-muted-foreground">
+              {author.displayName}&rsquo;s first title is on its way to the
+              shelves.
+            </p>
+          )
         )}
 
         {/* On the Writing Desk — manuscripts in progress, no covers-of-nothing */}
@@ -197,6 +207,7 @@ export default async function AuthorProfilePage({
                     {item.category}
                   </p>
                   <p className="mt-1 font-heading text-lg text-foreground">
+                    <span aria-hidden="true">✍️ </span>
                     {item.title}
                   </p>
                   {item.note && (
@@ -237,7 +248,7 @@ export default async function AuthorProfilePage({
                     name={other.displayName}
                     href={`/authors/${other.slug}`}
                     bio={other.bio}
-                    genreLabel={otherStats.categories[0] ?? 'New voice'}
+                    genreLabel={otherStats.categories[0] ?? other.desk?.[0]?.category ?? 'New voice'}
                     bookCount={otherStats.bookCount}
                     avatar={other.avatar}
                   />
