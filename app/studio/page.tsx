@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { getCurrentAuthor, getCurrentAuthorId } from '@/lib/studio/current-author';
+import { getCurrentAuthorId } from '@/lib/studio/current-author';
+import { useViewer } from '@/components/membership/use-viewer';
 import { useWorks } from '@/components/studio/use-works';
 import WorkCard from '@/components/studio/WorkCard';
 import { ArrowRightIcon, BookOpenIcon } from '@/components/ui/icons';
@@ -17,8 +18,10 @@ import { ArrowRightIcon, BookOpenIcon } from '@/components/ui/icons';
  * ------------------------------------------------------------------------- */
 
 export default function StudioHomePage() {
-  const author = getCurrentAuthor();
-  const firstName = (author?.displayName ?? 'Writer').split(' ')[0];
+  // The greeting addresses the PERSON (the account); the shell's identity
+  // chip carries the byline — which may be a pen name.
+  const { viewer } = useViewer();
+  const firstName = viewer.user?.firstName ?? 'Writer';
   const { works, loaded } = useWorks(getCurrentAuthorId());
 
   const drafts = works.filter((work) => work.lifecycle === 'draft');
