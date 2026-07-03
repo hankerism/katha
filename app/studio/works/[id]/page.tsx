@@ -9,8 +9,10 @@ import {
   manuscriptWordCount,
   newChapterId,
   slugifyTitle,
+  validateForPublish,
   workStats,
   type StudioChapter,
+  type StudioWork,
   type WorkBookMeta,
 } from '@/lib/studio/work';
 import { relativeTimeLabel } from '@/lib/relative-time';
@@ -51,7 +53,14 @@ export default function WorkWorkspacePage() {
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [confirmingRemove, setConfirmingRemove] = useState<string | null>(null);
+  const [siblings, setSiblings] = useState<StudioWork[]>([]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // The author's other works, for slug-collision checks at publish time.
+  useEffect(() => {
+    if (!work) return;
+    void workRepository.listWorks(work.authorId).then(setSiblings);
+  }, [work]);
 
   useEffect(() => {
     if (work && !meta) setMeta(work.book);
@@ -115,6 +124,18 @@ export default function WorkWorkspacePage() {
     setConfirmingRemove(null);
   }
 
+  async function publish() {
+    if (!work) return;
+    const next = await workRepository.publishWork(work.id);
+    if (next) setWork(next);
+  }
+
+  async function unpublish() {
+    if (!work) return;
+    const next = await workRepository.unpublishWork(work.id);
+    if (next) setWork(next);
+  }
+
   async function archive() {
     if (!work) return;
     await workRepository.archiveWork(work.id);
@@ -153,6 +174,9 @@ export default function WorkWorkspacePage() {
 
   const stats = workStats(work);
   const isArchived = work.lifecycle === 'archived';
+  const isPublished = work.lifecycle === 'published';
+  const issues = validateForPublish(work, siblings);
+  const hasPages = work.chapters.length > 0;
 
   return (
     <div className="container-katha max-w-4xl py-12 md:py-16">
@@ -194,6 +218,14 @@ export default function WorkWorkspacePage() {
             <ClockIcon className="size-3.5" />
             about {stats.readingMinutes} min
           </span>
+          {hasPages && (
+            <Link
+              href={`/studio/works/${work.id}/preview`}
+              className="font-body text-sm font-medium text-primary transition-colors hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+            >
+              Preview as a reader →
+            </Link>
+          )}
         </p>
       </header>
 
@@ -425,18 +457,89 @@ export default function WorkWorkspacePage() {
               Remove forever
             </button>
           </div>
-        ) : (
-          <div className="mt-4 flex flex-wrap items-center gap-6">
-            <p className="font-body text-sm text-muted-foreground">
-              Not every story needs to stay on the desk.
+        ) : isPublished ? (
+          <div className="mt-4 space-y-4">
+            <p className="font-body text-sm leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground">
+                In the Library
+              </span>{' '}
+              —{' '}
+              {work.publishedAt
+                ? relativeTimeLabel(work.publishedAt, 'placed').toLowerCase()
+                : 'on the shelves'}
+              . It lives on this device for now; the public shelves arrive
+              with author accounts.
             </p>
-            <button
-              type="button"
-              onClick={() => void archive()}
-              className="font-body text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-            >
-              Archive this work
-            </button>
+            <div className="flex flex-wrap items-center gap-6">
+              <Link
+                href={`/studio/works/${work.id}/preview`}
+                className="font-body text-sm font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              >
+                See it as readers do →
+              </Link>
+              <button
+                type="button"
+                onClick={() => void unpublish()}
+                className="font-body text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              >
+                Take it back to drafts
+              </button>
+              <button
+                type="button"
+                onClick={() => void archive()}
+                className="font-body text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              >
+                Archive this work
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-4 space-y-5">
+            {issues.length > 0 ? (
+              <div>
+                <p className="font-body text-sm leading-relaxed text-muted-foreground">
+                  A few things before this work takes its place in the
+                  Library:
+                </p>
+                <ul className="mt-3 space-y-2">
+                  {issues.map((issue) => (
+                    <li
+                      key={issue.key}
+                      className="flex items-start gap-2.5 font-body text-sm leading-relaxed text-muted-foreground"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-[7px] size-1.5 shrink-0 rounded-full bg-accent"
+                      />
+                      {issue.message}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="font-body text-sm leading-relaxed text-muted-foreground">
+                This work reads ready. When you are, it takes its place on
+                the shelves.
+              </p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-6">
+              <button
+                type="button"
+                onClick={() => void publish()}
+                disabled={issues.length > 0}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3 font-body text-sm font-semibold text-primary-foreground shadow-sm transition-colors duration-200 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                Place it in the Library
+              </button>
+              <button
+                type="button"
+                onClick={() => void archive()}
+                className="font-body text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              >
+                Archive this work
+              </button>
+            </div>
           </div>
         )}
       </section>
