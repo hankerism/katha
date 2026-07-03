@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- Ang Huling Tag-araw — the last summer: a low sun over a layered sea -->
+  <rect width="600" height="800" fill="#F8F5F1"/>
+  <rect y="470" width="600" height="330" fill="#5C3B28"/>
+  <rect y="470" width="600" height="6" fill="#D4A646"/>
+  <circle cx="300" cy="470" r="120" fill="#D4A646" opacity="0.92"/>
+  <circle cx="300" cy="470" r="120" fill="none" stroke="#F8F5F1" stroke-width="2" opacity="0.5"/>
+  <path d="M0 560 Q150 540 300 560 T600 560" fill="none" stroke="#F8F5F1" stroke-width="2" opacity="0.35"/>
+  <path d="M0 620 Q150 600 300 620 T600 620" fill="none" stroke="#F8F5F1" stroke-width="2" opacity="0.25"/>
+  <path d="M0 680 Q150 660 300 680 T600 680" fill="none" stroke="#D4A646" stroke-width="2" opacity="0.35"/>
+  <text x="300" y="96" text-anchor="middle" font-size="17" letter-spacing="8" fill="#B56A44">KATHA</text>
+  <rect x="270" y="128" width="60" height="2" fill="#D4A646"/>
+  <text x="300" y="215" text-anchor="middle" font-size="58" font-weight="bold" fill="#33210F">Ang Huling</text>
+  <text x="300" y="285" text-anchor="middle" font-size="58" font-weight="bold" fill="#33210F">Tag-araw</text>
+  <text x="300" y="345" text-anchor="middle" font-size="21" font-style="italic" fill="#5C3B28">Lakambini Reyes</text>
+  <text x="300" y="756" text-anchor="middle" font-size="12" letter-spacing="5" fill="#F8F5F1" opacity="0.65">A KATHA NOVEL</text>
+</svg>

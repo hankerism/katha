@@ -176,6 +176,8 @@ export function workToBook(work: StudioWork): KathaBook {
     language: work.book.language,
     status: work.book.status,
     updated: 'This week',
+    publishedAt: work.publishedAt ?? work.updatedAt,
+    cover: null,
     synopsis: work.book.synopsis,
     chapters: buildChapters(
       work.chapters.map((chapter, index) => ({

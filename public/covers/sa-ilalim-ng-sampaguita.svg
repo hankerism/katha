@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- Sa Ilalim ng Sampaguita — blossoms drifting over warm clay -->
+  <rect width="600" height="800" fill="#B56A44"/>
+  <rect y="560" width="600" height="240" fill="#F8F5F1"/>
+  <rect y="556" width="600" height="4" fill="#D4A646"/>
+  <g id="blossom" fill="#F8F5F1">
+    <g transform="translate(150,180)">
+      <ellipse rx="16" ry="30" transform="rotate(0)"/><ellipse rx="16" ry="30" transform="rotate(72)"/>
+      <ellipse rx="16" ry="30" transform="rotate(144)"/><ellipse rx="16" ry="30" transform="rotate(216)"/>
+      <ellipse rx="16" ry="30" transform="rotate(288)"/><circle r="9" fill="#D4A646"/>
+    </g>
+    <g transform="translate(452,120) scale(0.7)">
+      <ellipse rx="16" ry="30"/><ellipse rx="16" ry="30" transform="rotate(72)"/>
+      <ellipse rx="16" ry="30" transform="rotate(144)"/><ellipse rx="16" ry="30" transform="rotate(216)"/>
+      <ellipse rx="16" ry="30" transform="rotate(288)"/><circle r="9" fill="#D4A646"/>
+    </g>
+    <g transform="translate(360,320) scale(0.5)" opacity="0.85">
+      <ellipse rx="16" ry="30"/><ellipse rx="16" ry="30" transform="rotate(72)"/>
+      <ellipse rx="16" ry="30" transform="rotate(144)"/><ellipse rx="16" ry="30" transform="rotate(216)"/>
+      <ellipse rx="16" ry="30" transform="rotate(288)"/><circle r="9" fill="#D4A646"/>
+    </g>
+    <g transform="translate(110,400) scale(0.4)" opacity="0.7">
+      <ellipse rx="16" ry="30"/><ellipse rx="16" ry="30" transform="rotate(72)"/>
+      <ellipse rx="16" ry="30" transform="rotate(144)"/><ellipse rx="16" ry="30" transform="rotate(216)"/>
+      <ellipse rx="16" ry="30" transform="rotate(288)"/><circle r="9" fill="#D4A646"/>
+    </g>
+  </g>
+  <text x="300" y="640" text-anchor="middle" font-size="46" font-weight="bold" fill="#33210F">Sa Ilalim ng</text>
+  <text x="300" y="696" text-anchor="middle" font-size="46" font-weight="bold" fill="#33210F">Sampaguita</text>
+  <text x="300" y="744" text-anchor="middle" font-size="20" font-style="italic" fill="#B56A44">Clara Mendoza</text>
+  <text x="300" y="80" text-anchor="middle" font-size="17" letter-spacing="8" fill="#F8F5F1">KATHA</text>
+</svg>

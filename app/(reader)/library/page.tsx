@@ -71,6 +71,7 @@ function toCard(book: KathaBook) {
       key={book.slug}
       title={book.title}
       author={authorName(book.authorId)}
+      cover={book.cover}
       category={book.category}
       chapters={book.chapters.length}
       featured={book.featured}

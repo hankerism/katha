@@ -46,6 +46,11 @@ export interface KathaBook {
   language: string;
   status: string;
   updated: string;
+  /** ISO date the book joined the shelves — displayed as "Published …". */
+  publishedAt: string;
+  /** Cover image URL (/covers/*.svg for the catalogue; a data URL for
+   *  Studio-uploaded covers). Null → the branded placeholder cover. */
+  cover: string | null;
   synopsis: string;
   /** Editorial pick — surfaces on the featured shelves. */
   featured?: boolean;
@@ -185,6 +190,8 @@ const AUTHORED_BOOKS: KathaBook[] = [
     language: 'Filipino / English',
     status: 'Ongoing',
     updated: 'This week',
+    publishedAt: '2026-03-14',
+    cover: '/covers/ang-huling-tag-araw.svg',
     featured: true,
     synopsis:
       'A tender literary novel about memory, family, and the final summer before everything changes. Set between Manila and a quiet coastal town, Ang Huling Tag-araw follows a young woman returning home to confront old letters, unfinished grief, and the kind of love that never fully leaves.',
@@ -206,6 +213,8 @@ const AUTHORED_BOOKS: KathaBook[] = [
     language: 'Filipino / English',
     status: 'Completed',
     updated: 'Last month',
+    publishedAt: '2025-11-02',
+    cover: '/covers/mga-liham-sa-dilim.svg',
     featured: true,
     synopsis:
       'A slim cycle of prose poems written as letters to the dark — brownouts, candlelight, the hour after the last jeepney. J. Salvador turns the nightly failures of the grid into a correspondence with everything the light leaves out.',
@@ -225,6 +234,8 @@ const AUTHORED_BOOKS: KathaBook[] = [
     language: 'Filipino / English',
     status: 'Ongoing',
     updated: 'This week',
+    publishedAt: '2026-01-19',
+    cover: '/covers/ang-bahay-sa-buwan.svg',
     featured: true,
     synopsis:
       'Once a month, on the full moon, the Salazar house quietly leaves for the moon and comes back by morning. A family saga told in lunar cycles, about the errands of houses, the habits of grief, and what it costs a home to love the quiet.',
@@ -245,6 +256,8 @@ const AUTHORED_BOOKS: KathaBook[] = [
     language: 'Filipino / English',
     status: 'Ongoing',
     updated: '3 days ago',
+    publishedAt: '2026-05-08',
+    cover: '/covers/sa-ilalim-ng-sampaguita.svg',
     featured: true,
     synopsis:
       'Every Friday, Elias buys a garland he gives to no one from the sampaguita stall by the church steps. A slow, warm romance about flowers sold at dusk, tuition arithmetic, and the courage it takes to say who the flowers are for.',
@@ -265,6 +278,8 @@ const AUTHORED_BOOKS: KathaBook[] = [
     language: 'Filipino / English',
     status: 'Completed',
     updated: '2 weeks ago',
+    publishedAt: '2025-08-30',
+    cover: '/covers/huling-tren-pauwi.svg',
     synopsis:
       'Linked vignettes from the 11:42 — the last train home. A cake missing its party, nurses comparing blisters, a rehearsed apology that gets worse on purpose. Rafael Lim rides the length of the line and finds the whole city in one carriage.',
     chapters: buildChapters([
@@ -283,6 +298,8 @@ const AUTHORED_BOOKS: KathaBook[] = [
     language: 'Filipino / English',
     status: 'Ongoing',
     updated: 'Yesterday',
+    publishedAt: '2026-06-21',
+    cover: '/covers/mga-tala-sa-ulan.svg',
     synopsis:
       'Eleven straight days of rain, one unanswered message, and a notebook that cannot laugh. A rainy-season diary about class suspensions, sari-sari store kwentuhan, and figuring out who you are when nobody expects you to be anything.',
     chapters: buildChapters([
@@ -301,6 +318,8 @@ const AUTHORED_BOOKS: KathaBook[] = [
     language: 'Filipino / English',
     status: 'Ongoing',
     updated: 'Last week',
+    publishedAt: '2025-09-15',
+    cover: '/covers/bayan-ng-mga-alon.svg',
     synopsis:
       'San Isidro de las Olas, 1898: the ships change flags, the proclamations change hands, and a fishing town keeps its two calendars — the printed one and the one the sea writes nightly. A novel about the people history assigns to surviving.',
     chapters: buildChapters([
@@ -320,6 +339,8 @@ const AUTHORED_BOOKS: KathaBook[] = [
     language: 'Filipino / English',
     status: 'Ongoing',
     updated: 'This week',
+    publishedAt: '2026-04-03',
+    cover: '/covers/ang-mahiwagang-estasyon.svg',
     synopsis:
       'The station appears only to those who have missed something important, and the fare is a memory you will never have back. Odessa pays, boards, and learns what the departures board means by "Home, But Earlier." A portal fantasy about what travel costs.',
     chapters: buildChapters([
@@ -367,6 +388,7 @@ export interface BookSearchRecord {
   title: string;
   authorId: string;
   category: string;
+  cover: string | null;
   chapters: Array<{ number: number; slug: string; title: string }>;
 }
 
@@ -376,6 +398,7 @@ export function getSearchIndex(): BookSearchRecord[] {
     title: book.title,
     authorId: book.authorId,
     category: book.category,
+    cover: book.cover,
     chapters: book.chapters.map(({ number, slug, title }) => ({
       number,
       slug,

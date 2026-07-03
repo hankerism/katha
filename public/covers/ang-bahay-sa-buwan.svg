@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- Ang Bahay sa Buwan — a small house, at home on the moon -->
+  <rect width="600" height="800" fill="#33210F"/>
+  <circle cx="410" cy="250" r="150" fill="#F8F5F1"/>
+  <circle cx="360" cy="210" r="16" fill="#33210F" opacity="0.08"/>
+  <circle cx="460" cy="300" r="24" fill="#33210F" opacity="0.06"/>
+  <circle cx="440" cy="190" r="10" fill="#33210F" opacity="0.07"/>
+  <!-- the house, roof and window, standing on the moon's crown -->
+  <rect x="386" y="150" width="48" height="38" fill="#5C3B28"/>
+  <path d="M380 152 L410 122 L440 152 Z" fill="#B56A44"/>
+  <rect x="402" y="166" width="14" height="14" fill="#D4A646"/>
+  <g fill="#F8F5F1" opacity="0.75">
+    <circle cx="110" cy="120" r="2"/><circle cx="180" cy="80" r="1.6"/><circle cx="90" cy="300" r="1.8"/>
+    <circle cx="520" cy="90" r="2"/><circle cx="150" cy="420" r="1.6"/><circle cx="60" cy="200" r="1.4"/>
+    <circle cx="240" cy="150" r="1.5"/><circle cx="530" cy="420" r="1.8"/>
+  </g>
+  <text x="300" y="580" text-anchor="middle" font-size="54" font-weight="bold" fill="#F8F5F1">Ang Bahay</text>
+  <text x="300" y="646" text-anchor="middle" font-size="54" font-weight="bold" fill="#F8F5F1">sa Buwan</text>
+  <text x="300" y="700" text-anchor="middle" font-size="21" font-style="italic" fill="#D4A646">Noemi Bautista</text>
+  <text x="300" y="96" text-anchor="middle" font-size="17" letter-spacing="8" fill="#D4A646">KATHA</text>
+  <text x="300" y="766" text-anchor="middle" font-size="12" letter-spacing="5" fill="#F8F5F1" opacity="0.5">MAGICAL REALISM</text>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Georgia, 'Times New Roman', serif">
+  <!-- Liwanag sa Kusina — dawn through a kitchen window, light on the table -->
+  <rect width="600" height="800" fill="#33210F"/>
+  <!-- window -->
+  <rect x="170" y="120" width="260" height="320" fill="#D4A646" opacity="0.92"/>
+  <rect x="170" y="120" width="260" height="320" fill="none" stroke="#F8F5F1" stroke-width="8"/>
+  <line x1="300" y1="120" x2="300" y2="440" stroke="#F8F5F1" stroke-width="8"/>
+  <line x1="170" y1="280" x2="430" y2="280" stroke="#F8F5F1" stroke-width="8"/>
+  <!-- light spilling onto the table -->
+  <path d="M170 440 L110 620 L490 620 L430 440 Z" fill="#D4A646" opacity="0.28"/>
+  <rect x="70" y="620" width="460" height="8" fill="#F8F5F1" opacity="0.85"/>
+  <!-- a cup, steaming -->
+  <g>
+    <rect x="272" y="576" width="44" height="36" rx="6" fill="#F8F5F1"/>
+    <path d="M316 584 q22 8 0 20" fill="none" stroke="#F8F5F1" stroke-width="6"/>
+    <path d="M286 560 q6 -10 0 -20 M302 560 q6 -10 0 -20" fill="none" stroke="#F8F5F1" stroke-width="3" opacity="0.7"/>
+  </g>
+  <text x="300" y="96" text-anchor="middle" font-size="17" letter-spacing="8" fill="#D4A646">KATHA</text>
+  <text x="300" y="700" text-anchor="middle" font-size="50" font-weight="bold" fill="#F8F5F1">Liwanag</text>
+  <text x="300" y="758" text-anchor="middle" font-size="50" font-weight="bold" fill="#F8F5F1">sa Kusina</text>
+  <text x="300" y="792" text-anchor="middle" font-size="19" font-style="italic" fill="#D4A646">Abigail Marte</text>
+</svg>

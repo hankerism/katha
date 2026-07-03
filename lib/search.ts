@@ -41,6 +41,8 @@ export interface SearchableBook {
   title: string;
   authorId: string;
   category: string;
+  /** Cover URL, passed through to book results for the cards. */
+  cover?: string | null;
   chapters: SearchableChapter[];
 }
 
@@ -60,6 +62,7 @@ export interface BookResult {
   titleRanges: MatchRange[];
   author: string;
   category: string;
+  cover: string | null;
   chapterCount: number;
   href: string;
   score: number;
@@ -380,6 +383,7 @@ export function searchCatalogue(
         titleRanges,
         author: authorDisplay,
         category: book.category,
+        cover: book.cover ?? null,
         chapterCount: book.chapters.length,
         href: `/library/${book.slug}`,
         score: combinedMatch

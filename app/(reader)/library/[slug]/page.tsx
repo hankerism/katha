@@ -86,12 +86,17 @@ export default async function BookDetailPage({
         </div>
 
         <div className="container-katha grid gap-12 py-16 md:py-24 lg:grid-cols-[minmax(0,320px)_1fr] lg:gap-16">
-          {/* Cover — decorative, in the brand register */}
-          <div
-            aria-hidden="true"
-            className="mx-auto w-full max-w-[280px] lg:mx-0 lg:max-w-none"
-          >
-            <div className="relative aspect-[3/4] overflow-hidden rounded-[18px] bg-[linear-gradient(155deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_55%,#000))] shadow-xl ring-1 ring-black/10">
+          {/* Cover — the book's own art, or the brand placeholder */}
+          <div className="mx-auto w-full max-w-[280px] lg:mx-0 lg:max-w-none">
+            {book.cover ? (
+              // eslint-disable-next-line @next/next/no-img-element -- covers are local SVGs or uploaded data URLs
+              <img
+                src={book.cover}
+                alt={`Cover of ${book.title} by ${displayAuthor}`}
+                className="aspect-[3/4] w-full rounded-[18px] object-cover shadow-xl ring-1 ring-black/10"
+              />
+            ) : (
+            <div aria-hidden="true" className="relative aspect-[3/4] overflow-hidden rounded-[18px] bg-[linear-gradient(155deg,var(--color-brand-primary),color-mix(in_oklab,var(--color-brand-primary)_55%,#000))] shadow-xl ring-1 ring-black/10">
               <span className="absolute inset-0 bg-[radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.16),transparent_55%)]" />
               <span className="absolute inset-y-0 left-0 w-3 bg-[linear-gradient(to_right,rgba(0,0,0,0.30),transparent)]" />
               <span className="absolute inset-y-0 left-3 w-px bg-brand-accent/40" />
@@ -115,6 +120,7 @@ export default async function BookDetailPage({
                 </div>
               </div>
             </div>
+            )}
           </div>
 
           {/* Details */}
@@ -155,6 +161,13 @@ export default async function BookDetailPage({
                 about {minutes} min
               </span>
               <span>{book.language}</span>
+              <span>
+                Published{' '}
+                {new Date(book.publishedAt).toLocaleDateString('en-PH', {
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </span>
               <span>Updated {book.updated.toLowerCase()}</span>
             </div>
 
@@ -248,6 +261,7 @@ export default async function BookDetailPage({
                 key={other.slug}
                 title={other.title}
                 author={authorName(other.authorId)}
+                cover={other.cover}
                 category={other.category}
                 chapters={other.chapters.length}
                 href={`/library/${other.slug}`}

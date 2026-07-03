@@ -51,6 +51,7 @@ export default function FeaturedBooks() {
               key={book.slug}
               title={book.title}
               author={authorName(book.authorId)}
+              cover={book.cover}
               category={book.category}
               featured={book.featured}
               chapters={book.chapters.length}

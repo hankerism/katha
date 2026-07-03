@@ -92,6 +92,7 @@ export default function SearchResults({
                 <BookCard
                   title={book.title}
                   author={book.author}
+                  cover={book.cover}
                   category={book.category}
                   chapters={book.chapterCount}
                   href={book.href}

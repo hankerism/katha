@@ -161,6 +161,7 @@ export default async function AuthorProfilePage({
                 key={book.slug}
                 title={book.title}
                 author={author.displayName}
+                cover={book.cover}
                 category={book.category}
                 chapters={book.chapters.length}
                 featured={book.featured}
