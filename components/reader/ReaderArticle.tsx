@@ -12,12 +12,12 @@ import { ClockIcon } from '@/components/ui/icons';
  * only.
  *
  * Rhythm & sizing are intentional:
- *   • The body font-size / line-height follow the reader's Text Size preference
- *     via --reader-font-size / --reader-line-height (set on the reader wrapper),
- *     so Small/Medium/Large actually change the prose. A clamp() fallback keeps
+ *   • The body typography lives in .reader-prose (globals.css), driven by the
+ *     preference variables set on the reader wrapper — Text Size, Line Height,
+ *     and Paragraph Spacing all actually change the prose. Its fallbacks keep
  *     it sensible if the component is used outside the reader shell.
- *   • Paragraph spacing is em-based (space-y-[1.5em]), so the gaps scale with
- *     the chosen text size instead of staying fixed.
+ *   • Paragraph spacing is em-based, so the gaps scale with the chosen text
+ *     size instead of staying fixed.
  *
  * This component carries NO width or outer padding of its own — the caller's
  * page surface owns the measure and the book-margin padding.
@@ -71,18 +71,12 @@ export default function ReaderArticle({
         <div aria-hidden="true" className="mx-auto mt-10 h-px w-12 bg-border" />
       </header>
 
-      {/* Body — size + line-height follow the Text Size preference, nudged up
-          a touch for long-form comfort (still derived from the vars, never a
-          fixed size); paragraph spacing scales with the text via em units.
-          Colour is inherited from the warm .reading-surface paper. */}
-      <div
-        className="mt-14 space-y-[1.9em]"
-        style={{
-          fontSize:
-            'calc(var(--reader-font-size, clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem)) * 1.06)',
-          lineHeight: 'calc(var(--reader-line-height, 1.85) * 1.05)',
-        }}
-      >
+      {/* Body — all typography (size, leading, paragraph rhythm) comes from
+          .reader-prose in globals.css, driven by the preference variables on
+          the reader shell. Nothing here hardcodes a value, so this component
+          stays purely presentational. Colour is inherited from the warm
+          .reading-surface paper. */}
+      <div className="reader-prose mt-14">
         {content.map((paragraph, i) => (
           <p
             key={i}

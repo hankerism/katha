@@ -124,8 +124,11 @@ export default async function ReaderPage({
 
           {/* Reading canvas — a calm sheet of paper floating on the reader
               surface: centered, narrow measure, generous breathing room. */}
+          {/* The column measure follows the Reading Width preference via
+              --reader-measure (set on the reader shell); the fallback is the
+              original 680px, which Medium reproduces exactly. */}
           <main className="flex flex-1 justify-center px-4 py-8 sm:px-8 sm:py-12 lg:px-12">
-            <div className="w-full max-w-[680px]">
+            <div className="w-full max-w-[var(--reader-measure,680px)]">
               {/* The page — the warm reader surface (not a white card): a subtle
                   border, soft elevation, a minimum page height so short chapters
                   still fill the sheet, and an understated end-of-chapter footer

@@ -653,18 +653,41 @@
   }
   .dark .reader-dropcap > p:first-of-type::first-letter { color: var(--accent); }
 
-  /* — Reader preferences (text size · width) ————————————————————— */
-  /* Set on the reading-surface wrapper. `--reader-font-size` and
-     `--reader-line-height` cascade into `.reader`; `--reader-measure` feeds the
-     reading column's width (e.g. `max-width: var(--reader-measure)`).
-     The Medium values mirror what `.reader` already used, so Medium = default. */
-  .reader-size-small  { --reader-font-size: 1rem;                                  --reader-line-height: 1.8;  }
-  .reader-size-medium { --reader-font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);   --reader-line-height: 1.85; }
-  .reader-size-large  { --reader-font-size: clamp(1.1875rem, 1.05rem + 0.7vw, 1.4375rem); --reader-line-height: 1.9;  }
+  /* — Reader preferences (theme · size · leading · width · spacing) ——————— */
+  /* Set on the reading-surface wrapper; each scale sets one variable that
+     cascades into `.reader` / `.reader-prose` and the reading column. Each
+     "Medium"/"Normal" value mirrors the reader's original appearance, so the
+     defaults change nothing. Font size and line height are independent scales
+     (they were previously welded together in .reader-size-*). Width is in rem
+     — `ch` would resolve against the wrapper's UI font, not the prose — and
+     Medium (42.5rem = 680px) preserves the column's original measure. */
+  .reader-size-small  { --reader-font-size: 1rem; }
+  .reader-size-medium { --reader-font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem); }
+  .reader-size-large  { --reader-font-size: clamp(1.1875rem, 1.05rem + 0.7vw, 1.4375rem); }
 
-  .reader-width-narrow { --reader-measure: 58ch; }
-  .reader-width-medium { --reader-measure: 68ch; }
-  .reader-width-wide   { --reader-measure: 82ch; }
+  .reader-leading-compact { --reader-line-height: 1.7;  }
+  .reader-leading-normal  { --reader-line-height: 1.85; }
+  .reader-leading-relaxed { --reader-line-height: 2;    }
+
+  .reader-width-narrow { --reader-measure: 36rem;   }
+  .reader-width-medium { --reader-measure: 42.5rem; }
+  .reader-width-wide   { --reader-measure: 50rem;   }
+
+  .reader-spacing-tight  { --reader-paragraph-spacing: 1.4em; }
+  .reader-spacing-normal { --reader-paragraph-spacing: 1.9em; }
+  .reader-spacing-loose  { --reader-paragraph-spacing: 2.4em; }
+
+  /* The chapter prose inside ReaderArticle. The long-form comfort factors
+     (×1.06 size, ×1.05 leading) that used to be inline in the component live
+     here with the rest of the reader typography; paragraph rhythm scales with
+     the text via em. The fallbacks reproduce the Medium/Normal values so the
+     prose is correct even outside the preferences shell (e.g. Studio preview
+     before its wrapper mounts). */
+  .reader-prose {
+    font-size: calc(var(--reader-font-size, clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem)) * 1.06);
+    line-height: calc(var(--reader-line-height, 1.85) * 1.05);
+  }
+  .reader-prose > p + p { margin-top: var(--reader-paragraph-spacing, 1.9em); }
 
   /* — Utility flourishes ———————————————————————————————————— */
   .text-gold-gradient {

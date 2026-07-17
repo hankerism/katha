@@ -1,158 +1,49 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { readerPreferenceClasses, readerPreferencesBootstrapScript } from '@/lib/reader-preference-selectors';
+import { useReaderPreferences } from './use-reader-preferences';
+import ReaderPreferencesPanel from './ReaderPreferencesPanel';
+import InlineScript from '@/components/ui/InlineScript';
 
-interface ReaderPreferencesState {
-  size: 'small' | 'medium' | 'large';
-  width: 'narrow' | 'medium' | 'wide';
-  theme: 'light' | 'sepia' | 'dark';
-}
+/* ---------------------------------------------------------------------------
+ * KATHA · ReaderPreferences
+ * components/reader/ReaderPreferences.tsx
+ *
+ * The reader shell: wraps the reading experience, applies the visitor's
+ * preferences (theme / text size / line height / width / paragraph spacing)
+ * as design-system classes, and floats the "Aa" button that opens the panel.
+ *
+ * This component owns NO persistence and NO preference vocabulary:
+ *   • state comes through useReaderPreferences (the hook seam),
+ *   • classes come from the selector layer (readerPreferenceClasses),
+ *   • the panel body is the dumb ReaderPreferencesPanel.
+ *
+ * Flash prevention (the Next.js inline-script pattern): the server renders
+ * this shell with default classes; the InlineScript directly inside it runs
+ * synchronously during HTML parsing — BEFORE first paint — and swaps in the
+ * saved preference classes. The hook's lazy initializer reads the same
+ * storage, so React's first client render matches the corrected DOM and
+ * hydration is clean. On soft navigations the script is inert and the lazy
+ * read is simply correct. suppressHydrationWarning lets the DOM win for the
+ * className the script already fixed.
+ *
+ * `reader-surface` lets the typography variables from globals.css apply.
+ * No transform / overflow / isolation / perspective here — ReaderToolbar is
+ * sticky.
+ * ------------------------------------------------------------------------- */
 
-const STORAGE_KEY = 'katha:reader-preferences';
+const SHELL_BASE_CLASSES = 'min-h-screen bg-background text-foreground reader-surface';
+
 const PANEL_ID = 'reader-preferences-panel';
 
-const DEFAULTS: ReaderPreferencesState = {
-  size: 'medium',
-  width: 'medium',
-  theme: 'light',
-};
-
-const SIZE_CLASS: Record<ReaderPreferencesState['size'], string> = {
-  small: 'reader-size-small',
-  medium: 'reader-size-medium',
-  large: 'reader-size-large',
-};
-
-const WIDTH_CLASS: Record<ReaderPreferencesState['width'], string> = {
-  narrow: 'reader-width-narrow',
-  medium: 'reader-width-medium',
-  wide: 'reader-width-wide',
-};
-
-const THEME_CLASS: Record<ReaderPreferencesState['theme'], string> = {
-  light: 'reader-theme-light',
-  sepia: 'reader-theme-sepia',
-  dark: 'dark',
-};
-
-const SIZE_OPTIONS: ReadonlyArray<{ value: ReaderPreferencesState['size']; label: string }> = [
-  { value: 'small', label: 'Small' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'large', label: 'Large' },
-];
-
-const WIDTH_OPTIONS: ReadonlyArray<{ value: ReaderPreferencesState['width']; label: string }> = [
-  { value: 'narrow', label: 'Narrow' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'wide', label: 'Wide' },
-];
-
-const THEME_OPTIONS: ReadonlyArray<{ value: ReaderPreferencesState['theme']; label: string }> = [
-  { value: 'light', label: 'Light' },
-  { value: 'sepia', label: 'Sepia' },
-  { value: 'dark', label: 'Dark' },
-];
-
-function cx(...classes: Array<string | false | null | undefined>): string {
-  return classes.filter(Boolean).join(' ');
-}
-
-function isSize(v: unknown): v is ReaderPreferencesState['size'] {
-  return v === 'small' || v === 'medium' || v === 'large';
-}
-
-function isWidth(v: unknown): v is ReaderPreferencesState['width'] {
-  return v === 'narrow' || v === 'medium' || v === 'wide';
-}
-
-function isTheme(v: unknown): v is ReaderPreferencesState['theme'] {
-  return v === 'light' || v === 'sepia' || v === 'dark';
-}
-
-function parsePreferences(raw: string): ReaderPreferencesState {
-  try {
-    const parsed = JSON.parse(raw) as Record<string, unknown>;
-    return {
-      size: isSize(parsed.size) ? parsed.size : DEFAULTS.size,
-      width: isWidth(parsed.width) ? parsed.width : DEFAULTS.width,
-      theme: isTheme(parsed.theme) ? parsed.theme : DEFAULTS.theme,
-    };
-  } catch {
-    return DEFAULTS;
-  }
-}
-
-function Segment<T extends string>({
-  legend,
-  value,
-  options,
-  onChange,
-}: {
-  legend: string;
-  value: T;
-  options: ReadonlyArray<{ value: T; label: string }>;
-  onChange: (value: T) => void;
-}) {
-  return (
-    <fieldset className="m-0 border-0 p-0">
-      <legend className="mb-2 p-0 font-body text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        {legend}
-      </legend>
-      <div className="flex gap-1 rounded-full bg-secondary p-1">
-        {options.map((option) => {
-          const active = option.value === value;
-          return (
-            <button
-              key={option.value}
-              type="button"
-              aria-pressed={active}
-              onClick={() => onChange(option.value)}
-              className={cx(
-                'flex-1 rounded-full px-3 py-1.5 font-body text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                active
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
-    </fieldset>
-  );
-}
-
 export default function ReaderPreferences({ children }: { children: ReactNode }) {
-  const [preferences, setPreferences] = useState<ReaderPreferencesState>(DEFAULTS);
+  const shellId = useId();
+  const { preferences, update } = useReaderPreferences();
   const [open, setOpen] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const skipFirstSave = useRef(true);
-
-  // Load saved preferences after mount so SSR + first client render use defaults.
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setPreferences(parsePreferences(raw));
-    } catch {
-      // localStorage unavailable — keep defaults.
-    }
-  }, []);
-
-  // Persist on change; skip the initial mount so stored preferences survive.
-  useEffect(() => {
-    if (skipFirstSave.current) {
-      skipFirstSave.current = false;
-      return;
-    }
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
-    } catch {
-      // Best-effort — ignore write failures.
-    }
-  }, [preferences]);
 
   // Close on Escape / outside click; return focus to the button on Escape.
   useEffect(() => {
@@ -179,25 +70,15 @@ export default function ReaderPreferences({ children }: { children: ReactNode })
     };
   }, [open]);
 
-  function update<K extends keyof ReaderPreferencesState>(
-    key: K,
-    value: ReaderPreferencesState[K],
-  ) {
-    setPreferences((prev) => ({ ...prev, [key]: value }));
-  }
-
-  // `reader-surface` lets the typography variables from globals.css apply.
-  // No transform / overflow / isolation / perspective here — ReaderToolbar is sticky.
-  const wrapperClasses = cx(
-    'min-h-screen bg-background text-foreground',
-    'reader-surface',
-    SIZE_CLASS[preferences.size],
-    WIDTH_CLASS[preferences.width],
-    THEME_CLASS[preferences.theme],
-  );
-
   return (
-    <div className={wrapperClasses}>
+    <div
+      id={shellId}
+      className={`${SHELL_BASE_CLASSES} ${readerPreferenceClasses(preferences)}`}
+      suppressHydrationWarning
+    >
+      {/* Pre-paint correction for hard loads — see header comment. */}
+      <InlineScript html={readerPreferencesBootstrapScript(shellId)} />
+
       {children}
 
       <div ref={containerRef} className="fixed bottom-6 right-6 z-40">
@@ -212,26 +93,7 @@ export default function ReaderPreferences({ children }: { children: ReactNode })
               Reading preferences
             </p>
 
-            <div className="space-y-4">
-              <Segment
-                legend="Text Size"
-                value={preferences.size}
-                options={SIZE_OPTIONS}
-                onChange={(value) => update('size', value)}
-              />
-              <Segment
-                legend="Reading Width"
-                value={preferences.width}
-                options={WIDTH_OPTIONS}
-                onChange={(value) => update('width', value)}
-              />
-              <Segment
-                legend="Theme"
-                value={preferences.theme}
-                options={THEME_OPTIONS}
-                onChange={(value) => update('theme', value)}
-              />
-            </div>
+            <ReaderPreferencesPanel preferences={preferences} onChange={update} />
           </div>
         )}
 

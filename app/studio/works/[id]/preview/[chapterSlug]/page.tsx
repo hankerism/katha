@@ -79,8 +79,10 @@ export default function ChapterPreviewPage() {
       <PreviewBanner workId={work.id} />
 
       <ReaderPreferences>
+        {/* Same measure wiring as the real reader: the column follows the
+            Reading Width preference via --reader-measure. */}
         <main className="flex justify-center px-4 py-8 sm:px-8 sm:py-12 lg:px-12">
-          <div className="w-full max-w-[680px]">
+          <div className="w-full max-w-[var(--reader-measure,680px)]">
             {/* The page — the same warm reader surface as the real thing */}
             <div className="reading-surface flex min-h-[70dvh] w-full flex-col rounded-xl border border-border/50 px-8 py-14 shadow-[var(--ds-shadow-soft)] sm:px-12 sm:py-16 md:px-14 md:py-20">
               <ReaderArticle
