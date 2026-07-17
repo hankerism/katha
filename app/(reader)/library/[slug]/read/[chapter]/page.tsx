@@ -8,7 +8,9 @@ import ReaderToolbar from '@/components/reader/ReaderToolbar';
 import ReaderArticle from '@/components/reader/ReaderArticle';
 import ReaderNavigation from '@/components/reader/ReaderNavigation';
 import ReadingProgressTracker from '@/components/reader/ReadingProgressTracker';
+import ParagraphScrollRestoration from '@/components/reader/ParagraphScrollRestoration';
 import ReaderPreferences from '@/components/reader/ReaderPreferences';
+import type { ReadingLocation } from '@/lib/reading-location';
 
 /* ---------------------------------------------------------------------------
  * KATHA · Reader Mode
@@ -25,8 +27,11 @@ import ReaderPreferences from '@/components/reader/ReaderPreferences';
  *   • <lg  : the sidebar is hidden; the toolbar's ReaderDrawer (hamburger)
  *            provides the table of contents as before.
  *
- * ReadingProgressTracker persists position. The toolbar's BookmarkButton stores
- * a complete bookmark from the current chapter's slug + title.
+ * Two invisible client leaves do the remembering, each owning one write:
+ * ReadingProgressTracker persists Continue Reading (chapter-level, on mount);
+ * ParagraphScrollRestoration records Reading History at the arrival paragraph.
+ * The toolbar's BookmarkButton stores a complete bookmark from the current
+ * chapter's slug + title.
  * ------------------------------------------------------------------------- */
 
 export async function generateMetadata({
@@ -68,6 +73,20 @@ export default async function ReaderPage({
     current.number < total ? book.chapters[current.number] ?? null : null;
 
   const href = `/library/${book.slug}/read/${current.slug}`;
+
+  // Base reading location for this chapter (paragraph 0). The scroll-restoration
+  // leaf refines the paragraph index from any #p-{index} deep link, then records
+  // the visit. `preview` is intentionally empty — the History page resolves it
+  // from book content via resolvePreview(), so nothing is duplicated here.
+  const readingLocation: ReadingLocation = {
+    bookSlug: book.slug,
+    bookTitle: book.title,
+    chapterSlug: current.slug,
+    chapterTitle: current.title,
+    paragraphIndex: 0,
+    preview: '',
+    href,
+  };
 
   return (
     <ReaderPreferences>
@@ -128,6 +147,12 @@ export default async function ReaderPage({
                     estimatedReadingTime={current.estimatedReadingTime}
                     content={current.content}
                   />
+
+                  {/* Client leaf: scrolls to a deep-linked #p-{index} after mount,
+                      and records this visit in Reading History (once per chapter
+                      navigation, at the arrival paragraph). Inside the gate, so a
+                      chapter the reader never got to see is never recorded. */}
+                  <ParagraphScrollRestoration location={readingLocation} />
 
                   <footer className="mt-auto pt-16 text-center">
                     <div aria-hidden="true" className="mx-auto h-px w-10 bg-border" />

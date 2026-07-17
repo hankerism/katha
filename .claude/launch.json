@@ -7,6 +7,90 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "harbor-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/dev/harbor",
+        "--",
+        "--port",
+        "3009"
+      ],
+      "port": 3009
+    },
+    {
+      "name": "portfolio-v2-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/abby/OneDrive/Documents/Development/portfolio-v2",
+        "--",
+        "--port",
+        "3005"
+      ],
+      "port": 3005
+    },
+    {
+      "name": "ever-after-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/abby/OneDrive/Documents/Development/ever-after",
+        "--",
+        "--port",
+        "3006"
+      ],
+      "port": 3006
+    },
+    {
+      "name": "hazel-jhonel-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/abby/OneDrive/Documents/Development/hazel-and-jhonel",
+        "--",
+        "--port",
+        "3008"
+      ],
+      "port": 3008
+    },
+    {
+      "name": "hazel-jhonel-prod",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "start",
+        "--prefix",
+        "C:/Users/abby/OneDrive/Documents/Development/hazel-and-jhonel",
+        "--",
+        "--port",
+        "3018"
+      ],
+      "port": 3018
+    },
+    {
+      "name": "bahay-liwanag-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/abby/OneDrive/Documents/Development/bahay-liwanag",
+        "--",
+        "--port",
+        "3007"
+      ],
+      "port": 3007
     }
   ]
 }
