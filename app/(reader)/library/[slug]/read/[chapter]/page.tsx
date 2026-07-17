@@ -10,6 +10,7 @@ import ReaderNavigation from '@/components/reader/ReaderNavigation';
 import ReadingProgressTracker from '@/components/reader/ReadingProgressTracker';
 import ParagraphScrollRestoration from '@/components/reader/ParagraphScrollRestoration';
 import ReaderPreferences from '@/components/reader/ReaderPreferences';
+import LocalChapterReader from '@/components/reader/LocalChapterReader';
 import type { ReadingLocation } from '@/lib/reading-location';
 
 /* ---------------------------------------------------------------------------
@@ -61,7 +62,10 @@ export default async function ReaderPage({
   const { slug, chapter } = await params;
 
   const book = getBookBySlug(slug);
-  if (!book) notFound();
+  // Catalogue miss → the distribution seam: books published from this
+  // device's Studio live at these same addresses but only exist client-side,
+  // so the fallback resolves them there (and owns the miss UI beyond that).
+  if (!book) return <LocalChapterReader slug={slug} chapterSlug={chapter} />;
 
   const current = getChapterBySlug(slug, chapter);
   if (!current) notFound();

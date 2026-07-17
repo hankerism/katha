@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { getBookBySlug, getRelatedBooks, type KathaBook } from '@/lib/books';
+import LocalBookDetails from '@/components/library/LocalBookDetails';
 import {
   authorName,
   getAuthorForBook,
@@ -59,7 +59,9 @@ export default async function BookDetailPage({
 }) {
   const { slug } = await params;
   const book = getBookBySlug(slug);
-  if (!book) notFound();
+  // Catalogue miss → the distribution seam: the slug may belong to a book
+  // published from this device's Studio, which only exists client-side.
+  if (!book) return <LocalBookDetails slug={slug} />;
 
   const chapterCount = book.chapters.length;
   const minutes = totalReadingMinutes(book);

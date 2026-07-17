@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import BookCard from '@/components/ui/BookCard';
+import LocalPublishedShelf from '@/components/library/LocalPublishedShelf';
 import { SearchIcon, ShelfIcon } from '@/components/ui/icons';
 import {
   getAllBooks,
@@ -256,6 +257,13 @@ export default async function LibraryPage({
             </Link>
           </div>
         )}
+
+        {/* Books published from this device's Studio — a labeled client-side
+            shelf, deliberately separate from the shared catalogue grid so
+            provenance stays honest and the genre pills/counts stay truthful.
+            Unfiltered view only: a filtered page is an answer, not a
+            storefront. */}
+        {!isFiltered && <LocalPublishedShelf />}
       </section>
     </>
   );
