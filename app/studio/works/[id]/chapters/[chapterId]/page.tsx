@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useWork } from '@/components/studio/use-works';
+import { useAutosave } from '@/components/studio/use-autosave';
 import {
   manuscriptWordCount,
   parseManuscript,
@@ -23,15 +24,19 @@ import ReaderArticle from '@/components/reader/ReaderArticle';
  * component, fed live through the same parseManuscript → buildChapters
  * derivation readers get. No mock preview, no duplicated rendering.
  *
- * Everything autosaves (debounced, flushed on unload); the only status is a
- * whisper: "Draft saved just now." Blank-line = new paragraph, exactly as the
- * published page will break it.
+ * Everything autosaves through useAutosave — debounced, and flushed through
+ * the same single save path on unmount, pagehide, and beforeunload, so the
+ * last keystrokes survive any exit. The only status is a whisper: "Draft
+ * saved just now." Blank-line = new paragraph, exactly as the published page
+ * will break it.
  * ------------------------------------------------------------------------- */
 
-const AUTOSAVE_DELAY_MS = 800;
-
 type Mode = 'write' | 'read';
-type SaveState = 'idle' | 'saving' | 'saved';
+
+interface ChapterDraft {
+  title: string;
+  manuscript: string;
+}
 
 export default function ChapterEditorPage() {
   const params = useParams<{ id: string; chapterId: string }>();
@@ -40,10 +45,22 @@ export default function ChapterEditorPage() {
   const [mode, setMode] = useState<Mode>('write');
   const [title, setTitle] = useState<string | null>(null);
   const [manuscript, setManuscript] = useState<string | null>(null);
-  const [saveState, setSaveState] = useState<SaveState>('idle');
-  const [savedAt, setSavedAt] = useState<string | null>(null);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const dirtyRef = useRef(false);
+
+  // WHAT saving means for this surface: fold the draft into the work's
+  // chapter array through the repository seam. The hook owns every WHEN.
+  const saveDraft = useCallback(
+    async (draft: ChapterDraft) => {
+      if (!work) return;
+      const chapters = work.chapters.map((existing) =>
+        existing.id === params.chapterId ? { ...existing, ...draft } : existing,
+      );
+      const next = await update({ chapters });
+      if (next) setWork(next);
+    },
+    [work, params.chapterId, update, setWork],
+  );
+
+  const { scheduleSave, saveState, savedAt } = useAutosave(saveDraft);
 
   const chapterIndex =
     work?.chapters.findIndex((chapter) => chapter.id === params.chapterId) ??
@@ -58,40 +75,13 @@ export default function ChapterEditorPage() {
     }
   }, [chapter, title, manuscript]);
 
-  // Debounced autosave of title + manuscript into the work's chapter array.
+  // Schedule a save whenever the draft drifts from what is stored; once a
+  // save lands, setWork() brings the two back level and nothing reschedules.
   useEffect(() => {
-    if (!work || !chapter || title === null || manuscript === null) return;
+    if (!chapter || title === null || manuscript === null) return;
     if (title === chapter.title && manuscript === chapter.manuscript) return;
-
-    dirtyRef.current = true;
-    setSaveState('saving');
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
-      const chapters = work.chapters.map((existing) =>
-        existing.id === chapter.id
-          ? { ...existing, title, manuscript }
-          : existing,
-      );
-      void update({ chapters }).then((next) => {
-        if (next) setWork(next);
-        dirtyRef.current = false;
-        setSaveState('saved');
-        setSavedAt(new Date().toISOString());
-      });
-    }, AUTOSAVE_DELAY_MS);
-    return () => {
-      if (saveTimer.current) clearTimeout(saveTimer.current);
-    };
-  }, [title, manuscript, work, chapter, update, setWork]);
-
-  // A guard for the keystrokes still inside the debounce window.
-  useEffect(() => {
-    function onBeforeUnload(event: BeforeUnloadEvent) {
-      if (dirtyRef.current) event.preventDefault();
-    }
-    window.addEventListener('beforeunload', onBeforeUnload);
-    return () => window.removeEventListener('beforeunload', onBeforeUnload);
-  }, []);
+    scheduleSave({ title, manuscript });
+  }, [title, manuscript, chapter, scheduleSave]);
 
   // The live reader view: the CURRENT keystrokes through the real derivation.
   const previewChapter = useMemo(() => {

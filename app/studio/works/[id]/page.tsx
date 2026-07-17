@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useWork } from '@/components/studio/use-works';
+import { useAutosave } from '@/components/studio/use-autosave';
 import { workRepository } from '@/lib/studio/work-repository';
 import {
   manuscriptWordCount,
@@ -31,20 +32,17 @@ import {
  * second, and the quiet shelf decisions (archive / restore) at the bottom.
  * Publishing arrives with the preview in Phase 4.
  *
- * Metadata edits autosave (debounced) with a 'Draft saved' whisper — there is
+ * Metadata edits autosave through useAutosave (debounced, flushed through the
+ * one save path on unmount/pagehide) with a 'Draft saved' whisper — there is
  * no Save button in a calm room. The address (slug) follows the title until
  * the writer takes it over by editing it directly.
  * ------------------------------------------------------------------------- */
-
-const AUTOSAVE_DELAY_MS = 800;
 
 const inputClass =
   'w-full rounded-xl border border-border bg-card px-4 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/70 shadow-sm transition-shadow focus:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
 const labelClass =
   'block font-body text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground';
-
-type SaveState = 'idle' | 'saving' | 'saved';
 
 export default function WorkWorkspacePage() {
   const params = useParams<{ id: string }>();
@@ -54,12 +52,21 @@ export default function WorkWorkspacePage() {
   // Editable metadata mirror; the repository stays the source of truth.
   const [meta, setMeta] = useState<WorkBookMeta | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
-  const [saveState, setSaveState] = useState<SaveState>('idle');
-  const [savedAt, setSavedAt] = useState<string | null>(null);
   const [confirmingRemove, setConfirmingRemove] = useState<string | null>(null);
   const [coverError, setCoverError] = useState<string | null>(null);
   const [siblings, setSiblings] = useState<StudioWork[]>([]);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // WHAT saving means for this surface: persist the metadata mirror through
+  // the repository seam. The hook owns every WHEN (debounce, unmount,
+  // pagehide) via its single flush path.
+  const saveMeta = useCallback(
+    async (book: WorkBookMeta) => {
+      await update({ book });
+    },
+    [update],
+  );
+
+  const { scheduleSave, saveState, savedAt } = useAutosave(saveMeta);
 
   // The author's other works, for slug-collision checks at publish time.
   useEffect(() => {
@@ -71,22 +78,12 @@ export default function WorkWorkspacePage() {
     if (work && !meta) setMeta(work.book);
   }, [work, meta]);
 
-  // Debounced autosave of metadata edits.
+  // Schedule a save whenever the mirror drifts from what is stored.
   useEffect(() => {
     if (!work || !meta) return;
     if (JSON.stringify(meta) === JSON.stringify(work.book)) return;
-    setSaveState('saving');
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
-      void update({ book: meta }).then(() => {
-        setSaveState('saved');
-        setSavedAt(new Date().toISOString());
-      });
-    }, AUTOSAVE_DELAY_MS);
-    return () => {
-      if (saveTimer.current) clearTimeout(saveTimer.current);
-    };
-  }, [meta, work, update]);
+    scheduleSave(meta);
+  }, [meta, work, scheduleSave]);
 
   function patchMeta(patch: Partial<WorkBookMeta>) {
     setMeta((current) => (current ? { ...current, ...patch } : current));
