@@ -30,6 +30,13 @@ const NAV_LINKS = [
   { label: 'Authors', href: '/authors' },
 ] as const;
 
+/** Members also see their personal home. Appears after the viewer mount-gate
+ *  resolves (the Join button's pattern), so hydration stays clean. */
+const MEMBER_NAV_LINKS = [
+  ...NAV_LINKS,
+  { label: 'Dashboard', href: '/dashboard' },
+] as const;
+
 function isActivePath(pathname: string, href: string): boolean {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -74,6 +81,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { viewer, loaded } = useViewer();
   const isGuest = loaded && viewer.tier === 'guest';
+  const links = loaded && viewer.tier !== 'guest' ? MEMBER_NAV_LINKS : NAV_LINKS;
 
   // Close the mobile menu whenever the route changes.
   useEffect(() => {
@@ -124,7 +132,7 @@ export default function Navbar() {
             aria-label="Primary"
             className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex"
           >
-            {NAV_LINKS.map((link) => (
+            {links.map((link) => (
               <NavLink
                 key={link.href}
                 href={link.href}
@@ -176,7 +184,7 @@ export default function Navbar() {
         className="animate-fade-in border-b border-border/60 bg-background/95 backdrop-blur-xl md:hidden"
       >
         <nav aria-label="Mobile" className="container-katha flex flex-col gap-1 py-4">
-          {NAV_LINKS.map((link) => {
+          {links.map((link) => {
             const active = isActivePath(pathname, link.href);
             return (
               <Link
