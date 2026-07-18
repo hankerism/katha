@@ -87,6 +87,37 @@ class LocalCatalogue implements CatalogueRepository {
   }
 }
 
-/** The seam: swap this instance for SupabaseCatalogue and every server page
- *  is already correct. */
-export const catalogueRepository: CatalogueRepository = new LocalCatalogue();
+/* ── Selection (Sprint 13) ───────────────────────────────────────────────── */
+
+import { getCatalogueProvider } from './supabase/env';
+
+/** Resolve the ACTIVE implementation, lazily: the Supabase catalogue loads
+ *  via dynamic import at first use, so local mode bundles none of it and no
+ *  static import cycle exists (lib/supabase/repositories imports this
+ *  module's interface + helpers). */
+let activeCatalogue: Promise<CatalogueRepository> | null = null;
+
+function resolveCatalogue(): Promise<CatalogueRepository> {
+  if (activeCatalogue) return activeCatalogue;
+  activeCatalogue =
+    getCatalogueProvider() === 'supabase'
+      ? import('./supabase/repositories').then(
+          ({ SupabaseCatalogue }) => new SupabaseCatalogue(),
+        )
+      : Promise.resolve(new LocalCatalogue());
+  return activeCatalogue;
+}
+
+/** The seam: every consumer holds this one instance; which implementation
+ *  answers is decided by the EXPLICIT NEXT_PUBLIC_CATALOGUE_PROVIDER —
+ *  independent of the auth provider, so the data domains stay independently
+ *  swappable. */
+export const catalogueRepository: CatalogueRepository = {
+  listBooks: async () => (await resolveCatalogue()).listBooks(),
+  getBook: async (slug) => (await resolveCatalogue()).getBook(slug),
+  listFeatured: async () => (await resolveCatalogue()).listFeatured(),
+  listByCategory: async (categorySlug) =>
+    (await resolveCatalogue()).listByCategory(categorySlug),
+  listRelated: async (slug) => (await resolveCatalogue()).listRelated(slug),
+  searchIndex: async () => (await resolveCatalogue()).searchIndex(),
+};

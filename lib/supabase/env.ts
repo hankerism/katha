@@ -59,6 +59,32 @@ export function getAuthProvider(): AuthProvider {
   return 'local';
 }
 
+/* ── Catalogue provider selection ────────────────────────────────────────── */
+
+export type CatalogueProvider = 'local' | 'supabase';
+
+let warnedCatalogueFallback = false;
+
+/** Which catalogue implementation is active — independent of AUTH_PROVIDER
+ *  by design (Sprint 13 amendment): repository seams stay independently
+ *  swappable, so a deployment can run cloud auth over the compiled demo
+ *  catalogue, or the cloud catalogue over local membership, or both.
+ *  Explicit, defaults to 'local', warns-and-falls-back when credentials are
+ *  missing — the same contract as the auth switch. */
+export function getCatalogueProvider(): CatalogueProvider {
+  if (process.env.NEXT_PUBLIC_CATALOGUE_PROVIDER === 'supabase') {
+    if (getSupabaseEnv()) return 'supabase';
+    if (!warnedCatalogueFallback) {
+      warnedCatalogueFallback = true;
+      console.warn(
+        'NEXT_PUBLIC_CATALOGUE_PROVIDER=supabase, but Supabase env is not ' +
+          'set — falling back to the compiled local catalogue.',
+      );
+    }
+  }
+  return 'local';
+}
+
 /** The environment, or a thrown error naming what is missing — for code
  *  paths that must not run unconfigured (the client factories). */
 export function requireSupabaseEnv(): SupabaseEnv {

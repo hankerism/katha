@@ -17,6 +17,8 @@ import { collectCategories } from '@/lib/search';
 
 export default async function PopularCategories() {
   const categories = collectCategories(await catalogueRepository.listBooks());
+  // No books, no genre tiles — the section stays silent rather than empty.
+  if (categories.length === 0) return null;
 
   return (
     <section aria-labelledby="browse-by-genre-heading" className="bg-background">

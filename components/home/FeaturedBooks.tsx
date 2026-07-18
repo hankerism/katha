@@ -15,6 +15,9 @@ import { authorName } from '@/lib/author-selectors';
 
 export default async function FeaturedBooks() {
   const featured = await catalogueRepository.listFeatured();
+  // A shelf with nothing on it stays silent (empty cloud catalogue, or the
+  // catalogue backend degrading to empty — either way, no bare headers).
+  if (featured.length === 0) return null;
   return (
     <section aria-labelledby="featured-books-heading" className="bg-background">
       <div className="container-katha py-20">

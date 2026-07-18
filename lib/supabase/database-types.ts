@@ -1,12 +1,3 @@
-/* ---------------------------------------------------------------------------
- * KATHA · Supabase — database types (GENERATED)
- * lib/supabase/database-types.ts
- *
- * Generated from the live local schema (Sprint 8 Step 4):
- *   npx supabase gen types typescript --local > lib/supabase/database-types.ts
- * The generated schema is the source of truth — regenerate after every
- * migration; do not hand-edit.
- * ------------------------------------------------------------------------- */
 
 export type Json =
   | string
@@ -139,6 +130,7 @@ export type Database = {
           id: string
           manuscript: string
           position: number
+          slug: string | null
           title: string
           work_id: string
         }
@@ -146,6 +138,7 @@ export type Database = {
           id: string
           manuscript?: string
           position: number
+          slug?: string | null
           title?: string
           work_id: string
         }
@@ -153,6 +146,7 @@ export type Database = {
           id?: string
           manuscript?: string
           position?: number
+          slug?: string | null
           title?: string
           work_id?: string
         }
@@ -286,6 +280,8 @@ export type Database = {
           category: string
           cover_url: string | null
           created_at: string
+          featured: boolean
+          free_chapters: number | null
           id: string
           language: string
           lifecycle: string
@@ -302,6 +298,8 @@ export type Database = {
           category?: string
           cover_url?: string | null
           created_at?: string
+          featured?: boolean
+          free_chapters?: number | null
           id: string
           language?: string
           lifecycle?: string
@@ -318,6 +316,8 @@ export type Database = {
           category?: string
           cover_url?: string | null
           created_at?: string
+          featured?: boolean
+          free_chapters?: number | null
           id?: string
           language?: string
           lifecycle?: string
