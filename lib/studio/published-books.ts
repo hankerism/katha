@@ -22,14 +22,33 @@
 
 import type { KathaBook } from '../catalogue-repository';
 import { authorName } from '../author-selectors';
+import { getWorksProvider } from '../supabase/env';
+import { getViewer } from '../membership';
 import { getCurrentAuthor } from './current-author';
-import { listAllLocalWorks } from './work-repository';
+import { listAllLocalWorks, workRepository } from './work-repository';
 import { workToBook } from './work';
 
-/** Every book published from this device's Studio — any author, signed in or
- *  not — most recently published first. */
+/** Every book published from this device's Studio, most recently published
+ *  first. The abstraction resolves by works provider (Sprint 14 refinement —
+ *  the seam stays intact, its SOURCE changes):
+ *
+ *    local works    — everything published on this device, any pen, signed
+ *                     in or not (the device's shelf, per its own label).
+ *    cloud works    — what this device's Studio publishes is the signed-in
+ *                     author's cloud output; guests and readers have no
+ *                     Studio output, so their shelf is naturally empty (the
+ *                     public catalogue already shows every published book).
+ */
 export async function getLocalPublishedBooks(): Promise<KathaBook[]> {
-  return listAllLocalWorks()
+  let works;
+  if (getWorksProvider() === 'supabase') {
+    const viewer = getViewer();
+    if (viewer.tier !== 'author' || !viewer.authorId) return [];
+    works = await workRepository.listWorks(viewer.authorId);
+  } else {
+    works = listAllLocalWorks();
+  }
+  return works
     .filter((work) => work.lifecycle === 'published')
     .sort((a, b) =>
       (b.publishedAt ?? b.updatedAt).localeCompare(a.publishedAt ?? a.updatedAt),

@@ -142,6 +142,7 @@ you want preview deployments in supabase mode).
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | the `anon` **public** key | safe to expose; RLS is the boundary |
 | `NEXT_PUBLIC_AUTH_PROVIDER` | `supabase` | the EXPLICIT mode switch — without it the deploy runs the local demo membership |
 | `NEXT_PUBLIC_CATALOGUE_PROVIDER` | `supabase` | library serves published works from the database (apply migration 0003 + run `supabase/seed.sql` once, or shelves are empty) |
+| `NEXT_PUBLIC_WORKS_PROVIDER` | `supabase` | Studio drafts + publishing write to the database; requires `AUTH_PROVIDER=supabase` (falls back to local otherwise) |
 
 **Secrets policy:** the **service_role key is never configured anywhere in
 this deployment** — the application does not use it. The database password

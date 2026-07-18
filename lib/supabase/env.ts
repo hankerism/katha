@@ -85,6 +85,33 @@ export function getCatalogueProvider(): CatalogueProvider {
   return 'local';
 }
 
+/* ── Works (publishing) provider selection ───────────────────────────────── */
+
+export type WorksProvider = 'local' | 'supabase';
+
+let warnedWorksFallback = false;
+
+/** Which work repository is active — explicit like its siblings, with ONE
+ *  approved coupling: cloud works require cloud auth (writing works is an
+ *  authenticated, RLS-governed act; there is no session to write with in
+ *  local auth mode). supabase works + local auth is a misconfiguration:
+ *  warn once and run local works. The reverse (cloud auth over local works)
+ *  remains a valid mixed mode. */
+export function getWorksProvider(): WorksProvider {
+  if (process.env.NEXT_PUBLIC_WORKS_PROVIDER === 'supabase') {
+    if (getSupabaseEnv() && getAuthProvider() === 'supabase') return 'supabase';
+    if (!warnedWorksFallback) {
+      warnedWorksFallback = true;
+      console.warn(
+        'NEXT_PUBLIC_WORKS_PROVIDER=supabase requires Supabase credentials ' +
+          'AND NEXT_PUBLIC_AUTH_PROVIDER=supabase (publishing writes are ' +
+          'authenticated) — falling back to the local work repository.',
+      );
+    }
+  }
+  return 'local';
+}
+
 /** The environment, or a thrown error naming what is missing — for code
  *  paths that must not run unconfigured (the client factories). */
 export function requireSupabaseEnv(): SupabaseEnv {

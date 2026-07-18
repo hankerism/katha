@@ -58,6 +58,7 @@ export default function WorkWorkspacePage() {
   const [slugTouched, setSlugTouched] = useState(false);
   const [confirmingRemove, setConfirmingRemove] = useState<string | null>(null);
   const [coverError, setCoverError] = useState<string | null>(null);
+  const [publishError, setPublishError] = useState<string | null>(null);
   const [siblings, setSiblings] = useState<StudioWork[]>([]);
   const [catalogue, setCatalogue] = useState<readonly KathaBook[]>([]);
 
@@ -154,8 +155,19 @@ export default function WorkWorkspacePage() {
 
   async function publish() {
     if (!work) return;
-    const next = await workRepository.publishWork(work.id);
-    if (next) setWork(next);
+    setPublishError(null);
+    try {
+      const next = await workRepository.publishWork(work.id);
+      if (next) setWork(next);
+    } catch (error) {
+      // Cloud publishing has real failure modes (a slug already claimed by
+      // another author, a network drop) — report them calmly, never swallow.
+      setPublishError(
+        error instanceof Error
+          ? error.message
+          : 'Publishing failed — try again.',
+      );
+    }
   }
 
   async function unpublish() {
@@ -596,6 +608,12 @@ export default function WorkWorkspacePage() {
               <p className="font-body text-sm leading-relaxed text-muted-foreground">
                 This work reads ready. When you are, it takes its place on
                 the shelves.
+              </p>
+            )}
+
+            {publishError && (
+              <p role="alert" className="font-body text-sm text-destructive">
+                {publishError}
               </p>
             )}
 

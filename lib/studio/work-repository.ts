@@ -19,7 +19,7 @@
  * ------------------------------------------------------------------------- */
 
 import type { StudioWork, WorkLifecycle } from './work';
-import { getAuthProvider } from '../supabase/env';
+import { getAuthProvider, getWorksProvider } from '../supabase/env';
 
 export const WORKS_STORAGE_KEY = 'katha:studio:works';
 
@@ -343,9 +343,38 @@ class LocalWorkRepository implements WorkRepository {
   }
 }
 
-/** The seam: swap this instance for SupabaseWorkRepository and every hook,
- *  page, and component is already correct. */
-export const workRepository: WorkRepository = new LocalWorkRepository();
+/* ── Selection (Sprint 14) ───────────────────────────────────────────────── */
+
+/** Resolve the ACTIVE implementation lazily: the Supabase repository loads
+ *  via dynamic import at first use — local mode bundles none of it, and no
+ *  static import cycle exists. */
+let activeWorks: Promise<WorkRepository> | null = null;
+
+function resolveWorks(): Promise<WorkRepository> {
+  if (activeWorks) return activeWorks;
+  activeWorks =
+    getWorksProvider() === 'supabase'
+      ? import('../supabase/repositories').then(
+          ({ SupabaseWorkRepository }) => new SupabaseWorkRepository(),
+        )
+      : Promise.resolve(new LocalWorkRepository());
+  return activeWorks;
+}
+
+/** The seam every hook, page, and component holds — which implementation
+ *  answers is the EXPLICIT NEXT_PUBLIC_WORKS_PROVIDER's decision (cloud
+ *  works require cloud auth; see getWorksProvider). */
+export const workRepository: WorkRepository = {
+  listWorks: async (authorId) => (await resolveWorks()).listWorks(authorId),
+  getWork: async (id) => (await resolveWorks()).getWork(id),
+  saveNewWork: async (work) => (await resolveWorks()).saveNewWork(work),
+  updateWork: async (id, patch) => (await resolveWorks()).updateWork(id, patch),
+  publishWork: async (id) => (await resolveWorks()).publishWork(id),
+  unpublishWork: async (id) => (await resolveWorks()).unpublishWork(id),
+  archiveWork: async (id) => (await resolveWorks()).archiveWork(id),
+  restoreWork: async (id) => (await resolveWorks()).restoreWork(id),
+  deleteWorkForever: async (id) => (await resolveWorks()).deleteWorkForever(id),
+};
 
 /* ── Local-only helpers (device-level concerns of THIS implementation) ───── */
 

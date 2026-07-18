@@ -7,7 +7,8 @@
  *
  *   SupabaseCatalogue       LIVE (Sprint 13) — published works + chapters,
  *                           selected by NEXT_PUBLIC_CATALOGUE_PROVIDER.
- *   SupabaseWorkRepository  placeholder — lands with the publishing swap.
+ *   SupabaseWorkRepository  LIVE (Sprint 14) — the Studio's drafts and
+ *                           publishing, selected by NEXT_PUBLIC_WORKS_PROVIDER.
  *   SupabaseReadingData     placeholder — lands with reading-data sync.
  *
  * The row mappers are the schema⟷domain translation layer, compiler-held to
@@ -21,10 +22,12 @@ import { buildChapters, type KathaBook } from '../catalogue-repository';
 import type { BookSearchRecord } from '../catalogue-repository';
 import type { ReadingDataRepository } from '../reading-data-repository';
 import type { WorkRepository } from '../studio/work-repository';
-import type { StudioChapter, StudioWork } from '../studio/work';
+import { chapterSlugsFor, type StudioChapter, type StudioWork } from '../studio/work';
 
 type WorkRow = Database['public']['Tables']['works']['Row'];
 type ChapterRow = Database['public']['Tables']['chapters']['Row'];
+type SupabaseClientT =
+  import('@supabase/supabase-js').SupabaseClient<Database>;
 
 const NOT_IMPLEMENTED =
   'SupabaseRepository: not implemented yet — this lands with its migration step; the app runs on the local implementations.';
@@ -231,33 +234,300 @@ function slugifyCategory(category: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
+
+/** The cloud work repository — the Studio's drafts and publishing, written
+ *  straight into the database that IS the catalogue (Sprint 13): publishing
+ *  makes a book publicly visible the moment the lifecycle flips.
+ *
+ *  Uses the AUTHENTICATED browser client (cookie session) so RLS governs
+ *  every write; an injectable client keeps the class harness-testable.
+ *  Unlike the catalogue (which degrades to empty shelves), writing THROWS on
+ *  failure — an editor must report, never swallow, a failed save.
+ *
+ *  Conflict model this sprint: last-write-wins, matching the single-device
+ *  semantics the app has always had; optimistic concurrency arrives with
+ *  multi-device draft sync. */
 export class SupabaseWorkRepository implements WorkRepository {
-  async listWorks(): Promise<StudioWork[]> {
-    throw new Error(NOT_IMPLEMENTED);
+  private client: SupabaseClientT | null;
+
+  constructor(client?: SupabaseClientT) {
+    this.client = client ?? null;
   }
-  async getWork(): Promise<StudioWork | undefined> {
-    throw new Error(NOT_IMPLEMENTED);
+
+  private async getClient(): Promise<SupabaseClientT> {
+    if (this.client) return this.client;
+    const { getSupabaseBrowserClient } = await import('./client');
+    this.client = getSupabaseBrowserClient();
+    return this.client;
   }
-  async saveNewWork(): Promise<StudioWork> {
-    throw new Error(NOT_IMPLEMENTED);
+
+  private async fetchWork(id: string): Promise<StudioWork | undefined> {
+    const client = await this.getClient();
+    const { data, error } = await client
+      .from('works')
+      .select('*, chapters!chapters_work_id_fkey(*)')
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return data ? rowsToStudioWork(data, data.chapters ?? []) : undefined;
   }
-  async updateWork(): Promise<StudioWork | undefined> {
-    throw new Error(NOT_IMPLEMENTED);
+
+  async listWorks(authorId: string): Promise<StudioWork[]> {
+    // First authenticated look at the desk in cloud mode also brings any
+    // pre-cloud local drafts along (conditional, verified — see the helper).
+    await importLocalWorksOnce(this, authorId);
+    const client = await this.getClient();
+    const { data, error } = await client
+      .from('works')
+      .select('*, chapters!chapters_work_id_fkey(*)')
+      .eq('author_id', authorId)
+      .order('updated_at', { ascending: false });
+    if (error) throw new Error(error.message);
+    return (data ?? []).map((row) => rowsToStudioWork(row, row.chapters ?? []));
   }
-  async publishWork(): Promise<StudioWork | undefined> {
-    throw new Error(NOT_IMPLEMENTED);
+
+  async getWork(id: string): Promise<StudioWork | undefined> {
+    return this.fetchWork(id);
   }
-  async unpublishWork(): Promise<StudioWork | undefined> {
-    throw new Error(NOT_IMPLEMENTED);
+
+  async saveNewWork(work: StudioWork): Promise<StudioWork> {
+    const client = await this.getClient();
+    const { error } = await client.from('works').insert({
+      id: work.id,
+      author_id: work.authorId,
+      lifecycle: work.lifecycle,
+      slug: work.book.slug,
+      title: work.book.title,
+      category: work.book.category,
+      language: work.book.language,
+      status: work.book.status,
+      synopsis: work.book.synopsis,
+      cover_url: work.book.cover,
+      created_at: work.createdAt,
+      updated_at: work.updatedAt,
+    });
+    if (error) throw new Error(error.message);
+    if (work.chapters.length > 0) {
+      const { error: chapterError } = await client.from('chapters').insert(
+        work.chapters.map((chapter, index) => ({
+          id: chapter.id,
+          work_id: work.id,
+          position: index + 1,
+          title: chapter.title,
+          manuscript: chapter.manuscript,
+        })),
+      );
+      if (chapterError) throw new Error(chapterError.message);
+    }
+    return (await this.fetchWork(work.id)) ?? work;
   }
-  async archiveWork(): Promise<StudioWork | undefined> {
-    throw new Error(NOT_IMPLEMENTED);
+
+  async updateWork(
+    id: string,
+    patch: Partial<Omit<StudioWork, 'id' | 'authorId' | 'createdAt'>>,
+  ): Promise<StudioWork | undefined> {
+    const client = await this.getClient();
+    const now = new Date().toISOString();
+
+    const workPatch: Database['public']['Tables']['works']['Update'] = {
+      updated_at: now,
+    };
+    if (patch.book) {
+      workPatch.slug = patch.book.slug;
+      workPatch.title = patch.book.title;
+      workPatch.category = patch.book.category;
+      workPatch.language = patch.book.language;
+      workPatch.status = patch.book.status;
+      workPatch.synopsis = patch.book.synopsis;
+      workPatch.cover_url = patch.book.cover;
+    }
+    const { error } = await client.from('works').update(workPatch).eq('id', id);
+    if (error) throw new Error(error.message);
+
+    if (patch.chapters) {
+      // Chapter sync is UPSERT-only, never delete-and-reinsert: reading
+      // data cascades on chapter_id, so recreating rows would silently
+      // erase readers' bookmarks/history for those chapters.
+      //
+      // Two-phase positions: reorders swap position values, and the
+      // per-work unique fires through PostgREST despite being deferrable —
+      // so park every row far out of range first, then set finals.
+      const park = await client.from('chapters').upsert(
+        patch.chapters.map((chapter, index) => ({
+          id: chapter.id,
+          work_id: id,
+          position: index + 1 + 100_000,
+          title: chapter.title,
+          manuscript: chapter.manuscript,
+        })),
+      );
+      if (park.error) throw new Error(park.error.message);
+
+      // Delete removed chapters BETWEEN park and final: a removed chapter
+      // still holds its old position, and the deferred unique check at
+      // commit would reject a survivor claiming it (found the hard way —
+      // the harness's remove-then-renumber case).
+      const keep = patch.chapters.map((chapter) => chapter.id);
+      let removal = client.from('chapters').delete().eq('work_id', id);
+      if (keep.length > 0) {
+        removal = removal.not('id', 'in', `(${keep.join(',')})`);
+      }
+      const { error: deleteError } = await removal;
+      if (deleteError) throw new Error(deleteError.message);
+
+      const { error: upsertError } = await client.from('chapters').upsert(
+        patch.chapters.map((chapter, index) => ({
+          id: chapter.id,
+          work_id: id,
+          position: index + 1,
+          title: chapter.title,
+          manuscript: chapter.manuscript,
+        })),
+      );
+      if (upsertError) throw new Error(upsertError.message);
+    }
+
+    return this.fetchWork(id);
   }
-  async restoreWork(): Promise<StudioWork | undefined> {
-    throw new Error(NOT_IMPLEMENTED);
+
+  async publishWork(id: string): Promise<StudioWork | undefined> {
+    const client = await this.getClient();
+    const work = await this.fetchWork(id);
+    if (!work) return undefined;
+
+    // Publish-time slug persistence: chapter addresses freeze NOW — they
+    // become public URLs and reading-data keys the moment readers arrive.
+    // Cleared first so a re-publish that moves a slug between chapters can
+    // never transiently collide with the per-work uniqueness.
+    const { error: clearError } = await client
+      .from('chapters')
+      .update({ slug: null })
+      .eq('work_id', id);
+    if (clearError) throw new Error(clearError.message);
+
+    const slugs = chapterSlugsFor(work.chapters);
+    for (let i = 0; i < work.chapters.length; i++) {
+      const { error } = await client
+        .from('chapters')
+        .update({ slug: slugs[i] })
+        .eq('id', work.chapters[i].id);
+      if (error) throw new Error(error.message);
+    }
+
+    const now = new Date().toISOString();
+    const { error } = await client
+      .from('works')
+      .update({ lifecycle: 'published', published_at: now, updated_at: now })
+      .eq('id', id);
+    if (error) throw new Error(error.message);
+    return this.fetchWork(id);
   }
-  async deleteWorkForever(): Promise<void> {
-    throw new Error(NOT_IMPLEMENTED);
+
+  async unpublishWork(id: string): Promise<StudioWork | undefined> {
+    const client = await this.getClient();
+    // Chapter slugs are deliberately KEPT: re-publishing restores the same
+    // public addresses, so old links and reading data stay whole.
+    const { error } = await client
+      .from('works')
+      .update({
+        lifecycle: 'draft',
+        published_at: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id);
+    if (error) throw new Error(error.message);
+    return this.fetchWork(id);
+  }
+
+  async archiveWork(id: string): Promise<StudioWork | undefined> {
+    const client = await this.getClient();
+    const now = new Date().toISOString();
+    const { error } = await client
+      .from('works')
+      .update({ lifecycle: 'archived', archived_at: now, updated_at: now })
+      .eq('id', id);
+    if (error) throw new Error(error.message);
+    return this.fetchWork(id);
+  }
+
+  async restoreWork(id: string): Promise<StudioWork | undefined> {
+    const client = await this.getClient();
+    const { error } = await client
+      .from('works')
+      .update({
+        lifecycle: 'draft',
+        archived_at: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id);
+    if (error) throw new Error(error.message);
+    return this.fetchWork(id);
+  }
+
+  async deleteWorkForever(id: string): Promise<void> {
+    const client = await this.getClient();
+    const { error } = await client.from('works').delete().eq('id', id);
+    if (error) throw new Error(error.message);
+  }
+}
+
+/* ── One-time local-works import (Sprint 14, conditional by refinement) ──── */
+
+const WORKS_IMPORTED_FLAG = 'katha:studio:works-imported';
+
+/** Seed-reserved ids never travel: the house fixture and the generated
+ *  catalogue seeds belong to their modes, not to a writer's cloud desk. */
+function isSeedWorkId(id: string): boolean {
+  return id === 'work_table-for-two' || id.startsWith('work_seed_');
+}
+
+/** Bring a device's pre-cloud drafts to the writer's cloud desk, ONCE, and
+ *  only when there is something to bring:
+ *    detect → import (author re-keyed to the cloud identity) → VERIFY the
+ *    rows exist → only then persist the imported flag.
+ *  Local copies stay on the device as a safety net; a failed or partial
+ *  import leaves the flag unset so the next visit retries. */
+export async function importLocalWorksOnce(
+  repository: SupabaseWorkRepository,
+  authorId: string,
+): Promise<number> {
+  if (typeof window === 'undefined') return 0;
+  try {
+    if (window.localStorage.getItem(WORKS_IMPORTED_FLAG)) return 0;
+
+    const { listAllLocalWorks } = await import('../studio/work-repository');
+    const locals = listAllLocalWorks().filter(
+      (work) => !isSeedWorkId(work.id),
+    );
+    if (locals.length === 0) return 0; // nothing to import; no flag — a
+    // future local draft (e.g. after a mode flip) still gets its chance.
+
+    for (const work of locals) {
+      await repository.saveNewWork({ ...work, authorId });
+    }
+
+    // Verify before flagging: every imported id must now resolve.
+    for (const work of locals) {
+      const stored = await repository.getWork(work.id);
+      if (!stored) {
+        throw new Error(`import verification failed for ${work.id}`);
+      }
+    }
+
+    window.localStorage.setItem(
+      WORKS_IMPORTED_FLAG,
+      new Date().toISOString(),
+    );
+    return locals.length;
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'KATHA works import: could not bring local drafts to the cloud desk ' +
+          'yet — they remain on this device; will retry next visit.',
+        error,
+      );
+    }
+    return 0;
   }
 }
 
