@@ -32,6 +32,33 @@ export function isSupabaseConfigured(): boolean {
   return getSupabaseEnv() !== null;
 }
 
+/* ── Authentication provider selection ───────────────────────────────────── */
+
+export type AuthProvider = 'local' | 'supabase';
+
+let warnedFallback = false;
+
+/** Which membership implementation is active — an EXPLICIT selection, never
+ *  inferred from credential presence: local development keeps the local
+ *  membership system even when Supabase credentials exist, unless
+ *  NEXT_PUBLIC_AUTH_PROVIDER=supabase says otherwise. Defaults to 'local'.
+ *  'supabase' without credentials is a misconfiguration: warn once and run
+ *  local, so the app stays usable. */
+export function getAuthProvider(): AuthProvider {
+  if (process.env.NEXT_PUBLIC_AUTH_PROVIDER === 'supabase') {
+    if (getSupabaseEnv()) return 'supabase';
+    if (!warnedFallback) {
+      warnedFallback = true;
+      console.warn(
+        'NEXT_PUBLIC_AUTH_PROVIDER=supabase, but NEXT_PUBLIC_SUPABASE_URL / ' +
+          'NEXT_PUBLIC_SUPABASE_ANON_KEY are not set — falling back to the ' +
+          'local membership system.',
+      );
+    }
+  }
+  return 'local';
+}
+
 /** The environment, or a thrown error naming what is missing — for code
  *  paths that must not run unconfigured (the client factories). */
 export function requireSupabaseEnv(): SupabaseEnv {

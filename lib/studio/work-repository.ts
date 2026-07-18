@@ -341,3 +341,30 @@ class LocalWorkRepository implements WorkRepository {
 /** The seam: swap this instance for SupabaseWorkRepository and every hook,
  *  page, and component is already correct. */
 export const workRepository: WorkRepository = new LocalWorkRepository();
+
+/* ── Local-only migration helper (Sprint 9 · Authentication) ─────────────── */
+
+/** When a real account creates its author profile, the works written on this
+ *  device under the pre-auth identities follow the writer: re-key them to the
+ *  new author id so the desk survives the first sign-in. Local storage only —
+ *  cloud work sync is a later migration step. Returns how many works moved. */
+export function adoptLocalWorks(
+  fromAuthorIds: readonly string[],
+  toAuthorId: string,
+): number {
+  if (typeof window === 'undefined' || !toAuthorId) return 0;
+  const from = new Set(
+    fromAuthorIds.filter((id) => id && id !== toAuthorId),
+  );
+  if (from.size === 0) return 0;
+
+  const works = readAll();
+  let adopted = 0;
+  const next = works.map((work) => {
+    if (!from.has(work.authorId)) return work;
+    adopted += 1;
+    return { ...work, authorId: toAuthorId };
+  });
+  if (adopted > 0) writeAll(next);
+  return adopted;
+}
