@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { KathaChapter } from '@/lib/books';
+import type { KathaChapter } from '@/lib/catalogue-repository';
 import BookmarkButton from '@/components/reader/BookmarkButton';
 import ReaderDrawer from '@/components/reader/ReaderDrawer';
 import {
@@ -39,6 +39,11 @@ import {
 interface ReaderToolbarProps {
   bookSlug: string;
   bookTitle: string;
+  /** Author byline + full chapter list for the TOC drawer — supplied by the
+   *  server page (which resolved the book through CatalogueRepository), so
+   *  the client drawer never resolves the catalogue itself. */
+  author: string;
+  chapters: KathaChapter[];
   chapterSlug: string;
   chapterTitle: string;
   chapterNumber: number;
@@ -50,6 +55,8 @@ interface ReaderToolbarProps {
 export default function ReaderToolbar({
   bookSlug,
   bookTitle,
+  author,
+  chapters,
   chapterSlug,
   chapterTitle,
   chapterNumber,
@@ -93,6 +100,8 @@ export default function ReaderToolbar({
             <ReaderDrawer
               bookSlug={bookSlug}
               bookTitle={bookTitle}
+              author={author}
+              chapters={chapters}
               currentChapterSlug={chapterSlug}
             />
           </div>

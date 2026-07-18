@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getBookBySlug, getChapterBySlug, isChapterFree } from '@/lib/books';
+import {
+  catalogueRepository,
+  isChapterFree,
+} from '@/lib/catalogue-repository';
 import { authorName } from '@/lib/author-selectors';
 import ChapterGate from '@/components/membership/ChapterGate';
 import ReaderSidebar from '@/components/reader/ReaderSidebar';
@@ -41,8 +44,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string; chapter: string }>;
 }): Promise<Metadata> {
   const { slug, chapter } = await params;
-  const book = getBookBySlug(slug);
-  const current = book ? getChapterBySlug(slug, chapter) : undefined;
+  const book = await catalogueRepository.getBook(slug);
+  const current = book?.chapters.find((c) => c.slug === chapter);
 
   if (!book || !current) {
     return { title: 'Chapter not found' };
@@ -61,13 +64,13 @@ export default async function ReaderPage({
 }) {
   const { slug, chapter } = await params;
 
-  const book = getBookBySlug(slug);
+  const book = await catalogueRepository.getBook(slug);
   // Catalogue miss → the distribution seam: books published from this
   // device's Studio live at these same addresses but only exist client-side,
   // so the fallback resolves them there (and owns the miss UI beyond that).
   if (!book) return <LocalChapterReader slug={slug} chapterSlug={chapter} />;
 
-  const current = getChapterBySlug(slug, chapter);
+  const current = book.chapters.find((c) => c.slug === chapter);
   if (!current) notFound();
 
   const total = book.chapters.length;
@@ -118,6 +121,8 @@ export default async function ReaderPage({
           <ReaderToolbar
             bookSlug={book.slug}
             bookTitle={book.title}
+            author={authorName(book.authorId)}
+            chapters={book.chapters}
             chapterSlug={current.slug}
             chapterTitle={current.title}
             chapterNumber={current.number}

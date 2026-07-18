@@ -18,7 +18,7 @@
  * catalogue pages expect from the client-only shelf.
  * ------------------------------------------------------------------------- */
 
-import type { KathaBook } from '../books';
+import type { KathaBook } from '../catalogue-repository';
 import { authorName } from '../author-selectors';
 import { getCurrentAuthor, getCurrentAuthorId } from './current-author';
 import { workRepository } from './work-repository';

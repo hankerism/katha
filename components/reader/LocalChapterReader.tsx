@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { KathaBook } from '@/lib/books';
-import { isChapterFree } from '@/lib/books';
+import {
+  isChapterFree,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
 import type { ReadingLocation } from '@/lib/reading-location';
 import {
   getLocalPublishedBookBySlug,

@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  getContinueReading,
-  type ContinueReadingRecord,
-} from '@/lib/continue-reading';
+import type { ContinueReadingRecord } from '@/lib/continue-reading';
+import { readingDataRepository } from '@/lib/reading-data-repository';
 import { readingProgress } from '@/lib/continue-reading-selectors';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { ArrowRightIcon, CheckIcon } from '@/components/ui/icons';
@@ -29,10 +27,16 @@ export default function ContinueReading() {
   const [record, setRecord] = useState<ContinueReadingRecord | null>(null);
   const { viewer, loaded } = useViewer();
 
-  // Read via the persistence layer (never localStorage directly); it validates
-  // and returns null on the server / bad data, so the mount-gate stays clean.
+  // Read through the repository; it validates and resolves null on the server
+  // / bad data, so the mount-gate stays clean.
   useEffect(() => {
-    setRecord(getContinueReading());
+    let cancelled = false;
+    void readingDataRepository.getContinueReading().then((found) => {
+      if (!cancelled) setRecord(found);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Home carries exactly ONE quiet membership ask — this slot. The other

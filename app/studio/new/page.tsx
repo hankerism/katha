@@ -1,9 +1,12 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getAllBooks } from '@/lib/books';
+import {
+  catalogueRepository,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
 import { collectCategories } from '@/lib/search';
 import { getCurrentAuthorId } from '@/lib/studio/current-author';
 import { useWorks } from '@/components/studio/use-works';
@@ -27,7 +30,21 @@ const labelClass =
 export default function NewWorkPage() {
   const router = useRouter();
   const { begin } = useWorks(getCurrentAuthorId());
-  const categories = collectCategories(getAllBooks());
+
+  // Category suggestions from the shared catalogue, through the repository —
+  // loaded after mount (this is a client page); the free-text input works
+  // regardless, so the datalist filling in a beat later changes nothing.
+  const [catalogue, setCatalogue] = useState<KathaBook[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    void catalogueRepository.listBooks().then((found) => {
+      if (!cancelled) setCatalogue(found);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  const categories = collectCategories(catalogue);
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');

@@ -14,7 +14,7 @@
  * crash), UI consumes these and never joins inline.
  * ------------------------------------------------------------------------- */
 
-import { getAllBooks, type KathaBook } from './books';
+import type { KathaBook } from './catalogue-repository';
 import { getAuthorById, getAllAuthors, type KathaAuthor } from './authors';
 
 /* ── Names ───────────────────────────────────────────────────────────────── */
@@ -42,9 +42,13 @@ export function getAuthorForBook(book: KathaBook): KathaAuthor | undefined {
 
 /* ── Bibliography ────────────────────────────────────────────────────────── */
 
-/** An author's books, in catalogue order. */
-export function getBibliography(authorId: string): KathaBook[] {
-  return getAllBooks().filter((book) => book.authorId === authorId);
+/** An author's books, in catalogue order, from a caller-supplied catalogue
+ *  snapshot (fetched once through CatalogueRepository). */
+export function getBibliography(
+  authorId: string,
+  books: readonly KathaBook[],
+): KathaBook[] {
+  return books.filter((book) => book.authorId === authorId);
 }
 
 /* ── Profiles ────────────────────────────────────────────────────────────── */
@@ -81,16 +85,22 @@ function statsFor(books: KathaBook[]): AuthorStats {
 
 /** The /authors/[slug] page's one-call join: author + bibliography + stats.
  *  Undefined when the slug is unknown (the page 404s). */
-export function getAuthorProfile(slug: string): AuthorProfile | undefined {
+export function getAuthorProfile(
+  slug: string,
+  catalogue: readonly KathaBook[],
+): AuthorProfile | undefined {
   const author = getAllAuthors().find((a) => a.slug === slug);
   if (!author) return undefined;
-  const books = getBibliography(author.id);
+  const books = getBibliography(author.id, catalogue);
   return { author, books, stats: statsFor(books) };
 }
 
 /** Convenience for author cards: profile facts keyed by the author row. */
-export function getAuthorStats(authorId: string): AuthorStats {
-  return statsFor(getBibliography(authorId));
+export function getAuthorStats(
+  authorId: string,
+  catalogue: readonly KathaBook[],
+): AuthorStats {
+  return statsFor(getBibliography(authorId, catalogue));
 }
 
 /* ── Relationships ───────────────────────────────────────────────────────── */
@@ -98,14 +108,19 @@ export function getAuthorStats(authorId: string): AuthorStats {
 /** Other authors, those sharing a category first (then the rest, catalogue
  *  order), capped by the caller. Degrades gracefully in a small catalogue:
  *  with no category overlap it simply suggests other authors. */
-export function getRelatedAuthors(authorId: string): KathaAuthor[] {
+export function getRelatedAuthors(
+  authorId: string,
+  catalogue: readonly KathaBook[],
+): KathaAuthor[] {
   const ownCategories = new Set(
-    getBibliography(authorId).map((book) => book.category),
+    getBibliography(authorId, catalogue).map((book) => book.category),
   );
   const others = getAllAuthors().filter((author) => author.id !== authorId);
 
   const sharesCategory = (author: KathaAuthor) =>
-    getBibliography(author.id).some((book) => ownCategories.has(book.category));
+    getBibliography(author.id, catalogue).some((book) =>
+      ownCategories.has(book.category),
+    );
 
   return [
     ...others.filter(sharesCategory),

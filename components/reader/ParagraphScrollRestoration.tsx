@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { recordVisit } from '@/lib/history';
+import { readingDataRepository } from '@/lib/reading-data-repository';
 import { getViewer } from '@/lib/membership';
 import {
   paragraphAnchorId,
@@ -21,10 +21,11 @@ import {
  *      paragraphs carry scroll-margin-top, so the target clears the sticky
  *      chrome. Same-chapter passage jumps are handled by the hashchange listener.
  *
- *   2. History recording — it records this visit via history.recordVisit() ONCE
- *      per chapter navigation, at the arrival paragraph (a valid #p-{index} deep
- *      link, else paragraph 0). It reuses the shared ReadingLocation model and
- *      withParagraphAnchor(); it never re-derives any of that logic.
+ *   2. History recording — it records this visit through the reading-data
+ *      repository ONCE per chapter navigation, at the arrival paragraph (a
+ *      valid #p-{index} deep link, else paragraph 0). It reuses the shared
+ *      ReadingLocation model and withParagraphAnchor(); it never re-derives
+ *      any of that logic.
  *
  * Why here: ReaderArticle is a Server Component and must stay one, so all
  * browser-only work lives in this leaf. The page passes the base ReadingLocation
@@ -84,7 +85,7 @@ export default function ParagraphScrollRestoration({
     // Scroll restoration works for everyone; only members are remembered.
     if (lastRecorded.current !== key && getViewer().tier !== 'guest') {
       lastRecorded.current = key;
-      recordVisit(visit);
+      void readingDataRepository.recordVisit(visit);
     }
 
     // Same-chapter jumps to another passage still scroll — but don't re-record.

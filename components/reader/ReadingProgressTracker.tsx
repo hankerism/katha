@@ -1,10 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import {
-  saveContinueReading,
-  type ContinueReadingInput,
-} from '@/lib/continue-reading';
+import type { ContinueReadingInput } from '@/lib/continue-reading';
+import { readingDataRepository } from '@/lib/reading-data-repository';
 import { getViewer } from '@/lib/membership';
 
 /* ---------------------------------------------------------------------------
@@ -32,7 +30,7 @@ export default function ReadingProgressTracker({
   useEffect(() => {
     // The library only remembers members; a guest's visit leaves no trace.
     if (getViewer().tier === 'guest') return;
-    saveContinueReading({
+    void readingDataRepository.saveContinueReading({
       bookSlug,
       bookTitle,
       chapterSlug,

@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getBookmarks, removeBookmark, type Bookmark } from '@/lib/bookmarks';
+import type { Bookmark } from '@/lib/bookmarks';
+import { readingDataRepository } from '@/lib/reading-data-repository';
+import {
+  catalogueRepository,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { RibbonIcon, ArrowRightIcon } from '@/components/ui/icons';
 import { useViewer } from '@/components/membership/use-viewer';
@@ -40,8 +45,8 @@ function cx(...classes: Array<string | false | null | undefined>): string {
 
 /** Chapter citation for the card eyebrow, composed from the selectors — the
  *  card never derives this itself. Falls back gracefully for orphaned chapters. */
-function composeEyebrow(bookmark: Bookmark): string {
-  const number = getChapterNumber(bookmark);
+function composeEyebrow(bookmark: Bookmark, books: readonly KathaBook[]): string {
+  const number = getChapterNumber(bookmark, books);
   return number > 0
     ? `Chapter ${number} · ${bookmark.chapterTitle}`
     : bookmark.chapterTitle;
@@ -54,24 +59,37 @@ function pluralize(count: number, singular: string): string {
 export default function BookmarksPage() {
   const [loaded, setLoaded] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const [books, setBooks] = useState<readonly KathaBook[]>([]);
   const { viewer, loaded: viewerLoaded } = useViewer();
   const isGuest = viewerLoaded && viewer.tier === 'guest';
 
-  // Bookmarks live in localStorage — read once on mount, then reveal.
+  // Read once on mount through the repositories (bookmarks + the catalogue
+  // snapshot the selectors derive over), then reveal together.
   useEffect(() => {
-    setBookmarks(getBookmarks());
-    setLoaded(true);
+    let cancelled = false;
+    void Promise.all([
+      readingDataRepository.listBookmarks(),
+      catalogueRepository.listBooks(),
+    ]).then(([foundBookmarks, foundBooks]) => {
+      if (cancelled) return;
+      setBookmarks(foundBookmarks);
+      setBooks(foundBooks);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const groups = groupBookmarksByBook(bookmarks);
+  const groups = groupBookmarksByBook(bookmarks, books);
   const hasBookmarks = bookmarks.length > 0;
 
-  // Remove immediately: removeBookmark() filters + persists via the foundation
-  // and returns the next list. The functional updater removes from the LATEST
-  // list, so quick successive deletes can't race on a stale closure. When the
-  // last one goes, `groups` empties and the empty state renders automatically.
+  // Remove through the repository, which persists and returns the next list —
+  // storage is the single source of truth, so quick successive deletes can't
+  // race on a stale closure. When the last one goes, `groups` empties and the
+  // empty state renders automatically.
   function handleRemove(id: string) {
-    setBookmarks((current) => removeBookmark(id, current));
+    void readingDataRepository.removeBookmark(id).then(setBookmarks);
   }
 
   return (
@@ -131,8 +149,8 @@ export default function BookmarksPage() {
                       <ReadingLocationCard
                         key={bookmark.id}
                         href={bookmark.href}
-                        eyebrow={composeEyebrow(bookmark)}
-                        preview={resolvePreview(bookmark)}
+                        eyebrow={composeEyebrow(bookmark, books)}
+                        preview={resolvePreview(bookmark, books)}
                         meta={relativeTimeLabel(bookmark.createdAt, 'Saved')}
                         ariaLabel={`Continue reading ${group.bookTitle}, ${bookmark.chapterTitle}`}
                         onRemove={() => handleRemove(bookmark.id)}

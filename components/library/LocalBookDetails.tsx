@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { KathaBook } from '@/lib/books';
+import type { KathaBook } from '@/lib/catalogue-repository';
 import {
   getLocalPublishedBookBySlug,
   localBookAuthorName,

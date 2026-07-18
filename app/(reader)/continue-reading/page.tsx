@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import type { ContinueReadingRecord } from '@/lib/continue-reading';
+import { readingDataRepository } from '@/lib/reading-data-repository';
 import {
-  getContinueReading,
-  type ContinueReadingRecord,
-} from '@/lib/continue-reading';
+  catalogueRepository,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { BookOpenIcon, ArrowRightIcon } from '@/components/ui/icons';
 import { useViewer } from '@/components/membership/use-viewer';
@@ -37,8 +39,11 @@ function cx(...classes: Array<string | false | null | undefined>): string {
 }
 
 /** Chapter citation for the card eyebrow, via the shared selector. */
-function composeEyebrow(record: ContinueReadingRecord): string {
-  const number = getChapterNumber(record);
+function composeEyebrow(
+  record: ContinueReadingRecord,
+  books: readonly KathaBook[],
+): string {
+  const number = getChapterNumber(record, books);
   return number > 0
     ? `Chapter ${number} · ${record.chapterTitle}`
     : record.chapterTitle;
@@ -47,14 +52,25 @@ function composeEyebrow(record: ContinueReadingRecord): string {
 export default function ContinueReadingPage() {
   const [loaded, setLoaded] = useState(false);
   const [record, setRecord] = useState<ContinueReadingRecord | null>(null);
+  const [books, setBooks] = useState<readonly KathaBook[]>([]);
   const { viewer, loaded: viewerLoaded } = useViewer();
   const isGuest = viewerLoaded && viewer.tier === 'guest';
 
-  // The position lives in localStorage — read once on mount via the persistence
-  // layer (the UI never touches localStorage directly), then reveal.
+  // Read once on mount through the repositories, then reveal together.
   useEffect(() => {
-    setRecord(getContinueReading());
-    setLoaded(true);
+    let cancelled = false;
+    void Promise.all([
+      readingDataRepository.getContinueReading(),
+      catalogueRepository.listBooks(),
+    ]).then(([found, foundBooks]) => {
+      if (cancelled) return;
+      setRecord(found);
+      setBooks(foundBooks);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -96,8 +112,8 @@ export default function ContinueReadingPage() {
             <div className="mt-11">
               <ReadingLocationCard
                 href={record.href}
-                eyebrow={composeEyebrow(record)}
-                preview={resolvePreview(record)}
+                eyebrow={composeEyebrow(record, books)}
+                preview={resolvePreview(record, books)}
                 meta={relativeTimeLabel(record.updatedAt, 'Opened')}
                 ariaLabel={`Continue reading ${record.bookTitle}, ${record.chapterTitle}`}
                 showRibbon={false}

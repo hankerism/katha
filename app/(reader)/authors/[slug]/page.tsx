@@ -5,6 +5,7 @@ import {
   getAuthorStats,
   getRelatedAuthors,
 } from '@/lib/author-selectors';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import BookCard from '@/components/ui/BookCard';
 import AuthorCard from '@/components/authors/AuthorCard';
 import { initialsOf } from '@/lib/text';
@@ -29,7 +30,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const profile = getAuthorProfile(slug);
+  const profile = getAuthorProfile(slug, await catalogueRepository.listBooks());
   if (!profile) return { title: 'Author not found' };
   return {
     title: profile.author.displayName,
@@ -43,11 +44,12 @@ export default async function AuthorProfilePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const profile = getAuthorProfile(slug);
+  const catalogue = await catalogueRepository.listBooks();
+  const profile = getAuthorProfile(slug, catalogue);
   if (!profile) notFound();
 
   const { author, books, stats } = profile;
-  const related = getRelatedAuthors(author.id).slice(0, 3);
+  const related = getRelatedAuthors(author.id, catalogue).slice(0, 3);
 
   return (
     <>
@@ -255,7 +257,7 @@ export default async function AuthorProfilePage({
 
             <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((other) => {
-                const otherStats = getAuthorStats(other.id);
+                const otherStats = getAuthorStats(other.id, catalogue);
                 return (
                   <AuthorCard
                     key={other.id}

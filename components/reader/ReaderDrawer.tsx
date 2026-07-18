@@ -7,9 +7,8 @@ import {
   type TransitionEvent,
 } from 'react';
 import Link from 'next/link';
-import { getBookBySlug } from '@/lib/books';
-import { getBookmarks } from '@/lib/bookmarks';
-import { authorName } from '@/lib/author-selectors';
+import type { KathaChapter } from '@/lib/catalogue-repository';
+import { readingDataRepository } from '@/lib/reading-data-repository';
 import {
   ContentsIcon,
   CloseIcon,
@@ -37,6 +36,10 @@ import {
 interface ReaderDrawerProps {
   bookSlug: string;
   bookTitle: string;
+  /** Byline + chapter list, supplied by the server page through the toolbar —
+   *  this client leaf never resolves the catalogue itself. */
+  author: string;
+  chapters: KathaChapter[];
   currentChapterSlug: string;
 }
 
@@ -52,6 +55,8 @@ function cx(...classes: Array<string | false | null | undefined>): string {
 export default function ReaderDrawer({
   bookSlug,
   bookTitle,
+  author,
+  chapters,
   currentChapterSlug,
 }: ReaderDrawerProps) {
   const [open, setOpen] = useState(false); // controls mount
@@ -61,10 +66,7 @@ export default function ReaderDrawer({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
 
-  const book = getBookBySlug(bookSlug);
-  const chapters = book?.chapters ?? [];
-  const author = book ? authorName(book.authorId) : '';
-  const title = book?.title ?? bookTitle;
+  const title = bookTitle;
   const total = chapters.length;
   const currentNumber =
     chapters.find((chapter) => chapter.slug === currentChapterSlug)?.number ?? 0;
@@ -94,7 +96,9 @@ export default function ReaderDrawer({
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    setBookmarkCount(getBookmarks().filter((b) => b.bookSlug === bookSlug).length);
+    void readingDataRepository.listBookmarks().then((bookmarks) => {
+      setBookmarkCount(bookmarks.filter((b) => b.bookSlug === bookSlug).length);
+    });
 
     const focusId = requestAnimationFrame(() => panelRef.current?.focus());
 

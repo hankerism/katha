@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllBooks } from '@/lib/books';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import { collectCategories } from '@/lib/search';
 
 /* ---------------------------------------------------------------------------
@@ -15,8 +15,8 @@ import { collectCategories } from '@/lib/search';
  * that actually has books — and new categories appear here on their own.
  * ------------------------------------------------------------------------- */
 
-export default function PopularCategories() {
-  const categories = collectCategories(getAllBooks());
+export default async function PopularCategories() {
+  const categories = collectCategories(await catalogueRepository.listBooks());
 
   return (
     <section aria-labelledby="browse-by-genre-heading" className="bg-background">

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { getSearchIndex } from '@/lib/books';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import { getAllAuthors } from '@/lib/authors';
 import SearchExperience from '@/components/search/SearchExperience';
 
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     'Search the KATHA library — find books, authors, categories, and chapters across a curated shelf of Filipino-inspired fiction, poetry, and short stories.',
 };
 
-export default function SearchPage() {
+export default async function SearchPage() {
   return (
     <section
       aria-labelledby="search-hero-heading"
@@ -57,7 +57,7 @@ export default function SearchPage() {
             {/* The index is computed HERE (server) so chapter prose never
                 enters the client bundle — the experience gets data as props. */}
             <SearchExperience
-              books={getSearchIndex()}
+              books={await catalogueRepository.searchIndex()}
               authors={getAllAuthors()}
             />
           </Suspense>

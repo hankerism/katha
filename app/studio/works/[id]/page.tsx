@@ -7,6 +7,10 @@ import { useWork } from '@/components/studio/use-works';
 import { useAutosave } from '@/components/studio/use-autosave';
 import { workRepository } from '@/lib/studio/work-repository';
 import {
+  catalogueRepository,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
+import {
   manuscriptWordCount,
   newChapterId,
   slugifyTitle,
@@ -55,6 +59,7 @@ export default function WorkWorkspacePage() {
   const [confirmingRemove, setConfirmingRemove] = useState<string | null>(null);
   const [coverError, setCoverError] = useState<string | null>(null);
   const [siblings, setSiblings] = useState<StudioWork[]>([]);
+  const [catalogue, setCatalogue] = useState<readonly KathaBook[]>([]);
 
   // WHAT saving means for this surface: persist the metadata mirror through
   // the repository seam. The hook owns every WHEN (debounce, unmount,
@@ -68,10 +73,12 @@ export default function WorkWorkspacePage() {
 
   const { scheduleSave, saveState, savedAt } = useAutosave(saveMeta);
 
-  // The author's other works, for slug-collision checks at publish time.
+  // The author's other works + the shared catalogue, for slug-collision
+  // checks at publish time (both through their repository seams).
   useEffect(() => {
     if (!work) return;
     void workRepository.listWorks(work.authorId).then(setSiblings);
+    void catalogueRepository.listBooks().then(setCatalogue);
   }, [work]);
 
   useEffect(() => {
@@ -196,7 +203,7 @@ export default function WorkWorkspacePage() {
   const stats = workStats(work);
   const isArchived = work.lifecycle === 'archived';
   const isPublished = work.lifecycle === 'published';
-  const issues = validateForPublish(work, siblings);
+  const issues = validateForPublish(work, siblings, catalogue);
   const hasPages = work.chapters.length > 0;
 
   return (

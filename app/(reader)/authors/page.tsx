@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getAllAuthors } from '@/lib/authors';
 import { getAuthorStats } from '@/lib/author-selectors';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import AuthorCard from '@/components/authors/AuthorCard';
 
 /* ---------------------------------------------------------------------------
@@ -22,7 +23,8 @@ export const metadata: Metadata = {
     'Meet the writers behind KATHA — the novelists, poets, and storytellers bringing Filipino literature to beautifully typeset shelves.',
 };
 
-export default function AuthorsPage() {
+export default async function AuthorsPage() {
+  const books = await catalogueRepository.listBooks();
   const authors = getAllAuthors();
 
   return (
@@ -75,7 +77,7 @@ export default function AuthorsPage() {
 
         <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {authors.map((author) => {
-            const stats = getAuthorStats(author.id);
+            const stats = getAuthorStats(author.id, books);
             return (
               <AuthorCard
                 key={author.id}

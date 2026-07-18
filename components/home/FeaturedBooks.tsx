@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import BookCard from '@/components/ui/BookCard';
-import { getFeaturedBooks } from '@/lib/books';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import { authorName } from '@/lib/author-selectors';
 
 /* ---------------------------------------------------------------------------
@@ -13,8 +13,8 @@ import { authorName } from '@/lib/author-selectors';
  * library's featured shelf alike.
  * ------------------------------------------------------------------------- */
 
-export default function FeaturedBooks() {
-  const featured = getFeaturedBooks();
+export default async function FeaturedBooks() {
+  const featured = await catalogueRepository.listFeatured();
   return (
     <section aria-labelledby="featured-books-heading" className="bg-background">
       <div className="container-katha py-20">

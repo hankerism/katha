@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getBookBySlug, getRelatedBooks, type KathaBook } from '@/lib/books';
+import type { KathaBook } from '@/lib/catalogue-repository';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import LocalBookDetails from '@/components/library/LocalBookDetails';
 import {
   authorName,
@@ -33,7 +34,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const book = getBookBySlug(slug);
+  const book = await catalogueRepository.getBook(slug);
   if (!book) return { title: 'Book not found' };
   return {
     title: book.title,
@@ -58,7 +59,7 @@ export default async function BookDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const book = getBookBySlug(slug);
+  const book = await catalogueRepository.getBook(slug);
   // Catalogue miss → the distribution seam: the slug may belong to a book
   // published from this device's Studio, which only exists client-side.
   if (!book) return <LocalBookDetails slug={slug} />;
@@ -66,12 +67,15 @@ export default async function BookDetailPage({
   const chapterCount = book.chapters.length;
   const minutes = totalReadingMinutes(book);
   const firstChapter = book.chapters[0];
-  const related = getRelatedBooks(book.slug).slice(0, 4);
+  const related = (await catalogueRepository.listRelated(book.slug)).slice(0, 4);
 
   // All author facts come from the Author domain via the selector layer.
   const author = getAuthorForBook(book);
   const displayAuthor = author?.displayName ?? authorName(book.authorId);
-  const moreByAuthor = getBibliography(book.authorId).filter(
+  const moreByAuthor = getBibliography(
+    book.authorId,
+    await catalogueRepository.listBooks(),
+  ).filter(
     (other) => other.slug !== book.slug,
   );
 

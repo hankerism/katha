@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { KathaBook } from '@/lib/books';
+import type { KathaBook } from '@/lib/catalogue-repository';
 import {
   getLocalPublishedBooks,
   localBookAuthorName,

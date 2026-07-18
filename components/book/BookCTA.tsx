@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getContinueReading } from '@/lib/continue-reading';
+import { readingDataRepository } from '@/lib/reading-data-repository';
 import { ArrowRightIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------
@@ -37,13 +37,17 @@ export default function BookCTA({
   });
 
   useEffect(() => {
-    const record = getContinueReading();
-    if (record?.bookSlug === bookSlug) {
+    let cancelled = false;
+    void readingDataRepository.getContinueReading().then((record) => {
+      if (cancelled || record?.bookSlug !== bookSlug) return;
       setTarget({
         href: record.href,
         label: `Continue · Chapter ${record.chapterNumber}`,
       });
-    }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [bookSlug]);
 
   return (

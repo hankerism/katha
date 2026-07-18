@@ -1,5 +1,6 @@
 import { getFeaturedAuthors } from '@/lib/authors';
 import { getAuthorStats } from '@/lib/author-selectors';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import AuthorCard from '@/components/authors/AuthorCard';
 
 /* ---------------------------------------------------------------------------
@@ -12,7 +13,8 @@ import AuthorCard from '@/components/authors/AuthorCard';
  * via getAuthorStats(), so this shelf can never contradict the shelves again.
  * ------------------------------------------------------------------------- */
 
-export default function FeaturedAuthors() {
+export default async function FeaturedAuthors() {
+  const books = await catalogueRepository.listBooks();
   const authors = getFeaturedAuthors();
 
   return (
@@ -34,7 +36,7 @@ export default function FeaturedAuthors() {
         {/* Cards */}
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {authors.map((author) => {
-            const stats = getAuthorStats(author.id);
+            const stats = getAuthorStats(author.id, books);
             return (
               <AuthorCard
                 key={author.id}

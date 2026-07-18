@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getHistory, clearHistory, type HistoryEntry } from '@/lib/history';
+import type { HistoryEntry } from '@/lib/history';
+import { readingDataRepository } from '@/lib/reading-data-repository';
+import {
+  catalogueRepository,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { ClockIcon, ArrowRightIcon } from '@/components/ui/icons';
 import { useViewer } from '@/components/membership/use-viewer';
@@ -37,8 +42,8 @@ function cx(...classes: Array<string | false | null | undefined>): string {
 
 /** Chapter citation for the card eyebrow, composed from the selectors — the
  *  card never derives this itself. Falls back gracefully for orphaned chapters. */
-function composeEyebrow(entry: HistoryEntry): string {
-  const number = getChapterNumber(entry);
+function composeEyebrow(entry: HistoryEntry, books: readonly KathaBook[]): string {
+  const number = getChapterNumber(entry, books);
   return number > 0
     ? `Chapter ${number} · ${entry.chapterTitle}`
     : entry.chapterTitle;
@@ -51,23 +56,35 @@ function pluralize(count: number, singular: string): string {
 export default function HistoryPage() {
   const [loaded, setLoaded] = useState(false);
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
+  const [books, setBooks] = useState<readonly KathaBook[]>([]);
   const { viewer, loaded: viewerLoaded } = useViewer();
   const isGuest = viewerLoaded && viewer.tier === 'guest';
 
-  // History lives in localStorage — read once on mount via the persistence
-  // layer (the UI never touches localStorage directly), then reveal.
+  // Read once on mount through the repositories (history + the catalogue
+  // snapshot the selectors derive over), then reveal together.
   useEffect(() => {
-    setEntries(getHistory());
-    setLoaded(true);
+    let cancelled = false;
+    void Promise.all([
+      readingDataRepository.listHistory(),
+      catalogueRepository.listBooks(),
+    ]).then(([foundEntries, foundBooks]) => {
+      if (cancelled) return;
+      setEntries(foundEntries);
+      setBooks(foundBooks);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const groups = groupHistoryByBook(entries);
+  const groups = groupHistoryByBook(entries, books);
   const hasHistory = entries.length > 0;
 
-  // clearHistory() persists the empty list via the foundation; the empty state
-  // renders automatically once local state follows.
+  // The repository persists the cleared list; the empty state renders
+  // automatically once local state follows.
   function handleClear() {
-    clearHistory();
+    void readingDataRepository.clearHistory();
     setEntries([]);
   }
 
@@ -141,8 +158,8 @@ export default function HistoryPage() {
                       <ReadingLocationCard
                         key={entry.id}
                         href={entry.href}
-                        eyebrow={composeEyebrow(entry)}
-                        preview={resolvePreview(entry)}
+                        eyebrow={composeEyebrow(entry, books)}
+                        preview={resolvePreview(entry, books)}
                         meta={relativeTimeLabel(entry.visitedAt, 'Visited')}
                         ariaLabel={`Continue reading ${group.bookTitle}, ${entry.chapterTitle}`}
                       />

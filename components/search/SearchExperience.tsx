@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import type { BookSearchRecord } from '@/lib/books';
+import type { BookSearchRecord } from '@/lib/catalogue-repository';
 import type { KathaAuthor } from '@/lib/authors';
 import { searchCatalogue, collectCategories } from '@/lib/search';
 import {

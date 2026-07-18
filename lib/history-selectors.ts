@@ -13,7 +13,8 @@
  * never lib/books.ts directly.
  * ------------------------------------------------------------------------- */
 
-import { getBookBySlug } from './books';
+import type { KathaBook } from './catalogue-repository';
+import { findBook } from './reading-location-selectors';
 import type { HistoryEntry } from './history';
 
 // Shared, location-level helpers — re-exported so the History UI has a single
@@ -43,7 +44,10 @@ function toEpoch(iso: string): number {
 /** Group history by book — each group most-recently-visited first, groups
  *  ordered by most-recent visit (newest first). Orphaned books sort last. This
  *  owns ordering, so it is robust regardless of the input list's order. */
-export function groupHistoryByBook(entries: HistoryEntry[]): HistoryGroup[] {
+export function groupHistoryByBook(
+  entries: HistoryEntry[],
+  books: readonly KathaBook[],
+): HistoryGroup[] {
   const byBook = new Map<string, HistoryEntry[]>();
   for (const entry of entries) {
     const list = byBook.get(entry.bookSlug);
@@ -53,7 +57,7 @@ export function groupHistoryByBook(entries: HistoryEntry[]): HistoryGroup[] {
 
   const groups: HistoryGroup[] = [];
   for (const [bookSlug, list] of byBook) {
-    const book = getBookBySlug(bookSlug);
+    const book = findBook(books, bookSlug);
     const sorted = [...list].sort(
       (a, b) => toEpoch(b.visitedAt) - toEpoch(a.visitedAt),
     );

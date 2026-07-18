@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getBookmarks, type Bookmark } from '@/lib/bookmarks';
+import type { Bookmark } from '@/lib/bookmarks';
+import { readingDataRepository } from '@/lib/reading-data-repository';
+import {
+  catalogueRepository,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
 import { getChapterNumber } from '@/lib/bookmark-selectors';
 import { BookmarkIcon, ArrowRightIcon } from '@/components/ui/icons';
 import { useViewer } from '@/components/membership/use-viewer';
@@ -23,12 +28,24 @@ const MAX_VISIBLE = 3;
 
 export default function BookmarksShelf() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const [books, setBooks] = useState<readonly KathaBook[]>([]);
   const [loaded, setLoaded] = useState(false);
   const { viewer, loaded: viewerLoaded } = useViewer();
 
   useEffect(() => {
-    setBookmarks(getBookmarks());
-    setLoaded(true);
+    let cancelled = false;
+    void Promise.all([
+      readingDataRepository.listBookmarks(),
+      catalogueRepository.listBooks(),
+    ]).then(([found, foundBooks]) => {
+      if (cancelled) return;
+      setBookmarks(found);
+      setBooks(foundBooks);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Until we've read storage, render nothing (matches the server pass).
@@ -57,7 +74,7 @@ export default function BookmarksShelf() {
         <>
           <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((bookmark) => {
-              const chapterNumber = getChapterNumber(bookmark);
+              const chapterNumber = getChapterNumber(bookmark, books);
               return (
                 <article
                   key={bookmark.id}

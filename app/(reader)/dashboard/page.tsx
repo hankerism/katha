@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getBookmarks, type Bookmark } from '@/lib/bookmarks';
-import { getHistory, type HistoryEntry } from '@/lib/history';
+import type { Bookmark } from '@/lib/bookmarks';
+import type { HistoryEntry } from '@/lib/history';
+import type { ContinueReadingRecord } from '@/lib/continue-reading';
+import { readingDataRepository } from '@/lib/reading-data-repository';
 import {
-  getContinueReading,
-  type ContinueReadingRecord,
-} from '@/lib/continue-reading';
+  catalogueRepository,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
 import { groupHistoryByBook } from '@/lib/history-selectors';
 import {
   resolvePreview,
@@ -55,8 +57,9 @@ function composeEyebrow(
     ReadingLocation,
     'bookSlug' | 'bookTitle' | 'chapterSlug' | 'chapterTitle'
   >,
+  books: readonly KathaBook[],
 ): string {
-  const number = getChapterNumber(location);
+  const number = getChapterNumber(location, books);
   return number > 0
     ? `${location.bookTitle} · Chapter ${number}`
     : `${location.bookTitle} · ${location.chapterTitle}`;
@@ -78,20 +81,33 @@ export default function DashboardPage() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [record, setRecord] = useState<ContinueReadingRecord | null>(null);
+  const [books, setBooks] = useState<readonly KathaBook[]>([]);
   const { viewer, loaded: viewerLoaded } = useViewer();
   const { preferences } = useReaderPreferences();
   const isGuest = viewerLoaded && viewer.tier === 'guest';
 
-  // All reading data lives in localStorage — read once on mount via the
-  // persistence layers (never localStorage directly), then reveal.
+  // Read once on mount through the repositories, then reveal together.
   useEffect(() => {
-    setBookmarks(getBookmarks());
-    setHistory(getHistory());
-    setRecord(getContinueReading());
-    setLoaded(true);
+    let cancelled = false;
+    void Promise.all([
+      readingDataRepository.listBookmarks(),
+      readingDataRepository.listHistory(),
+      readingDataRepository.getContinueReading(),
+      catalogueRepository.listBooks(),
+    ]).then(([foundBookmarks, foundHistory, foundRecord, foundBooks]) => {
+      if (cancelled) return;
+      setBookmarks(foundBookmarks);
+      setHistory(foundHistory);
+      setRecord(foundRecord);
+      setBooks(foundBooks);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const historyGroups = groupHistoryByBook(history);
+  const historyGroups = groupHistoryByBook(history, books);
   const recentBookmarks = bookmarks.slice(0, MAX_SECTION_CARDS);
   const recentBooks = historyGroups.slice(0, MAX_SECTION_CARDS);
 
@@ -161,8 +177,8 @@ export default function DashboardPage() {
                 <DashboardSection title="Continue Reading">
                   <ReadingLocationCard
                     href={record.href}
-                    eyebrow={composeEyebrow(record)}
-                    preview={resolvePreview(record)}
+                    eyebrow={composeEyebrow(record, books)}
+                    preview={resolvePreview(record, books)}
                     meta={relativeTimeLabel(record.updatedAt, 'Opened')}
                     ariaLabel={`Continue reading ${record.bookTitle}, ${record.chapterTitle}`}
                     showRibbon={false}
@@ -179,8 +195,8 @@ export default function DashboardPage() {
                       <ReadingLocationCard
                         key={bookmark.id}
                         href={bookmark.href}
-                        eyebrow={composeEyebrow(bookmark)}
-                        preview={resolvePreview(bookmark)}
+                        eyebrow={composeEyebrow(bookmark, books)}
+                        preview={resolvePreview(bookmark, books)}
                         meta={relativeTimeLabel(bookmark.createdAt, 'Saved')}
                         ariaLabel={`Continue reading ${bookmark.bookTitle}, ${bookmark.chapterTitle}`}
                       />
@@ -198,8 +214,8 @@ export default function DashboardPage() {
                         <ReadingLocationCard
                           key={group.bookSlug}
                           href={latest.href}
-                          eyebrow={composeEyebrow(latest)}
-                          preview={resolvePreview(latest)}
+                          eyebrow={composeEyebrow(latest, books)}
+                          preview={resolvePreview(latest, books)}
                           meta={relativeTimeLabel(latest.visitedAt, 'Visited')}
                           ariaLabel={`Continue reading ${group.bookTitle}, ${latest.chapterTitle}`}
                         />

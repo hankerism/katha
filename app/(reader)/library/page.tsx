@@ -3,12 +3,8 @@ import Link from 'next/link';
 import BookCard from '@/components/ui/BookCard';
 import LocalPublishedShelf from '@/components/library/LocalPublishedShelf';
 import { SearchIcon, ShelfIcon } from '@/components/ui/icons';
-import {
-  getAllBooks,
-  getBooksByCategory,
-  getFeaturedBooks,
-  type KathaBook,
-} from '@/lib/books';
+import type { KathaBook } from '@/lib/catalogue-repository';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import { authorName } from '@/lib/author-selectors';
 import { collectCategories } from '@/lib/search';
 
@@ -54,7 +50,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const slug = activeGenreSlug(await searchParams);
   const category = slug
-    ? collectCategories(getAllBooks()).find((c) => c.slug === slug)
+    ? collectCategories(await catalogueRepository.listBooks()).find(
+        (c) => c.slug === slug,
+      )
     : undefined;
 
   return {
@@ -90,14 +88,16 @@ export default async function LibraryPage({
 }) {
   const genreSlug = activeGenreSlug(await searchParams);
 
-  const allBooks = getAllBooks();
+  const allBooks = await catalogueRepository.listBooks();
   const categories = collectCategories(allBooks);
   const activeCategory = genreSlug
     ? categories.find((category) => category.slug === genreSlug)
     : undefined;
 
-  const books = genreSlug ? getBooksByCategory(genreSlug) : allBooks;
-  const featured = getFeaturedBooks();
+  const books = genreSlug
+    ? await catalogueRepository.listByCategory(genreSlug)
+    : allBooks;
+  const featured = await catalogueRepository.listFeatured();
   const isFiltered = genreSlug !== undefined;
 
   return (

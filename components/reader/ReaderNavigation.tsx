@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { KathaChapter } from '@/lib/books';
+import type { KathaChapter } from '@/lib/catalogue-repository';
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/ui/icons';
 
 /* ---------------------------------------------------------------------------

@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getHistory, type HistoryEntry } from '@/lib/history';
+import type { HistoryEntry } from '@/lib/history';
+import { readingDataRepository } from '@/lib/reading-data-repository';
+import {
+  catalogueRepository,
+  type KathaBook,
+} from '@/lib/catalogue-repository';
 import { groupHistoryByBook, getChapterNumber } from '@/lib/history-selectors';
 import { relativeTimeLabel } from '@/lib/relative-time';
 import { ClockIcon, ArrowRightIcon } from '@/components/ui/icons';
@@ -33,12 +38,24 @@ const MAX_VISIBLE = 3;
 
 export default function RecentlyRead() {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
+  const [books, setBooks] = useState<readonly KathaBook[]>([]);
   const [loaded, setLoaded] = useState(false);
   const { viewer, loaded: viewerLoaded } = useViewer();
 
   useEffect(() => {
-    setEntries(getHistory());
-    setLoaded(true);
+    let cancelled = false;
+    void Promise.all([
+      readingDataRepository.listHistory(),
+      catalogueRepository.listBooks(),
+    ]).then(([found, foundBooks]) => {
+      if (cancelled) return;
+      setEntries(found);
+      setBooks(foundBooks);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Until we've read storage, render nothing (matches the server pass).
@@ -48,7 +65,7 @@ export default function RecentlyRead() {
   // One card per book, most-recently-visited book first; each card shows that
   // book's newest location. Orphaned books sort last and simply fall off the
   // shelf when there are more than MAX_VISIBLE groups.
-  const groups = groupHistoryByBook(entries).slice(0, MAX_VISIBLE);
+  const groups = groupHistoryByBook(entries, books).slice(0, MAX_VISIBLE);
   if (groups.length === 0) return null;
 
   // The /history page shows every location, so "view all" appears whenever the
@@ -74,7 +91,7 @@ export default function RecentlyRead() {
       <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {groups.map((group) => {
           const latest: HistoryEntry = group.entries[0];
-          const chapterNumber = getChapterNumber(latest);
+          const chapterNumber = getChapterNumber(latest, books);
           return (
             <article
               key={group.bookSlug}

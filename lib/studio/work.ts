@@ -15,11 +15,7 @@
  * testable in isolation.
  * ------------------------------------------------------------------------- */
 
-import {
-  buildChapters,
-  getBookBySlug,
-  type KathaBook,
-} from '../books';
+import { buildChapters, type KathaBook } from '../catalogue-repository';
 import { foldText } from '../text';
 
 /* ── Model ───────────────────────────────────────────────────────────────── */
@@ -200,10 +196,13 @@ export interface PublishIssue {
 }
 
 /** Everything standing between a draft and the library, as gentle, editorial
- *  guidance. `siblings` = the author's other works (for slug collisions). */
+ *  guidance. `siblings` = the author's other works; `catalogue` = the shared
+ *  catalogue snapshot (fetched through CatalogueRepository) — both feed the
+ *  slug-collision check. Pure over its inputs. */
 export function validateForPublish(
   work: StudioWork,
   siblings: StudioWork[] = [],
+  catalogue: readonly KathaBook[] = [],
 ): PublishIssue[] {
   const issues: PublishIssue[] = [];
 
@@ -245,7 +244,7 @@ export function validateForPublish(
   if (!slug) {
     issues.push({ key: 'slug', message: 'The title needs a web address.' });
   } else {
-    const catalogueCollision = getBookBySlug(slug) !== undefined;
+    const catalogueCollision = catalogue.some((book) => book.slug === slug);
     const siblingCollision = siblings.some(
       (other) => other.id !== work.id && other.book.slug === slug,
     );

@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { isBookmarked, toggleBookmark } from '@/lib/bookmarks';
+import { isBookmarked } from '@/lib/bookmarks';
+import { readingDataRepository } from '@/lib/reading-data-repository';
 import { withParagraphAnchor } from '@/lib/reading-location';
 import { BookmarkIcon } from '@/components/ui/icons';
 import { useViewer } from '@/components/membership/use-viewer';
@@ -20,9 +21,10 @@ import { useViewer } from '@/components/membership/use-viewer';
  * href. The icon reflects whether the current paragraph is bookmarked, so it
  * fills/empties as you scroll.
  *
- * Reuses the existing ReadingLocation + toggleBookmark() API and adds no new
- * persistence. State starts false so SSR and the first client render agree,
- * then effects reconcile with the DOM + localStorage (no hydration mismatch).
+ * Reuses the shared ReadingLocation model and toggles through the reading-data
+ * repository — no new persistence. State starts false so SSR and the first
+ * client render agree, then effects reconcile with the DOM + stored bookmarks
+ * (no hydration mismatch).
  * ------------------------------------------------------------------------- */
 
 interface BookmarkButtonProps {
@@ -87,32 +89,46 @@ export default function BookmarkButton({
   }, [chapterSlug]);
 
   // Reflect whether the CURRENT paragraph is bookmarked (reconciled post-mount
-  // and whenever the reading position changes).
+  // and whenever the reading position changes). The list comes through the
+  // repository; isBookmarked stays the pure derivation over it.
   useEffect(() => {
-    setBookmarked(
-      isBookmarked({ bookSlug, chapterSlug, paragraphIndex: currentIndex }),
-    );
+    let cancelled = false;
+    void readingDataRepository.listBookmarks().then((bookmarks) => {
+      if (cancelled) return;
+      setBookmarked(
+        isBookmarked(
+          { bookSlug, chapterSlug, paragraphIndex: currentIndex },
+          bookmarks,
+        ),
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [bookSlug, chapterSlug, currentIndex]);
 
   function handleToggle() {
     const paragraph = document.querySelector<HTMLElement>(
       `[data-paragraph-index="${currentIndex}"]`,
     );
-    const next = toggleBookmark({
-      bookSlug,
-      bookTitle,
-      chapterSlug,
-      chapterTitle,
-      paragraphIndex: currentIndex,
-      preview: makePreview(paragraph?.textContent ?? ''),
-      href: withParagraphAnchor(href, currentIndex),
-    });
-    setBookmarked(
-      isBookmarked(
-        { bookSlug, chapterSlug, paragraphIndex: currentIndex },
-        next,
-      ),
-    );
+    void readingDataRepository
+      .toggleBookmark({
+        bookSlug,
+        bookTitle,
+        chapterSlug,
+        chapterTitle,
+        paragraphIndex: currentIndex,
+        preview: makePreview(paragraph?.textContent ?? ''),
+        href: withParagraphAnchor(href, currentIndex),
+      })
+      .then((next) => {
+        setBookmarked(
+          isBookmarked(
+            { bookSlug, chapterSlug, paragraphIndex: currentIndex },
+            next,
+          ),
+        );
+      });
   }
 
   // Guests see the ribbon as an invitation, not a control — bookmarks are a

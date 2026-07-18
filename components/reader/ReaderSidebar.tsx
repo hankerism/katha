@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getBookBySlug } from '@/lib/books';
+import { catalogueRepository } from '@/lib/catalogue-repository';
 import { authorName } from '@/lib/author-selectors';
 import {
   BookmarkIcon,
@@ -35,12 +35,12 @@ function cx(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function ReaderSidebar({
+export default async function ReaderSidebar({
   bookSlug,
   bookTitle,
   currentChapterSlug,
 }: ReaderSidebarProps) {
-  const book = getBookBySlug(bookSlug);
+  const book = await catalogueRepository.getBook(bookSlug);
   const chapters = book?.chapters ?? [];
   const author = book ? authorName(book.authorId) : '';
   const title = book?.title ?? bookTitle;

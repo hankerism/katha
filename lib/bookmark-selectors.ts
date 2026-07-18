@@ -13,8 +13,8 @@
  * in the selector layer. UI consumes selectors, never lib/books.ts directly.
  * ------------------------------------------------------------------------- */
 
-import { getBookBySlug } from './books';
-import { getChapterIndex } from './reading-location-selectors';
+import type { KathaBook } from './catalogue-repository';
+import { findBook, getChapterIndex } from './reading-location-selectors';
 import type { Bookmark } from './bookmarks';
 
 // Shared, location-level helpers — re-exported so the Bookmarks UI has a single
@@ -40,13 +40,20 @@ export interface BookmarkGroup {
  *  Each chapter's order is resolved ONCE (memoized per book+chapter, then
  *  attached to each item) rather than recomputed inside the comparator — so the
  *  cost stays linear in getChapterIndex lookups as bookmark counts grow. */
-export function sortReadingOrder(bookmarks: Bookmark[]): Bookmark[] {
+export function sortReadingOrder(
+  bookmarks: Bookmark[],
+  books: readonly KathaBook[],
+): Bookmark[] {
   const orderCache = new Map<string, number>();
   const chapterOrder = (bookmark: Bookmark): number => {
     const key = `${bookmark.bookSlug}\u0000${bookmark.chapterSlug}`;
     let order = orderCache.get(key);
     if (order === undefined) {
-      const index = getChapterIndex(bookmark.bookSlug, bookmark.chapterSlug);
+      const index = getChapterIndex(
+        books,
+        bookmark.bookSlug,
+        bookmark.chapterSlug,
+      );
       order = index === -1 ? Number.POSITIVE_INFINITY : index;
       orderCache.set(key, order);
     }
@@ -72,7 +79,10 @@ function toEpoch(iso: string): number {
 
 /** Group bookmarks by book — each group in reading order, groups ordered by
  *  most-recent activity (newest first). Orphaned books sort last. */
-export function groupBookmarksByBook(bookmarks: Bookmark[]): BookmarkGroup[] {
+export function groupBookmarksByBook(
+  bookmarks: Bookmark[],
+  books: readonly KathaBook[],
+): BookmarkGroup[] {
   const byBook = new Map<string, Bookmark[]>();
   for (const bookmark of bookmarks) {
     const list = byBook.get(bookmark.bookSlug);
@@ -82,7 +92,7 @@ export function groupBookmarksByBook(bookmarks: Bookmark[]): BookmarkGroup[] {
 
   const groups: BookmarkGroup[] = [];
   for (const [bookSlug, list] of byBook) {
-    const book = getBookBySlug(bookSlug);
+    const book = findBook(books, bookSlug);
 
     // Most-recent activity in the group, chosen by epoch time (not ISO string
     // ordering) so the intent is explicit for future maintainers.
@@ -100,7 +110,7 @@ export function groupBookmarksByBook(bookmarks: Bookmark[]): BookmarkGroup[] {
       bookSlug,
       bookTitle: book?.title ?? list[0]?.bookTitle ?? bookSlug,
       isOrphan: !book,
-      bookmarks: sortReadingOrder(list),
+      bookmarks: sortReadingOrder(list, books),
       lastActivity,
     });
   }
