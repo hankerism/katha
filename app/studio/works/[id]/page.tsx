@@ -543,8 +543,8 @@ export default function WorkWorkspacePage() {
               {work.publishedAt
                 ? relativeTimeLabel(work.publishedAt, 'placed').toLowerCase()
                 : 'on the shelves'}
-              . It lives on this device for now; the public shelves arrive
-              with author accounts.
+              . It lives on this device for now; cloud publishing arrives
+              soon.
             </p>
             <div className="flex flex-wrap items-center gap-6">
               <Link

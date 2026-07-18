@@ -132,8 +132,8 @@ export default function LocalBookDetails({ slug }: { slug: string }) {
           )}
 
           <p className="mt-4 font-body text-xs text-muted-foreground/80">
-            Published from this device&rsquo;s Studio — public shelves arrive
-            with author accounts.
+            Published from this device&rsquo;s Studio — cloud publishing
+            arrives soon.
           </p>
         </div>
       </header>

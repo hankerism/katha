@@ -101,8 +101,8 @@ export default function StudioWorksPage() {
                       In the Library
                     </h2>
                     <p className="mt-1 font-body text-sm text-muted-foreground">
-                      Finished and on the shelves of this device — public
-                      shelves arrive with author accounts.
+                      Finished and on the shelves of this device — cloud
+                      publishing arrives soon.
                     </p>
                   </div>
                   <span className="shrink-0 pb-1 font-body text-[0.68rem] uppercase tracking-[0.2em] text-muted-foreground">

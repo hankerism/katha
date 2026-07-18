@@ -19,6 +19,7 @@
  * ------------------------------------------------------------------------- */
 
 import type { StudioWork, WorkLifecycle } from './work';
+import { getAuthProvider } from '../supabase/env';
 
 export const WORKS_STORAGE_KEY = 'katha:studio:works';
 
@@ -228,11 +229,15 @@ function readAll(): StudioWork[] {
       }
     }
     // Plant the house manuscript(s) wherever absent — by id, so it stands
-    // beside whatever else is on the desk.
-    for (const seed of SEEDED_WORKS) {
-      if (!seen.has(seed.id)) {
-        works.push(seed);
-        changed = true;
+    // beside whatever else is on the desk. LOCAL (demo) mode only, per the
+    // Sprint 11 product decision: a real account's desk starts empty; the
+    // house fixture belongs to the deviceless demo, not to cloud users.
+    if (getAuthProvider() === 'local') {
+      for (const seed of SEEDED_WORKS) {
+        if (!seen.has(seed.id)) {
+          works.push(seed);
+          changed = true;
+        }
       }
     }
 
@@ -341,6 +346,17 @@ class LocalWorkRepository implements WorkRepository {
 /** The seam: swap this instance for SupabaseWorkRepository and every hook,
  *  page, and component is already correct. */
 export const workRepository: WorkRepository = new LocalWorkRepository();
+
+/* ── Local-only helpers (device-level concerns of THIS implementation) ───── */
+
+/** Every work stored on this device, regardless of author. For device-scoped
+ *  surfaces only — the /library "From this device's Studio" shelf, which is
+ *  the device's shelf by its own label (Sprint 11 product decision: it stays
+ *  populated across sign-out). Author-scoped surfaces (the Studio desk) keep
+ *  using listWorks(authorId) behind the repository interface. */
+export function listAllLocalWorks(): StudioWork[] {
+  return readAll().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+}
 
 /* ── Local-only migration helper (Sprint 9 · Authentication) ─────────────── */
 

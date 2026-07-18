@@ -7,11 +7,13 @@
  * client fallback surfaces (book details, chapter reader) all consume this
  * module — nothing else translates works for readers.
  *
- * Derives from the EXISTING repository interface (listWorks by the current
- * author) rather than a dedicated query — on this device the current author
- * IS the publisher. If a future backend wants a dedicated published-books
- * query for performance, this selector adopts it internally without
- * affecting any caller.
+ * DEVICE-scoped on purpose (Sprint 11 product decision): the shelf's own
+ * label is "From this device's Studio", so it lists every published work on
+ * the device — signed in, signed out, whoever's pen. Author-scoped views
+ * (the Studio desk) stay behind the repository interface; this module uses
+ * the local implementation's device-level helper directly, which is exactly
+ * the coupling a device-only feature should have. Cloud publishing replaces
+ * this seam wholesale.
  *
  * SSR-safe: resolves to [] / null on the server (the repository already
  * no-ops without a window), which is exactly what the server-rendered
@@ -20,15 +22,14 @@
 
 import type { KathaBook } from '../catalogue-repository';
 import { authorName } from '../author-selectors';
-import { getCurrentAuthor, getCurrentAuthorId } from './current-author';
-import { workRepository } from './work-repository';
+import { getCurrentAuthor } from './current-author';
+import { listAllLocalWorks } from './work-repository';
 import { workToBook } from './work';
 
-/** Every book published from this device's Studio, most recently published
- *  first. */
+/** Every book published from this device's Studio — any author, signed in or
+ *  not — most recently published first. */
 export async function getLocalPublishedBooks(): Promise<KathaBook[]> {
-  const works = await workRepository.listWorks(getCurrentAuthorId());
-  return works
+  return listAllLocalWorks()
     .filter((work) => work.lifecycle === 'published')
     .sort((a, b) =>
       (b.publishedAt ?? b.updatedAt).localeCompare(a.publishedAt ?? a.updatedAt),

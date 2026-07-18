@@ -99,8 +99,7 @@ export default function StudioGate({ children }: { children: ReactNode }) {
             <ArrowRightIcon className="size-4" />
           </button>
           <p className="mt-4 max-w-[40ch] font-body text-xs leading-relaxed text-muted-foreground/70">
-            Author applications arrive with accounts — today, the desk simply
-            opens.
+            No application, no waiting — the desk simply opens.
           </p>
         </div>
       </div>

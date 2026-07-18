@@ -337,20 +337,48 @@ async function refreshSupabaseViewer(client: SupabaseClientT): Promise<Viewer> {
 
 /** One-time hydration: resolve the session into the cache and subscribe to
  *  auth changes, which refresh the cache and announce through the SAME event
- *  every membership consumer already listens to. */
+ *  every membership consumer already listens to.
+ *
+ *  DESIGN PRINCIPLE (Sprint 11): authentication failure must never prevent
+ *  someone from reading. Every failure path here resolves as GUEST — the
+ *  promise never rejects, `loaded` always flips, and the gates render their
+ *  guest experience instead of going blank. A development warning is the
+ *  only trace. */
 function supabaseHydrate(): Promise<Viewer> {
   if (typeof window === 'undefined') return Promise.resolve(GUEST);
   if (supabaseHydration) return supabaseHydration;
   supabaseHydration = (async () => {
-    const client = await supabaseClient();
-    const viewer = await refreshSupabaseViewer(client);
-    client.auth.onAuthStateChange(() => {
-      void refreshSupabaseViewer(client).then(() => announce());
-    });
-    announce();
-    return viewer;
+    try {
+      const client = await supabaseClient();
+      const viewer = await refreshSupabaseViewer(client);
+      client.auth.onAuthStateChange(() => {
+        void refreshSupabaseViewer(client)
+          .catch((error) => {
+            warnAuthUnavailable(error);
+            supabaseViewerCache = GUEST;
+          })
+          .then(() => announce());
+      });
+      announce();
+      return viewer;
+    } catch (error) {
+      warnAuthUnavailable(error);
+      supabaseViewerCache = GUEST;
+      announce();
+      return GUEST;
+    }
   })();
   return supabaseHydration;
+}
+
+function warnAuthUnavailable(error: unknown): void {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      'KATHA membership: Supabase auth is unreachable — continuing as guest. ' +
+        'Reading stays available; sign-in will recover when the backend does.',
+      error,
+    );
+  }
 }
 
 // Hydrate eagerly on first client-side import, so the cache is warm before
@@ -390,6 +418,11 @@ async function supabaseSignUp(input: SignUpInput): Promise<SignUpResult> {
         first_name: input.firstName.trim(),
         last_name: input.lastName.trim(),
       },
+      // Confirmation emails complete at the callback route, which verifies
+      // the link, writes the session cookies, and returns the reader into
+      // the app (the route's default destination). Kept query-free because
+      // the redirect allow-list matches exact URLs.
+      emailRedirectTo: `${window.location.origin}/auth/confirm`,
     },
   });
   if (error) throw new Error(error.message);

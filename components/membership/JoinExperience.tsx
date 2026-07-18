@@ -44,6 +44,7 @@ export default function JoinExperience() {
 
   const from = searchParams.get('from') ?? '';
   const destination = from.startsWith('/') ? from : '/library';
+  const authError = searchParams.get('auth_error');
 
   function handleLocalJoin() {
     if (joining) return;
@@ -105,7 +106,14 @@ export default function JoinExperience() {
 
   /* Guest — the credentialed experience (supabase mode) */
   if (authProvider === 'supabase') {
-    return <CredentialedJoin destination={destination} signUp={signUp} signIn={signIn} />;
+    return (
+      <CredentialedJoin
+        destination={destination}
+        signUp={signUp}
+        signIn={signIn}
+        authError={authError}
+      />
+    );
   }
 
   /* Guest — the invitation proper (local mode, unchanged) */
@@ -155,7 +163,7 @@ export default function JoinExperience() {
         <ArrowRightIcon className="size-4" />
       </button>
       <p className="mt-4 font-body text-xs text-muted-foreground/70">
-        On this device for now — accounts and sync are on the way.
+        Kept on this device — cloud sync is on the way.
       </p>
       <Link
         href={destination}
@@ -169,17 +177,29 @@ export default function JoinExperience() {
 
 /* ── The calm sign-up / sign-in (supabase mode) ──────────────────────────── */
 
+/** Calm explanations for the callback route's named errors. */
+const AUTH_ERROR_COPY: Record<string, string> = {
+  expired:
+    'That confirmation link has expired or was already used. Sign in below — or sign up again and we’ll send a fresh one.',
+  invalid:
+    'That link didn’t carry a valid confirmation. Sign in below, or sign up to receive a new one.',
+};
+
 function CredentialedJoin({
   destination,
   signUp,
   signIn,
+  authError,
 }: {
   destination: string;
   signUp: ReturnType<typeof useViewer>['signUp'];
   signIn: ReturnType<typeof useViewer>['signIn'];
+  authError: string | null;
 }) {
   const router = useRouter();
-  const [mode, setMode] = useState<'signup' | 'signin'>('signup');
+  const [mode, setMode] = useState<'signup' | 'signin'>(
+    authError ? 'signin' : 'signup',
+  );
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -250,6 +270,15 @@ function CredentialedJoin({
           ? 'Free, and quietly yours. The library starts remembering — where you paused, what you marked, where you’ve been.'
           : 'Sign in and pick up exactly where you left off.'}
       </p>
+
+      {authError && AUTH_ERROR_COPY[authError] && (
+        <p
+          role="alert"
+          className="mt-5 max-w-[46ch] rounded-xl border border-border bg-card px-4 py-3 font-body text-sm leading-relaxed text-muted-foreground"
+        >
+          {AUTH_ERROR_COPY[authError]}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="mt-9 w-full space-y-4">
         {isSignUp && (

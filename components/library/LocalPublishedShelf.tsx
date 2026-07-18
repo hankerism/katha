@@ -55,8 +55,7 @@ export default function LocalPublishedShelf() {
         From this device&rsquo;s Studio
       </h2>
       <p className="mt-1.5 font-body text-sm text-muted-foreground">
-        Published here, readable here — public shelves arrive with author
-        accounts.
+        Published here, readable here — cloud publishing arrives soon.
       </p>
 
       <div className="mt-7 grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3 md:gap-x-6 lg:grid-cols-4 xl:grid-cols-5">
